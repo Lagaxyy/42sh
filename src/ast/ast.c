@@ -15,12 +15,13 @@ void ast_free(struct ast *ast)
 {
     if (ast == NULL)
         return;
-
-    ast_free(ast->left);
-    ast->left = NULL;
-
-    ast_free(ast->right);
-    ast->right = NULL;
-
+    for (size_t i = 0; i < ast->nbchild; i++)
+    {
+        ast_free(ast->child[i]);
+    }
+    // apeler la fonction free token
+    free(ast->value);
+    free(ast->child);
+    free(ast->next);
     free(ast);
 }

@@ -8,18 +8,17 @@ enum ast_type
     ELIF,
     ELSE,
     FI,
-    SEMICOLON, /// ;
-    LINE_BREAK, /// \n
-    QUOT, /// '
-    WORLD
+    COMAND
 };
 
 struct ast
 {
     enum ast_type type;
     char *value;
-    struct ast *left;
-    struct ast *right;
+    size_t nbchild;
+    struct ast **child;
+    struct ast *next;
+    //struct token *token;
 };
 
 struct ast *ast_new(enum ast_type type);
