@@ -15,11 +15,11 @@ void aux_error(void)
 */
 {
     if (optopt == 'c')
-        errx(1, "Argument manquant pour l'option -c");
+        errx(2, "Argument manquant pour l'option -c");
     else if (isprint(optopt))
-        errx(1, "Option inconnue -%c", optopt);
+        errx(2, "Option inconnue -%c", optopt);
     else
-        errx(1, "Caractere inconnu '\\x%x'", optopt);
+        errx(2, "Caractere inconnu '\\x%x'", optopt);
 }
 
 void aux_pretty_print(void)
@@ -114,7 +114,7 @@ int main(int argc, char **argv)
             aux_error();
             break;
         default:
-            errx(1, "Erreur inconnue");
+            errx(2, "Erreur inconnue");
         }
     }
 
@@ -122,7 +122,7 @@ int main(int argc, char **argv)
     for (int i = optind; i < argc; i++)
     {
         if (filename != NULL)
-            errx(1, "Trop d'arguments ou arguments mal places");
+            errx(2, "Trop d'arguments ou arguments mal places");
         filename = argv[i];
     }
 
@@ -134,7 +134,7 @@ int main(int argc, char **argv)
         else if (strcmp(double_dash, "verbose") == 0)
             aux_verbose();
         else
-            errx(1, "Option inconnue --%s", double_dash);
+            errx(2, "Option inconnue --%s", double_dash);
     }
     else if (script != NULL)
         // Input depuis une chaine de caractere
