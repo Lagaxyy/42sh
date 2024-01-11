@@ -36,21 +36,21 @@ void print_list_tokens(struct Token* tokens, size_t length)
 void fnmatch_for_tokens(struct Token* tokenList, int *numTokens, char *str)
 {
     // printf("str =     %.5s\n", str);
-    if (strstr(str, "if"))
+    if (strstr(str, "if") == str)
         tokenList[*numTokens].condition = IF;
-    else if (strstr(str, "then"))
+    else if (strstr(str, "then") == str)
         tokenList[*numTokens].condition = THEN;
-    else if (strstr(str, "elif"))
+    else if (strstr(str, "elif") == str)
         tokenList[*numTokens].condition = ELIF;
-    else if (strstr(str, "else"))
+    else if (strstr(str, "else") == str)
         tokenList[*numTokens].condition = ELSE;
-    else if (strstr(str, "fi"))
+    else if (strstr(str, "fi") == str)
         tokenList[*numTokens].condition = FI;
-    else if (strstr(str, ";"))
+    else if (strstr(str, ";") == str)
         tokenList[*numTokens].condition = PVIRG;
-    else if (strstr(str, "\n"))
+    else if (strstr(str, "\n") == str)
         tokenList[*numTokens].condition = NEWLINE;
-    else if (strstr(str, "'"))
+    else if (strstr(str, "'") == str)
         tokenList[*numTokens].condition = QUOTE;
     // if (!fnmatch("if[' ';\\n]?*", str, 0))
     //         tokenList[*numTokens].condition = IF;
@@ -71,7 +71,7 @@ void fnmatch_for_tokens(struct Token* tokenList, int *numTokens, char *str)
     else
     {
         tokenList[*numTokens].condition = WORD;
-        int word_len = strcspn(str, " \n\0");
+        int word_len = strcspn(str, " ;\n\0");
         tokenList[*numTokens].word = malloc(word_len + 1);
         strncpy(tokenList[*numTokens].word, str, word_len);
     }
@@ -90,7 +90,7 @@ struct Token* char_to_token(char* str, int* numTokens)
 
     while (str[0] != 0)
     {
-        printf("str[0] = %.5s\n ; numtokens = %d\n\n",str, *numTokens);
+        // printf("str[0] = %.5s\n ; numtokens = %d\n\n",str, *numTokens);
         if (*numTokens >= capacity)
         {
             capacity *= 2;
@@ -103,8 +103,9 @@ struct Token* char_to_token(char* str, int* numTokens)
         }
         tokenList[*numTokens] = init_token();
         fnmatch_for_tokens(tokenList, numTokens, str);
+        int test = str[0] == '\n';
         str++;
-        while ((*str >= 'a' && *str <= 'z') || (*str >= 'A' && *str <= 'Z'))
+        while (!test && ((*str >= 'a' && *str <= 'z') || (*str >= 'A' && *str <= 'Z')))
         {
             str++;
             // printf("str[0] = '%c' ; numtokens = %d\n",str[0], *numTokens);

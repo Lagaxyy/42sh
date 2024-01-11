@@ -1,6 +1,42 @@
+#ifndef _POSIX_C_SOURCE
+#    define _POSIX_C_SOURCE 200112L
+#endif /* ! _POSIX_C_SOURCE */
+
+#include <err.h>
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
+
+void aux_error(void)
+/*
+** Fonction auxiliaire qui gere les erreurs de getopt
+*/
+{
+    if (optopt == 'c')
+        errx(1, "Argument manquant pour l'option -c");
+    else if (isprint(optopt))
+        errx(1, "Option inconnue -%c", optopt);
+    else
+        errx(1, "Caractere inconnu '\\x%x'", optopt);
+}
+
+void aux_pretty_print(void)
+/*
+** Fonction auxiliaire utilisant le Pretty Print
+*/
+{
+    return;
+}
+
+void aux_verbose(void)
+/*
+** Fonction auxiliaire permettant l'affichage de logs
+*/
+{
+    return;
+}
 
 char *InputStandardInStr(void)
 {
@@ -53,35 +89,65 @@ char *fileInStr(char *path)
 
 int main(int argc, char **argv)
 {
+    // Variables
+    int c;
+    char *double_dash = NULL;
+    char *filename = NULL;
     char *input = NULL;
-    if (argc < 2)
+    char *script = NULL;
+
+    // Desactive l'affichage du message d'erreur par getopt
+    opterr = 0;
+
+    // Parse les options
+    while ((c = getopt(argc, argv, "c:-:")) != -1)
     {
-        input = InputStandardInStr();
-        if (input == NULL)
-            return 1;
-    }
-    else if (strcmp(argv[1], "-c") == 0)
-    {
-        if (argc != 3)
+        switch (c)
         {
-            fprintf(stderr, "42sh: error paramettre\n");
-            return 1;
+        case 'c':
+            script = optarg;
+            break;
+        case '-':
+            double_dash = optarg;
+            break;
+        case '?':
+            aux_error();
+            break;
+        default:
+            errx(1, "Erreur inconnue");
         }
-        input = argv[2];
     }
+
+    // Parse les arguments en plus
+    for (int i = optind; i < argc; i++)
+    {
+        if (filename != NULL)
+            errx(1, "Trop d'arguments ou arguments mal places");
+        filename = argv[i];
+    }
+
+    // Redirection
+    if (double_dash != NULL)
+    {
+        if (strcmp(double_dash, "pretty-print") == 0)
+            aux_pretty_print();
+        else if (strcmp(double_dash, "verbose") == 0)
+            aux_verbose();
+        else
+            errx(1, "Option inconnue --%s", double_dash);
+    }
+    else if (script != NULL)
+        // Input depuis une chaine de caractere
+        input = script;
+    else if (filename != NULL)
+        // Input depuis un fichier
+        input = fileInStr(filename);
     else
-    {
-        if (argc != 2)
-        {
-            fprintf(stderr, "42sh: error paramettre\n");
-            return 1;
-        }
-        input = fileInStr(argv[1]);
-        if (input == NULL)
-            return 1;
-    }
-    printf("%s\n", input);
-    //execute la fonction avec input
-    free(input);
+        // Input depuis stdin
+        input = InputStandardInStr();
+
+    // Temporaire
+    if (input != NULL)
+        printf("%s\n", input);
     return 0;
 }
