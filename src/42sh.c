@@ -57,6 +57,8 @@ int main(int argc, char **argv)
     if (argc < 2)
     {
         input = InputStandardInStr();
+        if (input == NULL)
+            return 1;
     }
     else if (strcmp(argv[1], "-c") == 0)
     {
@@ -75,8 +77,11 @@ int main(int argc, char **argv)
             return 1;
         }
         input = fileInStr(argv[1]);
+        if (input == NULL)
+            return 1;
     }
     printf("%s\n", input);
     //execute la fonction avec input
+    free(input);
     return 0;
 }
