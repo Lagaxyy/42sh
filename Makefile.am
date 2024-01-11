@@ -1,21 +1,16 @@
-export CC = gcc
-export CFLAGS = -std=c99 -pedantic -Werror -Wall -Wextra -Wvla
+SUBDIRS = src/ast \
+		  src/parser \
+		  src/lexer
 
-BINARY=42sh
+bin_PROGRAMS = src/42sh
 
-.PHONY: all check clean
+42sh_SOURCES = src/42sh.c
 
-all: $(BINARY)
+42sh_CPPFLAGS = -I$(top_srcdir)/src
 
-$(BINARY):
-	$(MAKE) -C src
-	mv src/$(BINARY) .
+42sh_CFLAGS = -std=c99 -Werror -Wall -Wextra -Wvla -pedantic
 
-check: $(BINARY)
-	#commande check
-
-clean:
-	$(MAKE) -C src clean
-	$(RM) $(BINARY)
-
-.PHONY: all check clean
+42sh_LDADD =  \
+		$(top_builddir)/src/ast/libast.a \
+		$(top_builddir)/src/parser/libparser.a \
+		$(top_builddir)/src/lexer/liblexer.a

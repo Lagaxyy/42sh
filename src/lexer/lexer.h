@@ -28,4 +28,4 @@ struct Token* char_to_token(char* str, int* numTokens);
 void free_tokens(struct Token* tokenList, int numTokens);
 
 
-#endif " ! LEXER_H "
+#endif /* ! LEXER_H */

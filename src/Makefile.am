@@ -1,17 +1,16 @@
-CC = gcc
-CFLAGS = -std=c99 -pedantic -Werror -Wall -Wextra -Wvla
+SUBDIRS = ast \
+		  parser \
+		  lexer
 
-SRC = # your code to include
+bin_PROGRAMS = 42sh
 
-OBJ = ${SRC:.c=.o}
+42sh_SOURCES = 42sh.c
 
-all: 42sh
+42sh_CPPFLAGS = -I$(top_srcdir)/src
 
-42sh: $(OBJ)
-	$(CC) -o 42sh $(OBJ)
+42sh_CFLAGS = -std=c99 -Werror -Wall -Wextra -Wvla -pedantic
 
-clean:
-	$(RM) $(OBJ)
-	$(RM) 42sh
-
-.PHONY: all clean
+42sh_LDADD =  \
+		ast/libast.a \
+		parser/libparser.a \
+		lexer/liblexer.a

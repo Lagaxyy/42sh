@@ -1,0 +1,1 @@
+rm -rf aclocal.m4 ar-lib autom4te.cache/ compile configure depcomp install-sh missing Makefile.in src/ast/Makefile.in src/lexer/Makefile.in src/parser/Makefile.in

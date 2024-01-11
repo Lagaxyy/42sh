@@ -110,6 +110,7 @@ void free_tokens(struct Token* tokenList, int numTokens) {
     free(tokenList); // Libérer la mémoire de la liste de tokens
 }
 
+/*
 int main() {
     char input[] = "if false; true; then\necho a\necho b; echo c;\nfi";
 
@@ -124,3 +125,4 @@ int main() {
 
     return 0;
 }
+*/
