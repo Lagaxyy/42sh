@@ -1,7 +1,5 @@
 #include "lexer.h"
 
-// #include <fnmatch.h>
-
 // init an empty token
 struct Token init_token()
 {
@@ -11,7 +9,6 @@ struct Token init_token()
     return token;
 }
 
-// Fonction pour libérer la mémoire de la liste de tokens
 void free_list_tokens(struct Token* tokenList, int numTokens) {
     for (int i = 0; i < numTokens; ++i) {
         free(tokenList[i].word);
@@ -19,7 +16,6 @@ void free_list_tokens(struct Token* tokenList, int numTokens) {
     free(tokenList);
 }
 
-// Fonction pour afficher la liste de tokens
 void print_list_tokens(struct Token* tokens, size_t length)
 {
     for (size_t i = 0; i < length; ++i) {
@@ -52,22 +48,6 @@ void fnmatch_for_tokens(struct Token* tokenList, int *numTokens, char *str)
         tokenList[*numTokens].condition = NEWLINE;
     else if (strstr(str, "'") == str)
         tokenList[*numTokens].condition = QUOTE;
-    // if (!fnmatch("if[' ';\\n]?*", str, 0))
-    //         tokenList[*numTokens].condition = IF;
-    //     else if (!fnmatch("then[' ';\\n\\0]+*", str, 0))
-    //         tokenList[*numTokens].condition = THEN;
-    //     else if (!fnmatch("elif[' ';\\n\\0]+*", str, 0))
-    //         tokenList[*numTokens].condition = ELIF;
-    //     else if (!fnmatch("else[' ';\\n\\0]+*", str, 0))
-    //         tokenList[*numTokens].condition = ELSE;
-    //     else if (!fnmatch("fi[' ';\\n\\0]+*", str, 0))
-    //         tokenList[*numTokens].condition = FI;
-    //     else if (!fnmatch(";[' ';\\n\\0]+*", str, 0))
-    //         tokenList[*numTokens].condition = PVIRG;
-    //     else if (!fnmatch("\\n[' ';\\n\\0]+*", str, 0))
-    //         tokenList[*numTokens].condition = NEWLINE;
-    //     else if (!fnmatch("'[' ';\\n\\0]+*", str, 0))
-    //         tokenList[*numTokens].condition = QUOTE;
     else
     {
         tokenList[*numTokens].condition = WORD;
@@ -121,7 +101,6 @@ struct Token* char_to_token(char* str, int* numTokens)
     return tokenList;
 }
 
-// Fonction pour libérer la mémoire allouée à la liste de tokens
 void free_tokens(struct Token* tokenList, int numTokens) {
     for (int i = 0; i < numTokens; ++i) {
         if (tokenList[i].condition == WORD) {
@@ -132,7 +111,7 @@ void free_tokens(struct Token* tokenList, int numTokens) {
 }
 
 int main() {
-    char input[] = "if false; true; then\necho a\necho b; echo c;\nfi"; // Exemple de chaîne d'entrée
+    char input[] = "if false; true; then\necho a\necho b; echo c;\nfi";
 
     int numTokens;
     struct Token* tokens = char_to_token(input, &numTokens);
@@ -141,7 +120,6 @@ int main() {
     printf("len = %d ;; Liste de tokens :\n",numTokens);
     print_list_tokens(tokens, numTokens);
 
-    // Libérer la mémoire allouée pour la liste de tokens
     // free_list_tokens(tokens, numTokens);
 
     return 0;
