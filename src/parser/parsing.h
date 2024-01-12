@@ -1,6 +1,8 @@
 #ifndef PARSING_H
 #define PARSING_H
 
+#include <stddef.h>
+
 enum Ast_type
 {
     IF,
@@ -20,14 +22,14 @@ enum Grammaire
 struct Token
 {
     char *str;
-    int len;
+    size_t len;
 };
 
 
 struct Command
 {
     struct token **token;
-    int nbtoken;
+    size_t nbtoken;
 };
 
 struct Ast
