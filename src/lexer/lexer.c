@@ -50,8 +50,11 @@ struct Token *lexer(char *str, enum Grammaire grm)
 
     // Cree la structure Token
     struct Token *new = malloc(sizeof(struct Token));
-    new->str = token;
+    new->str = str + len_spc;
     new->len = strlen(token);
+
+    // Libere la memoire du token
+    free(token);
 
     return new;
 }
