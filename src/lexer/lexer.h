@@ -4,8 +4,9 @@
 #include "../parser/parsing.h"
 
 /*
-** Renvoie le premier token de la chaine de caractere
-** ou NULL si le token ne correspond pas a la grammaire demandee
+** Considerant l'input (ici c'est str), renvoie
+** un struct Token contenant un pointeur au debut
+** du premier token et la taille du token
 */
 struct Token *lexer(char *str, enum Grammaire grm);
 
