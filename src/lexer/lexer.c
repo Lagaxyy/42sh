@@ -1,128 +1,57 @@
+#ifndef _POSIX_C_SOURCE
+#    define _POSIX_C_SOURCE 200809L
+#endif /* ! _POSIX_C_SOURCE */
+
 #include "lexer.h"
 
-// init an empty token
-struct Token init_token()
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+bool check_word(char *tok)
 {
-    struct Token token;
-    token.condition = EMPTY;
-    token.word = NULL;
-    return token;
+    if (!tok)
+        return false;
+    return true;
 }
 
-void free_list_tokens(struct Token* tokenList, int numTokens) {
-    for (int i = 0; i < numTokens; ++i) {
-        free(tokenList[i].word);
-    }
-    free(tokenList);
-}
-
-void print_list_tokens(struct Token* tokens, size_t length)
+struct Token *lexer(char *str, enum Grammaire grm)
 {
-    for (size_t i = 0; i < length; ++i) {
-        const char *condition_name = condition_names[tokens[i].condition];
+    // Duplique la chaine de caractere
+    char *adr_strr = strdup(str);
 
-        if (tokens[i].condition == WORD) {
-            printf("%s: %s\n", condition_name, tokens[i].word);
-        } else {
-            printf("%s\n", condition_name);
-        }
-    }
-}
+    // Skip les premiers ' ' si besoin
+    size_t len_spc = strspn(adr_strr, " ");
+    char *strr = adr_strr + len_spc;
 
-void fnmatch_for_tokens(struct Token* tokenList, int *numTokens, char *str)
-{
-    // printf("str =     %.5s\n", str);
-    if (strstr(str, "if") == str)
-        tokenList[*numTokens].condition = IF;
-    else if (strstr(str, "then") == str)
-        tokenList[*numTokens].condition = THEN;
-    else if (strstr(str, "elif") == str)
-        tokenList[*numTokens].condition = ELIF;
-    else if (strstr(str, "else") == str)
-        tokenList[*numTokens].condition = ELSE;
-    else if (strstr(str, "fi") == str)
-        tokenList[*numTokens].condition = FI;
-    else if (strstr(str, ";") == str)
-        tokenList[*numTokens].condition = PVIRG;
-    else if (strstr(str, "\n") == str)
-        tokenList[*numTokens].condition = NEWLINE;
-    else if (strstr(str, "'") == str)
-        tokenList[*numTokens].condition = QUOTE;
+    // Extrait le premier token
+    char *token = NULL;
+    if (str[0] == ';')
+        token = strdup(";");
     else
     {
-        tokenList[*numTokens].condition = WORD;
-        int word_len = strcspn(str, " ;\n\0");
-        tokenList[*numTokens].word = malloc(word_len + 1);
-        strncpy(tokenList[*numTokens].word, str, word_len);
+        char *tmp = strtok(strr, " ;");
+        token = strdup(tmp);
     }
+
+    // Libere la memoire de strdup
+    free(adr_strr);
+
+    // (TODO) Verifie la grammaire donnee
+    bool check_grm = true;
+    if (grm == WORD)
+        check_grm = check_word(token);
+    else
+        // END
+        check_grm = false;
+    if (check_grm == false)
+        return NULL;
+
+    // Cree la structure Token
+    struct Token *new = malloc(sizeof(struct Token));
+    new->str = token;
+    new->len = strlen(token);
+
+    return new;
 }
-
-struct Token* char_to_token(char* str, int* numTokens)
-{
-    int capacity = 10;
-    struct Token* tokenList = malloc(capacity * sizeof(struct Token));
-    if (tokenList == NULL)
-    {
-        fprintf(stderr, "Allocation failed");
-        exit(EXIT_FAILURE);
-    }
-    *numTokens = 0;
-
-    while (str[0] != 0)
-    {
-        // printf("str[0] = %.5s\n ; numtokens = %d\n\n",str, *numTokens);
-        if (*numTokens >= capacity)
-        {
-            capacity *= 2;
-            tokenList = realloc(tokenList, capacity * sizeof(struct Token));
-            if (tokenList == NULL)
-            {
-                fprintf(stderr, "Reallocation failed");
-                exit(EXIT_FAILURE);
-            }
-        }
-        tokenList[*numTokens] = init_token();
-        fnmatch_for_tokens(tokenList, numTokens, str);
-        int test = str[0] == '\n';
-        str++;
-        while (!test && ((*str >= 'a' && *str <= 'z') || (*str >= 'A' && *str <= 'Z')))
-        {
-            str++;
-            // printf("str[0] = '%c' ; numtokens = %d\n",str[0], *numTokens);
-        }
-        while (*str == ' ')
-        {
-            str++;
-            // printf("str[0] = '%c' ; numtokens = %d\n",str[0], *numTokens);
-        }
-        // printf("cpt = %d\n", cpt);
-        (*numTokens)++;
-    }
-    return tokenList;
-}
-
-void free_tokens(struct Token* tokenList, int numTokens) {
-    for (int i = 0; i < numTokens; ++i) {
-        if (tokenList[i].condition == WORD) {
-            free(tokenList[i].word); // Libérer la mémoire du mot si nécessaire
-        }
-    }
-    free(tokenList); // Libérer la mémoire de la liste de tokens
-}
-
-/*
-int main() {
-    char input[] = "if false; true; then\necho a\necho b; echo c;\nfi";
-
-    int numTokens;
-    struct Token* tokens = char_to_token(input, &numTokens);
-
-    // Afficher la liste de tokens
-    printf("len = %d ;; Liste de tokens :\n",numTokens);
-    print_list_tokens(tokens, numTokens);
-
-    // free_list_tokens(tokens, numTokens);
-
-    return 0;
-}
-*/
