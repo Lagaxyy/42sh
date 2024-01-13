@@ -3,16 +3,9 @@
 
 #include <stddef.h>
 
-enum Ast_type
-{
-    IF,
-    THEN,
-    ELIF,
-    ELSE,
-    FI,
-    COMAND
-};
-
+/*
+** Struct et enum concernant les tokens
+*/
 enum Grammaire
 {
     END,
@@ -25,24 +18,54 @@ struct Token
     size_t len;
 };
 
-
+/*
+** Structs contenant les datas
+*/
 struct Command
 {
-    struct Token **token;
+    struct Token **tokenlist;
     size_t nbtoken;
+};
+
+/*
+** Structs et enum definissant l'AST
+*/
+enum Ast_type
+{
+    IF_CMD,
+    SIMPLE_CMD
+};
+
+// (TODO) A completer
+struct Ast_if
+{
+    void *rien;
+};
+
+struct Ast_simple_cmd
+{
+    struct Command *cmd;
+};
+
+union Ast_union
+{
+    struct Ast_simple_cmd sc;
+    struct Ast_if aif;
 };
 
 struct Ast
 {
     enum Ast_type type;
-    struct Command *command;
-    size_t nbchild;
-    struct Ast **child;
-    struct Ast *next;
+    union Ast_union data;
 };
 
-//struct ast *ast_new(enum ast_type type);
-//void ast_free(struct ast *ast);
-void parse_command(char *str);
+/*
+** Fonctions exportees
+*/
+struct Ast *parse_command(char *str);
+void print_ast(struct Ast *ast, size_t depth);
+void free_ast(struct Ast *ast);
+void free_ast_sc(struct Ast *ast);
+void free_ast_if(struct Ast *ast);
 
 #endif /* ! PARSING_H */

@@ -45,9 +45,9 @@ struct Token *lexer(char *str, enum Grammaire grm)
     // return NULL si fin de la string. ajout car sinon sa cracher
     if (*strr == 0)
     {
+        free(adr_strr);
         return NULL;
     }
-    
 
     // Extrait le premier token
     char *token = NULL;
