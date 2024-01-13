@@ -1,11 +1,8 @@
 lib_LIBRARIES = libast.a
 
-libast_a_SOURCES =  \
-  ast.c \
+libast_a_SOURCES = ast.c \
   ast.h
-
-libast_a_CPPFLAGS = -I$(top_srcdir)
-
 libast_a_CFLAGS = -std=c99 -Werror -Wall -Wextra -Wvla -pedantic
+libast_a_CPPFLAGS = -I$(top_srcdir)
 
 noinst_LIBRARIES = libast.a
