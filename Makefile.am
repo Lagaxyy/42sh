@@ -1,6 +1,7 @@
 SUBDIRS = src/ast \
 		  src/parser \
-		  src/lexer
+		  src/lexer \
+		  src/function
 
 bin_PROGRAMS = src/42sh
 
@@ -14,3 +15,4 @@ bin_PROGRAMS = src/42sh
 		$(top_builddir)/src/ast/libast.a \
 		$(top_builddir)/src/parser/libparser.a \
 		$(top_builddir)/src/lexer/liblexer.a
+		$(top_builddir)/src/function/libfunc.a \

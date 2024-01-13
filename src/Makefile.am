@@ -1,6 +1,7 @@
 SUBDIRS = ast \
 		  parser \
-		  lexer
+		  lexer \
+		  function
 
 bin_PROGRAMS = 42sh
 
@@ -14,3 +15,4 @@ bin_PROGRAMS = 42sh
 		ast/libast.a \
 		parser/libparser.a \
 		lexer/liblexer.a
+		function/libfunc.a \
