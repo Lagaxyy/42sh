@@ -28,7 +28,7 @@ struct Token
 
 struct Command
 {
-    struct token **token;
+    struct Token **token;
     size_t nbtoken;
 };
 
@@ -43,5 +43,6 @@ struct Ast
 
 //struct ast *ast_new(enum ast_type type);
 //void ast_free(struct ast *ast);
+void parse_command(char *str);
 
 #endif /* ! PARSING_H */

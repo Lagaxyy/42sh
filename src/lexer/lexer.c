@@ -17,6 +17,8 @@ bool check_word(char *tok)
 {
     if (!tok)
         return false;
+    if (*tok == 0)
+        return false;
     // Autres conditions ??
     return true;
 }
@@ -40,6 +42,12 @@ struct Token *lexer(char *str, enum Grammaire grm)
     // Skip les premiers caracteres BLANK si besoin
     size_t len_blank = strspn(adr_strr, " \t\r\n");
     char *strr = adr_strr + len_blank;
+    // return NULL si fin de la string. ajout car sinon sa cracher
+    if (*strr == 0)
+    {
+        return NULL;
+    }
+    
 
     // Extrait le premier token
     char *token = NULL;
