@@ -1,7 +1,7 @@
 check_PROGRAMS = ut_lexer
 
 ut_lexer_SOURCES = unit_tests_lexer.c \
-				   ../lexer.h
+				   $(top_builddir)/src/lexer/lexer.h
 ut_lexer_CPPFLAGS = -I$(top_srcdir)/src
 
 ut_lexer_LDADD = -lcriterion \
