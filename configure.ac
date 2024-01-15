@@ -11,6 +11,7 @@ AC_CONFIG_FILES([
     Makefile
     src/Makefile
     src/lexer/Makefile
+    src/lexer/tests/Makefile
     src/parser/Makefile
     src/function/Makefile
     src/ast/Makefile

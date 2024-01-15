@@ -6,3 +6,5 @@ liblexer_a_CFLAGS = -std=c99 -Werror -Wall -Wextra -Wvla -pedantic
 liblexer_a_CPPFLAGS = -I$(top_srcdir)
 
 noinst_LIBRARIES = liblexer.a
+
+SUBDIRS = tests

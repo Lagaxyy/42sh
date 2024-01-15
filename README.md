@@ -10,3 +10,11 @@ make
 ```
 
 Le binaire se trouvera dans le dossier src/
+
+## Clean le repo
+
+Les commandes pour supprimer tous les fichiers produits sont:
+```
+make distclean
+./rm_autotools_files.sh
+```
