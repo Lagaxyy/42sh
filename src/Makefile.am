@@ -6,10 +6,8 @@ bin_PROGRAMS = 42sh
 
 42sh_LDADD = $(top_builddir)/src/lexer/liblexer.a \
 	$(top_builddir)/src/parser/libparser.a \
-	$(top_builddir)/src/function/libfunc.a \
-	$(top_builddir)/src/ast/libast.a
+	$(top_builddir)/src/exec_ast/libea.a
 
 SUBDIRS = lexer \
 		  parser \
-		  function \
-		  ast
+		  exec_ast
