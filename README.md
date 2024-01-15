@@ -9,4 +9,4 @@ autoreconf --install
 make
 ```
 
-Le binaire se trouvera dans le dossier src/
+Le binaire se trouvera dans le dossier _src/_
