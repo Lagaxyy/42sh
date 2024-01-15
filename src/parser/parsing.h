@@ -65,7 +65,5 @@ struct Ast
 struct Ast *parse_command(char *str);
 void print_ast(struct Ast *ast, size_t depth);
 void free_ast(struct Ast *ast);
-void free_ast_sc(struct Ast *ast);
-void free_ast_if(struct Ast *ast);
 
 #endif /* ! PARSING_H */
