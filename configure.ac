@@ -15,6 +15,7 @@ AC_CONFIG_FILES([
     src/parser/Makefile
     src/parser/tests/Makefile
     src/exec_ast/Makefile
+    src/exec_ast/tests/Makefile
     ])
 
 AC_OUTPUT
