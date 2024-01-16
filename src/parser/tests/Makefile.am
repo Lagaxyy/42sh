@@ -9,5 +9,8 @@ ut_parser_LDADD = -lcriterion \
 				 $(top_builddir)/src/lexer/liblexer.a \
 				 $(top_builddir)/src/parser/libparser.a
 
+ut_parser_LDFLAGS = -fsanitize=address
+
+check-local: CFLAGS += -g -fsanitize=address
 check-local: ut_parser
 	./ut_parser

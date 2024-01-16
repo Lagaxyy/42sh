@@ -26,6 +26,8 @@ Test(parser, simple_cmd_simple)
     char *expected_output = "SIMPLE_CMD\n  Command:\n    Token 1: echo\n    Token 2: foo\n";
 
     cr_expect_stdout_eq_str(expected_output);
+
+    free_ast(test_ast);
 }
 
 Test(parser, simple_cmd_simple2)
@@ -40,4 +42,6 @@ Test(parser, simple_cmd_simple2)
     char *expected_output = "SIMPLE_CMD\n  Command:\n    Token 1: echo\n    Token 2: Hello\n    Token 3: World!\n    Token 4: ;\n";
 
     cr_expect_stdout_eq_str(expected_output);
+
+    free_ast(test_ast);
 }
