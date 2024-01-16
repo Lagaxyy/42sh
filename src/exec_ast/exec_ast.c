@@ -4,6 +4,7 @@
 
 #include "exec_ast.h"
 
+#include <assert.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -16,8 +17,9 @@ void exec_ast_sc(struct Ast *ast)
 ** Execute le noeud simple_command
 */
 {
-    if (!ast || ast->type != SIMPLE_CMD)
+    if (!ast)
         return;
+    assert(ast->type == SIMPLE_CMD);
 
     // Match la commande avec sa fonction correspondante
     struct Ast_simple_cmd *sc = &ast->data.sc; // Alias pratique
@@ -42,6 +44,7 @@ void exec_ast_if(struct Ast *ast)
 {
     if (!ast)
         return;
+    assert(ast->type == IF_CMD);
     return;
 }
 
@@ -55,16 +58,9 @@ void exec_ast(struct Ast *ast)
         return;
 
     // Redirige vers les autres fonctions selon le type du noeud
-    // (TODO) Utiliser une lookup table
-    switch (ast->type)
-    {
-    case SIMPLE_CMD:
-        exec_ast_sc(ast);
-        break;
-    case IF_CMD:
-        exec_ast_if(ast);
-        break;
-    default:
-        break;
-    }
+    static const node_type functions[] = {
+        [SIMPLE_CMD] = &exec_ast_sc,
+        [IF_CMD] = &exec_ast_if
+    };
+    (*functions[ast->type])(ast);
 }
