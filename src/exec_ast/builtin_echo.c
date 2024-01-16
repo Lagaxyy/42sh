@@ -120,14 +120,25 @@ int my_echo(struct Ast *ast)
     // Print les arguments de echo suivi d'un espace
     for (i = check_options; i < sc->cmd->nbtoken - 1; i++)
     {
+        if (sc->cmd->tokenlist[i]->str[0] == ';' && sc->cmd->tokenlist[i]->len == 1)
+            break;
         src = strdup(sc->cmd->tokenlist[i]->str);
         src[sc->cmd->tokenlist[i]->len] = '\0';
         echo_print(src, interpretEscapes);
         free(src);
-        putchar(' ');
+        if (sc->cmd->tokenlist[i + 1]->str[0] != ';' || sc->cmd->tokenlist[i + 1]->len != 1)
+            putchar(' ');
     }
 
     // Print le dernier argument de echo sans l'espace
+    if (sc->cmd->tokenlist[i]->str[0] == ';' && sc->cmd->tokenlist[i]->len == 1)
+    {
+        if (printNewline)
+            putchar('\n');
+
+        fflush(stdout);
+        return 0;
+    }
     src = strdup(sc->cmd->tokenlist[i]->str);
     src[sc->cmd->tokenlist[i]->len] = '\0';
     echo_print(src, interpretEscapes);

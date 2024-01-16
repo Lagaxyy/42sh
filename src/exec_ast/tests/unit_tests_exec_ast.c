@@ -4,6 +4,7 @@
 #include "../exec_ast.h"
 #include "../../parser/parsing.h"
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -13,6 +14,8 @@ Test(exec_ast, dummy)
 {
     cr_assert(1);
 }
+
+// === simple_command =========================================================
 
 Test(exec_ast, simple_echo)
 {
@@ -173,3 +176,37 @@ Test(exec_ast, echo_combination_options_5)
 
     free_ast(test_ast);
 }
+
+Test(exec_ast, simple_echo_semicolon_1)
+{
+    char *cmd = "echo Hello World;";
+    struct Ast *test_ast = parse_command(cmd);
+
+    cr_redirect_stdout();
+    exec_ast(test_ast);
+    fflush(NULL);
+
+    char *expected_output = "Hello World\n";
+
+    cr_expect_stdout_eq_str(expected_output);
+
+    free_ast(test_ast);
+}
+
+Test(exec_ast, simple_echo_semicolon_2)
+{
+    char *cmd = "echo Hello World ;";
+    struct Ast *test_ast = parse_command(cmd);
+
+    cr_redirect_stdout();
+    exec_ast(test_ast);
+    fflush(NULL);
+
+    char *expected_output = "Hello World\n";
+
+    cr_expect_stdout_eq_str(expected_output);
+
+    free_ast(test_ast);
+}
+
+// === command_list ===========================================================
