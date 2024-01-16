@@ -28,8 +28,10 @@ int aux_get_options(char *str, int *pN, int *iE)
             *iE = 1;
         else
         {
+            // Restaure les anciennes valeurs
             *pN = pN_save;
             *iE = iE_save;
+
             return 1;
         }
     }
@@ -48,6 +50,8 @@ size_t get_options(struct Ast *ast, int *pN, int *iE)
     size_t ind = 1;
     struct Ast_simple_cmd *sc = &ast->data.sc; // Alias pratique
 
+    // Check tous les tokens jusqu'a trouver le premier
+    // token qui n'est pas une option
     for (size_t i = 1; i < sc->cmd->nbtoken; i++)
     {
         if (sc->cmd->tokenlist[i]->str[0] != '-')
@@ -64,7 +68,6 @@ size_t get_options(struct Ast *ast, int *pN, int *iE)
         ind++;
         free(str);
     }
-
 
     return ind;
 }
@@ -101,8 +104,9 @@ void echo_print(char *src, int iE)
 
 int my_echo(struct Ast *ast)
 {
-    if (!ast || ast->type != SIMPLE_CMD)
+    if (!ast)
         return 1;
+    assert(ast->type == SIMPLE_CMD);
 
     char *src = NULL;
     size_t i = 0;
@@ -112,6 +116,7 @@ int my_echo(struct Ast *ast)
 
     size_t check_options = get_options(ast, &printNewline, &interpretEscapes);
 
+    // Print les arguments de echo suivi d'un espace
     for (i = check_options; i < sc->cmd->nbtoken - 1; i++)
     {
         src = strdup(sc->cmd->tokenlist[i]->str);
@@ -120,6 +125,8 @@ int my_echo(struct Ast *ast)
         free(src);
         putchar(' ');
     }
+
+    // Print le dernier argument de echo sans l'espace
     src = strdup(sc->cmd->tokenlist[i]->str);
     src[sc->cmd->tokenlist[i]->len] = '\0';
     echo_print(src, interpretEscapes);
