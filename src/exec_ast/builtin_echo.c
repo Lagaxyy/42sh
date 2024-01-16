@@ -117,6 +117,10 @@ int my_echo(struct Ast *ast)
 
     size_t check_options = get_options(ast, &printNewline, &interpretEscapes);
 
+    // Pas d'arguments
+    if (sc->cmd->nbtoken < 2)
+        return 0;
+
     // Print les arguments de echo suivi d'un espace
     for (i = check_options; i < sc->cmd->nbtoken - 1; i++)
     {
