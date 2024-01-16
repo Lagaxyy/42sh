@@ -209,4 +209,19 @@ Test(exec_ast, simple_echo_semicolon_2)
     free_ast(test_ast);
 }
 
+Test(exec_ast, simple_cmd_non_builtin)
+{
+    char *cmd = "ls /bin;";
+    struct Ast *test_ast = parse_command(cmd);
+    cr_redirect_stdout();
+    exec_ast(test_ast);
+    fflush(NULL);
+    free_ast(test_ast);
+
+    // Test seulement pour savoir si tout run bien
+    // Creer un dossier temporaire pour check l'output
+    // de la commande ?
+    cr_assert(1);
+}
+
 // === command_list ===========================================================

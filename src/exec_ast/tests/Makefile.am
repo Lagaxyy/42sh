@@ -11,5 +11,8 @@ ut_exec_ast_LDADD = -lcriterion \
 				 $(top_builddir)/src/parser/libparser.a \
 				 $(top_builddir)/src/exec_ast/libea.a
 
+ut_exec_ast_LDFLAGS = -fsanitize=address
+
+check-local: CFLAGS += -g -fsanitize=address
 check-local: ut_exec_ast
 	./ut_exec_ast

@@ -5,5 +5,6 @@
 
 void exec_ast(struct Ast *ast);
 int my_echo(struct Ast *ast);
+void run_cmds(struct Ast *ast);
 
 #endif /* ! EXEC_AST_H */

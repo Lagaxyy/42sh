@@ -29,10 +29,7 @@ void exec_ast_sc(struct Ast *ast)
         // ECHO
         my_echo(ast);
     else
-    {
-        // (TODO) Utilisation des fonctions exec
-        ;
-    }
+        run_cmds(ast);
 
     free(cmd);
 }

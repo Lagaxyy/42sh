@@ -4,6 +4,7 @@
 
 #include "lexer/lexer.h"
 #include "parser/parsing.h"
+#include "exec_ast/exec_ast.h"
 
 #include <err.h>
 #include <ctype.h>
@@ -27,7 +28,7 @@ void aux_error(void)
 
 void aux_pretty_print(char *input)
 /*
-** Fonction auxiliaire utilisant le Pretty Print
+** Fonction auxiliaire affichant l'AST
 */
 {
     struct Ast *ast = parse_command(input);
@@ -42,6 +43,19 @@ void aux_verbose(void)
 ** Fonction auxiliaire permettant l'affichage de logs
 */
 {
+    return;
+}
+
+void aux_run(char *input)
+/*
+** Construit l'AST de l'input et
+** l'execute
+*/
+{
+    struct Ast *ast = parse_command(input);
+    exec_ast(ast);
+    free_ast(ast);
+
     return;
 }
 
@@ -149,14 +163,12 @@ int main(int argc, char **argv)
         if (strcmp(double_dash, "pretty-print") == 0)
             aux_pretty_print(input);
         else if (strcmp(double_dash, "verbose") == 0)
-            aux_verbose();
+            aux_verbose(); // A implementer ?
         else
             errx(2, "Option inconnue --%s", double_dash);
     }
     else
-    {
-        printf("check: %s\n", input);
-    }
+        aux_run(input);
 
     return 0;
 }
