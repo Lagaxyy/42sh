@@ -2,6 +2,10 @@
 #    define _POSIX_C_SOURCE 200112L
 #endif /* ! _POSIX_C_SOURCE */
 
+#include "lexer/lexer.h"
+#include "parser/parsing.h"
+#include "exec_ast/exec_ast.h"
+
 #include <err.h>
 #include <ctype.h>
 #include <stdio.h>
@@ -22,11 +26,15 @@ void aux_error(void)
         errx(2, "Caractere inconnu '\\x%x'", optopt);
 }
 
-void aux_pretty_print(void)
+void aux_pretty_print(char *input)
 /*
-** Fonction auxiliaire utilisant le Pretty Print
+** Fonction auxiliaire affichant l'AST
 */
 {
+    struct Ast *ast = parse_command(input);
+    print_ast(ast, 0);
+    free_ast(ast);
+
     return;
 }
 
@@ -35,6 +43,19 @@ void aux_verbose(void)
 ** Fonction auxiliaire permettant l'affichage de logs
 */
 {
+    return;
+}
+
+void aux_run(char *input)
+/*
+** Construit l'AST de l'input et
+** l'execute
+*/
+{
+    struct Ast *ast = parse_command(input);
+    exec_ast(ast);
+    free_ast(ast);
+
     return;
 }
 
@@ -126,17 +147,7 @@ int main(int argc, char **argv)
         filename = argv[i];
     }
 
-    // Redirection
-    if (double_dash != NULL)
-    {
-        if (strcmp(double_dash, "pretty-print") == 0)
-            aux_pretty_print();
-        else if (strcmp(double_dash, "verbose") == 0)
-            aux_verbose();
-        else
-            errx(2, "Option inconnue --%s", double_dash);
-    }
-    else if (script != NULL)
+    if (script != NULL)
         // Input depuis une chaine de caractere
         input = script;
     else if (filename != NULL)
@@ -146,8 +157,18 @@ int main(int argc, char **argv)
         // Input depuis stdin
         input = InputStandardInStr();
 
-    // Temporaire
-    if (input != NULL)
-        printf("%s\n", input);
+    // Redirection
+    if (double_dash != NULL)
+    {
+        if (strcmp(double_dash, "pretty-print") == 0)
+            aux_pretty_print(input);
+        else if (strcmp(double_dash, "verbose") == 0)
+            aux_verbose(); // A implementer ?
+        else
+            errx(2, "Option inconnue --%s", double_dash);
+    }
+    else
+        aux_run(input);
+
     return 0;
 }

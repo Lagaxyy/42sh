@@ -1,11 +1,13 @@
 lib_LIBRARIES = libparser.a
 
-libparser_a_SOURCES =  \
-  parsing.c \
-  parsing.h
-
+libparser_a_SOURCES = parsing.c \
+  parsing.h \
+  free_func.c \
+  ../lexer/lexer.c \
+  ../lexer/lexer.h
+libparser_a_CFLAGS = -std=c99 -Werror -Wall -Wextra -Wvla -pedantic
 libparser_a_CPPFLAGS = -I$(top_srcdir)
 
-libparser_a_CFLAGS = -std=c99 -Werror -Wall -Wextra -Wvla -pedantic
-
 noinst_LIBRARIES = libparser.a
+
+SUBDIRS = tests

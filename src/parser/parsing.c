@@ -1,164 +1,129 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include "../lexer/lexer.h"
 #include "parsing.h"
 
-/*
-struct Token *lexer(char *str, enum Grammaire grammaire)
-{
-    return NULL;
-}
-*/
-struct Ast *ast_new(enum Ast_type type)
-{
-    struct Ast *new = calloc(1, sizeof(struct Ast));
-    if (!new)
-        return NULL;
-    new->type = type;
-    return new;
-}
+#include <err.h>
+#include <stdio.h>
+#include <stdlib.h>
 
-struct Command *int_command()
+#include "../lexer/lexer.h"
+
+struct Command *init_command(void)
+/*
+** Renvoie une struct Command initialisee
+*/
 {
     struct Command *c = malloc(sizeof(struct Command));
+    c->tokenlist = NULL;
     c->nbtoken = 0;
-    c->token = NULL;
     return c;
 }
-// ajoute un word a la struct command
+
 void ajout_command(struct Command *c, struct Token *token)
+/*
+** Ajoute un WORD a la struct Command
+*/
 {
-    c->token = realloc(c->token, sizeof(struct Token*) * (c->nbtoken + 1));
-    c->token[c->nbtoken] = token;
+    c->tokenlist = realloc(c->tokenlist, sizeof(struct Token) * (c->nbtoken + 1));
+    c->tokenlist[c->nbtoken] = token;
     c->nbtoken++;
 }
 
-
 char *decale_str(struct Token *token)
+/*
+** Renvoie un pointeur sur l'input
+** mis a jour en fonction du token
+*/
 {
     return token->str + token->len;
 }
 
-/*
-simple_command =
-        word {word}
-*/
 struct Ast *simple_command(char *str)
+/*
+** Renvoie un noeud de l'AST de type
+** simple_command
+**
+** Grammaire:
+**
+** simple_command =
+**      WORD { WORD }
+*/
 {
-    // word
-    struct Token *token = lexer(str, WORD); // return NULL si incorect
-    if (token == NULL)
-    {
+    // Premier WORD necessaire
+    struct Token *token = lexer(str, WORD);
+    if (!token)
+        // Token incorrect
         return NULL;
-    }
-    struct Ast *ast = ast_new(COMAND);
-    ast->command = int_command();
-    ajout_command(ast->command, token);
+
+    // Alloue la memoire pour la struct Ast et definit le type
+    struct Ast *ast = malloc(sizeof(struct Ast));
+    if (!ast)
+        return NULL;
+    ast->type = SIMPLE_CMD;
+
+    // Alloue la memoire pour la struct Ast_simple_cmd
+    struct Ast_simple_cmd *sc = &ast->data.sc; // Alias pratique
+
+    // Initialise la struct Command et ajoute le premier token
+    sc->cmd = init_command();
+    ajout_command(sc->cmd, token);
     str = decale_str(token);
 
-    // {word}
+    // Autres WORD
     token = lexer(str, WORD);
     while (token != NULL)
     {
-        ajout_command(ast->command, token);
+        ajout_command(sc->cmd, token);
         str = decale_str(token);
         token = lexer(str, WORD);
     }
+
     return ast;
 }
 
-/*
-input = 
-        simple_command EOF
-*/
-// return l'ast si true, NULL si false
-struct Ast *input(char *str)
+void print_ast(struct Ast *ast, size_t depth)
 {
-    // simple_command EOF
-    struct Ast *ast = simple_command(str);
-    if (ast != NULL)
-    {
-        return ast;
-    }
-    return NULL;
-}
-
-void printAst(struct Ast *ast, size_t depth)
-{
-    // Print the type of the current node
+    // Print le type du noeud actuel
     for (size_t i = 0; i < depth; i++)
-        printf("  "); // Add indentation based on depth
+        printf("  "); // Indente en fonction de la profondeur du noeud
 
     switch (ast->type)
     {
-    case IF:
-        printf("IF\n");
+    case IF_CMD:
+        printf("IF_CMD\n");
         break;
-    case THEN:
-        printf("THEN\n");
-        break;
-    case ELIF:
-        printf("ELIF\n");
-        break;
-    case ELSE:
-        printf("ELSE\n");
-        break;
-    case FI:
-        printf("FI\n");
-        break;
-    case COMAND:
-        printf("COMMAND\n");
+    case SIMPLE_CMD:
+        printf("SIMPLE_CMD\n");
         break;
     default:
-        printf("Unknown Type\n");
+        printf("Type inconnu\n");
         break;
     }
 
-    // Print the command if present
-    if (ast->command != NULL)
+    // Alias pratique
+    struct Ast_simple_cmd *sc = &ast->data.sc;
+
+    // Print la commande si elle existe
+    if (ast->type == SIMPLE_CMD && sc->cmd != NULL)
     {
         for (size_t i = 0; i < depth + 1; i++)
             printf("  ");
 
         printf("Command:\n");
 
-        for (size_t i = 0; i < ast->command->nbtoken; i++)
+        for (size_t i = 0; i < sc->cmd->nbtoken; i++)
         {
             for (size_t j = 0; j < depth + 2; j++)
                 printf("  ");
-            int s = ast->command->token[i]->len;
-            printf("Token %zu: %.*s\n", i + 1, s, ast->command->token[i]->str);
-            //printf("Token %ld: %s\n", i + 1, ast->command->token[i]->str);
+            int s = sc->cmd->tokenlist[i]->len;
+            printf("Token %zu: %.*s\n", i + 1, s, sc->cmd->tokenlist[i]->str);
         }
     }
-
-    // Recursively print child nodes
-    for (size_t i = 0; i < ast->nbchild; i++)
-    {
-        printAst(ast->child[i], depth + 1);
-    }
-
-    // Print the next node in the list
-    if (ast->next != NULL)
-    {
-        printf("\n");
-        printAst(ast->next, depth);
-    }
 }
 
-void parse_command(char *str)
+struct Ast *parse_command(char *str)
 {
-    struct Ast *ast = input(str);
-    if (ast == NULL)
-    {
-        printf("erreur\n");
-        return;
-    }
-    printAst(ast,0);
-}
+    struct Ast *ast = simple_command(str);
+    if (!ast)
+        errx(1, "Erreur lors de la construction de l'AST");
 
-int main(void)
-{
-    parse_command("echo 1 52");
-    return 1;
+    return ast;
 }
