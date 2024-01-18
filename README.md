@@ -10,7 +10,14 @@ make
 ```
 Le binaire se trouvera dans le dossier _src/_
 
-## Clean le repo
+## Ajouter des flags
+
+Exemple: ajout de flags pour debug et voir les memory leaks
+```
+autoreconf --install
+./configure CFLAGS='-g -fsanitize=address' LDFLAGS='-fsanitize=address'
+make
+```
 
 Les commandes pour supprimer tous les fichiers produits sont:
 ```
