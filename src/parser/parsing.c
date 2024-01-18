@@ -3,6 +3,7 @@
 #include <err.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "../lexer/lexer.h"
 
@@ -82,6 +83,9 @@ struct Ast *simple_command(char *str)
 
 void print_ast(struct Ast *ast, size_t depth)
 {
+    if (!ast)
+        return;
+
     // Print le type du noeud actuel
     for (size_t i = 0; i < depth; i++)
         printf("  "); // Indente en fonction de la profondeur du noeud
@@ -122,6 +126,10 @@ void print_ast(struct Ast *ast, size_t depth)
 
 struct Ast *parse_command(char *str)
 {
+    if (strlen(str) == 0)
+        // Empty
+        return NULL;
+
     struct Ast *ast = simple_command(str);
     if (!ast)
         errx(1, "Erreur lors de la construction de l'AST");

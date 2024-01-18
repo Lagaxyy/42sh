@@ -26,7 +26,7 @@ void aux_error(void)
         errx(2, "Caractere inconnu '\\x%x'", optopt);
 }
 
-void aux_pretty_print(char *input)
+int aux_pretty_print(char *input)
 /*
 ** Fonction auxiliaire affichant l'AST
 */
@@ -35,28 +35,30 @@ void aux_pretty_print(char *input)
     print_ast(ast, 0);
     free_ast(ast);
 
-    return;
+    return 0;
 }
 
-void aux_verbose(void)
+int aux_verbose(void)
 /*
 ** Fonction auxiliaire permettant l'affichage de logs
 */
 {
-    return;
+    return 0;
 }
 
-void aux_run(char *input)
+int aux_run(char *input)
 /*
 ** Construit l'AST de l'input et
 ** l'execute
 */
 {
+    int exitcode = 1;
+
     struct Ast *ast = parse_command(input);
-    exec_ast(ast);
+    exitcode = exec_ast(ast);
     free_ast(ast);
 
-    return;
+    return exitcode;
 }
 
 char *InputStandardInStr(void)
@@ -166,6 +168,7 @@ char *get_input(int argc, char *argv[], char **double_dash)
 int main(int argc, char **argv)
 {
     // Recupere l'input
+    int exitcode = 1;
     char *double_dash = NULL;
     char *input = get_input(argc, argv, &double_dash);
 
@@ -173,16 +176,16 @@ int main(int argc, char **argv)
     if (double_dash != NULL)
     {
         if (strcmp(double_dash, "pretty-print") == 0)
-            aux_pretty_print(input);
+            exitcode = aux_pretty_print(input);
         else if (strcmp(double_dash, "verbose") == 0)
-            aux_verbose(); // A implementer ?
+            exitcode = aux_verbose(); // A implementer ?
         else
             errx(2, "Option inconnue --%s", double_dash);
     }
     else
-        aux_run(input);
+        exitcode = aux_run(input);
 
     free(input);
 
-    return 0;
+    return exitcode;
 }

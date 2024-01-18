@@ -4,6 +4,7 @@
 
 #include <assert.h>
 #include <err.h>
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -12,20 +13,21 @@
 
 #include "exec_ast.h"
 
-void run_cmds(struct Ast *ast)
+int run_cmds(struct Ast *ast)
 /*
 ** Execute les commandes non builtin
 ** Etape: simple_command
 */
 {
     if (!ast)
-        return;
+        return 0;
     assert(ast->type == SIMPLE_CMD);
 
     // Variables
     struct Ast_simple_cmd *sc = &ast->data.sc; // Alias pratique
     size_t nbt = sc->cmd->nbtoken;
     char *str = NULL;
+    int exitcode = 0;
 
     // Construction d'un argv a partir de
     // la liste de tokens
@@ -53,7 +55,7 @@ void run_cmds(struct Ast *ast)
         errx(1, "Erreur lors de l'execution de la commande");
     }
     else
-        waitpid(pid, NULL, 0);
+        waitpid(pid, &exitcode, 0);
 
     for (size_t j = 0; j < nbt; j++)
     {
@@ -61,4 +63,6 @@ void run_cmds(struct Ast *ast)
             free(argv[j]);
     }
     free(argv);
+
+    return WEXITSTATUS(exitcode);
 }
