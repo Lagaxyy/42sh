@@ -2,8 +2,6 @@
 #    define _POSIX_C_SOURCE 200809L
 #endif /* ! _POSIX_C_SOURCE */
 
-#include "exec_ast.h"
-
 #include <assert.h>
 #include <err.h>
 #include <stdio.h>
@@ -11,6 +9,8 @@
 #include <string.h>
 #include <sys/wait.h>
 #include <unistd.h>
+
+#include "exec_ast.h"
 
 void run_cmds(struct Ast *ast)
 /*
@@ -32,7 +32,8 @@ void run_cmds(struct Ast *ast)
     char **argv = malloc(sizeof(char *) * (nbt + 1));
     for (size_t i = 0; i < nbt; i++)
     {
-        if (sc->cmd->tokenlist[i]->str[0] == ';' && sc->cmd->tokenlist[i]->len == 1)
+        if (sc->cmd->tokenlist[i]->str[0] == ';'
+            && sc->cmd->tokenlist[i]->len == 1)
         {
             argv[i] = NULL;
             break;

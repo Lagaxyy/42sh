@@ -1,6 +1,6 @@
-#include "parsing.h"
-
 #include <stdlib.h>
+
+#include "parsing.h"
 
 void free_ast_sc(struct Ast *ast)
 /*

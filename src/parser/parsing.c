@@ -22,7 +22,8 @@ void ajout_command(struct Command *c, struct Token *token)
 ** Ajoute un WORD a la struct Command
 */
 {
-    c->tokenlist = realloc(c->tokenlist, sizeof(struct Token) * (c->nbtoken + 1));
+    c->tokenlist =
+        realloc(c->tokenlist, sizeof(struct Token) * (c->nbtoken + 1));
     c->tokenlist[c->nbtoken] = token;
     c->nbtoken++;
 }
