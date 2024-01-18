@@ -29,6 +29,12 @@ int exec_ast_sc(struct Ast *ast)
     if (strcmp(cmd, "echo") == 0)
         // ECHO
         exitcode = my_echo(ast);
+    else if (strcmp(cmd, "true") == 0)
+        // TRUE
+        exitcode = 0;
+    else if (strcmp(cmd, "false") == 0)
+        // FALSE
+        exitcode = 1;
     else
         exitcode = run_cmds(ast);
 
