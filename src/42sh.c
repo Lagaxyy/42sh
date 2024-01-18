@@ -2,16 +2,16 @@
 #    define _POSIX_C_SOURCE 200809L
 #endif /* ! _POSIX_C_SOURCE */
 
-#include "lexer/lexer.h"
-#include "parser/parsing.h"
-#include "exec_ast/exec_ast.h"
-
-#include <err.h>
 #include <ctype.h>
+#include <err.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+
+#include "exec_ast/exec_ast.h"
+#include "lexer/lexer.h"
+#include "parser/parsing.h"
 
 void aux_error(void)
 /*

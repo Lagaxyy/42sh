@@ -2,12 +2,12 @@
 #    define _POSIX_C_SOURCE 200809L
 #endif /* ! _POSIX_C_SOURCE */
 
-#include "exec_ast.h"
-
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "exec_ast.h"
 
 int aux_get_options(char *str, int *pN, int *iE)
 /*
@@ -124,13 +124,15 @@ int my_echo(struct Ast *ast)
     // Print les arguments de echo suivi d'un espace
     for (i = check_options; i < sc->cmd->nbtoken - 1; i++)
     {
-        if (sc->cmd->tokenlist[i]->str[0] == ';' && sc->cmd->tokenlist[i]->len == 1)
+        if (sc->cmd->tokenlist[i]->str[0] == ';'
+            && sc->cmd->tokenlist[i]->len == 1)
             break;
         src = strdup(sc->cmd->tokenlist[i]->str);
         src[sc->cmd->tokenlist[i]->len] = '\0';
         echo_print(src, interpretEscapes);
         free(src);
-        if (sc->cmd->tokenlist[i + 1]->str[0] != ';' || sc->cmd->tokenlist[i + 1]->len != 1)
+        if (sc->cmd->tokenlist[i + 1]->str[0] != ';'
+            || sc->cmd->tokenlist[i + 1]->len != 1)
             putchar(' ');
     }
 
