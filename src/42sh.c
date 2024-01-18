@@ -1,5 +1,5 @@
 #ifndef _POSIX_C_SOURCE
-#    define _POSIX_C_SOURCE 200112L
+#    define _POSIX_C_SOURCE 200809L
 #endif /* ! _POSIX_C_SOURCE */
 
 #include "lexer/lexer.h"
@@ -108,14 +108,17 @@ char *fileInStr(char *path)
     return fileContent;
 }
 
-int main(int argc, char **argv)
+char *get_input(int argc, char *argv[], char **double_dash)
+/*
+** Renvoie un pointeur vers l'input
+** Memoire allouee a free
+*/
 {
     // Variables
     int c;
-    char *double_dash = NULL;
     char *filename = NULL;
-    char *input = NULL;
     char *script = NULL;
+    char *input = NULL;
 
     // Desactive l'affichage du message d'erreur par getopt
     opterr = 0;
@@ -129,7 +132,7 @@ int main(int argc, char **argv)
             script = optarg;
             break;
         case '-':
-            double_dash = optarg;
+            *double_dash = optarg;
             break;
         case '?':
             aux_error();
@@ -149,13 +152,22 @@ int main(int argc, char **argv)
 
     if (script != NULL)
         // Input depuis une chaine de caractere
-        input = script;
+        input = strdup(script);
     else if (filename != NULL)
         // Input depuis un fichier
         input = fileInStr(filename);
     else
         // Input depuis stdin
         input = InputStandardInStr();
+
+    return input;
+}
+
+int main(int argc, char **argv)
+{
+    // Recupere l'input
+    char *double_dash = NULL;
+    char *input = get_input(argc, argv, &double_dash);
 
     // Redirection
     if (double_dash != NULL)
@@ -169,6 +181,8 @@ int main(int argc, char **argv)
     }
     else
         aux_run(input);
+
+    free(input);
 
     return 0;
 }
