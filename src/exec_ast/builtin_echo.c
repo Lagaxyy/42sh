@@ -110,6 +110,8 @@ int is_token_echo(char *str)
 */
 {
     size_t len = strlen(str);
+    if (len < 4)
+        return 0;
     return str[len - 4] == 'e' && str[len - 3] == 'c' && str[len - 2] == 'h'
         && str[len - 1] == 'o';
 }
