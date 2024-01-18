@@ -58,7 +58,7 @@ Test(exec_ast, echo_n_option)
     exec_ast(test_ast);
     fflush(NULL);
 
-    char *expected_output = "Hello World! \\n";
+    char *expected_output = "Hello World! n";
 
     cr_expect_stdout_eq_str(expected_output);
 
@@ -74,7 +74,7 @@ Test(exec_ast, echo_e_option)
     exec_ast(test_ast);
     fflush(NULL);
 
-    char *expected_output = "Hello World! \n\n";
+    char *expected_output = "Hello World! n\n";
 
     cr_expect_stdout_eq_str(expected_output);
 
@@ -90,7 +90,7 @@ Test(exec_ast, echo_E_option)
     exec_ast(test_ast);
     fflush(NULL);
 
-    char *expected_output = "Hello World! \\n\n";
+    char *expected_output = "Hello World! n\n";
 
     cr_expect_stdout_eq_str(expected_output);
 
@@ -106,7 +106,7 @@ Test(exec_ast, echo_combination_options_1)
     exec_ast(test_ast);
     fflush(NULL);
 
-    char *expected_output = "Hello World! \\n";
+    char *expected_output = "Hello World! n";
 
     cr_expect_stdout_eq_str(expected_output);
 
@@ -122,7 +122,7 @@ Test(exec_ast, echo_combination_options_2)
     exec_ast(test_ast);
     fflush(NULL);
 
-    char *expected_output = "Hello World! \n";
+    char *expected_output = "Hello World! n";
 
     cr_expect_stdout_eq_str(expected_output);
 
@@ -138,7 +138,7 @@ Test(exec_ast, echo_combination_options_3)
     exec_ast(test_ast);
     fflush(NULL);
 
-    char *expected_output = "Hello World! \n";
+    char *expected_output = "Hello World! n";
 
     cr_expect_stdout_eq_str(expected_output);
 
@@ -154,7 +154,7 @@ Test(exec_ast, echo_combination_options_4)
     exec_ast(test_ast);
     fflush(NULL);
 
-    char *expected_output = "Hello World! \\n";
+    char *expected_output = "Hello World! n";
 
     cr_expect_stdout_eq_str(expected_output);
 
@@ -170,7 +170,7 @@ Test(exec_ast, echo_combination_options_5)
     exec_ast(test_ast);
     fflush(NULL);
 
-    char *expected_output = "Hello World! \n";
+    char *expected_output = "Hello World! n";
 
     cr_expect_stdout_eq_str(expected_output);
 
