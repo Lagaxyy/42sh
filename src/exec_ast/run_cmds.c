@@ -52,7 +52,9 @@ int run_cmds(struct Ast *ast)
     {
         // Child process
         execvp(argv[0], argv);
-        errx(1, "Erreur lors de l'execution de la commande");
+        if (errno == EACCES)
+            errx(126, "Permission refusee");
+        errx(127, "Commande inconnue");
     }
     else
         waitpid(pid, &exitcode, 0);
