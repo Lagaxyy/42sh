@@ -209,19 +209,93 @@ Test(exec_ast, simple_echo_semicolon_2)
     free_ast(test_ast);
 }
 
+Test(exec_ast, double_echo_1)
+{
+    char *cmd = "echo two /bin/echo inputs;";
+    struct Ast *test_ast = parse_command(cmd);
+
+    cr_redirect_stdout();
+    exec_ast(test_ast);
+    fflush(NULL);
+
+    char *expected_output = "two\ninputs\n";
+
+    cr_expect_stdout_eq_str(expected_output);
+
+    free_ast(test_ast);
+}
+
+Test(exec_ast, double_echo_2)
+{
+    char *cmd = "echo   two      echo   \t   inputs ";
+    struct Ast *test_ast = parse_command(cmd);
+
+    cr_redirect_stdout();
+    exec_ast(test_ast);
+    fflush(NULL);
+
+    char *expected_output = "two\ninputs\n";
+
+    cr_expect_stdout_eq_str(expected_output);
+
+    free_ast(test_ast);
+}
+
+Test(exec_ast, empty)
+{
+    char *cmd = "echo ;";
+    struct Ast *test_ast = parse_command(cmd);
+
+    cr_redirect_stdout();
+    exec_ast(test_ast);
+    fflush(NULL);
+
+    char *expected_output = "\n";
+
+    cr_expect_stdout_eq_str(expected_output);
+
+    free_ast(test_ast);
+}
+
 Test(exec_ast, simple_cmd_non_builtin)
 {
     char *cmd = "ls /bin;";
     struct Ast *test_ast = parse_command(cmd);
     cr_redirect_stdout();
-    exec_ast(test_ast);
+    int exitcode = exec_ast(test_ast);
     fflush(NULL);
     free_ast(test_ast);
 
     // Test seulement pour savoir si tout run bien
     // Creer un dossier temporaire pour check l'output
     // de la commande ?
-    cr_assert(1);
+    cr_expect_eq(exitcode, 0, "Expected: %d. Got: %d.", 0, exitcode);
+}
+
+// === builtin_true_false =====================================================
+
+Test(exec_ast, builtin_true)
+{
+    char *cmd = "true;";
+    struct Ast *test_ast = parse_command(cmd);
+    cr_redirect_stdout();
+    int exitcode = exec_ast(test_ast);
+    fflush(NULL);
+    free_ast(test_ast);
+
+    cr_expect_eq(exitcode, 0, "Expected: %d. Got: %d.", 0, exitcode);
+}
+
+Test(exec_ast, builtin_false)
+{
+    char *cmd = "false;";
+    struct Ast *test_ast = parse_command(cmd);
+    cr_redirect_stdout();
+    int exitcode = exec_ast(test_ast);
+    fflush(NULL);
+    free_ast(test_ast);
+
+    cr_expect_eq(exitcode, 1, "Expected: %d. Got: %d.", 1, exitcode);
 }
 
 // === command_list ===========================================================

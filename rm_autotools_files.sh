@@ -1,1 +1,1 @@
-rm -rf aclocal.m4 ar-lib autom4te.cache/ compile configure depcomp install-sh missing Makefile.in src/exec_ast/Makefile.in src/lexer/Makefile.in src/parser/Makefile.in src/Makefile.in src/lexer/tests/Makefile.in src/parser/tests/Makefile.in src/exec_ast/tests/Makefile.in
+rm -rf aclocal.m4 ar-lib autom4te.cache/ compile configure depcomp install-sh missing config.log config.status Makefile.in src/exec_ast/Makefile.in src/lexer/Makefile.in src/parser/Makefile.in src/Makefile.in src/lexer/tests/Makefile.in src/parser/tests/Makefile.in src/exec_ast/tests/Makefile.in

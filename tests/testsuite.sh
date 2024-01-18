@@ -11,16 +11,36 @@ TEST_DIR="d"
 
 # Liste des commandes à tester
 COMMANDS=(
-    "echo Hello, World!" 
-    "echo Command 1; echo Command 2; echo Command 3" 
-    "if true; then echo Condition is true.; fi")
+    # simple_commands
+    "echo Hello, World!;"
+    "echo -nE Hello World! \\n;"
+    "echo -eEn Hello World! \\n"
+    "echo -n -E -e Hello World! \\n"
+    "echo -n -E -e Hello World! \\\\n"
+    "echo -Ee -n Hello World! \\n;"
+    "echo -Ee -n Hello World! \\\\n;"
+    "echo Hello World! \\\\\\\\n;"
+    "echo -e Hello World! \\\\\\\\n"
+    "echo ;"
+    "ls /bin"
+    "true"
+    "false"
+    "true true false"
+    "false true"
+
+    # command_list
+    # "echo Command 1; echo Command 2; echo Command 3"
+
+    # if_command
+    # "if true; then echo Condition is true.; fi"
+)
 
 # couleur
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 NC='\033[0m' # No Color
 
-TEST_SUCESS=0
+TEST_SUCCESS=0
 TEST_ECHEC=0
 
 
@@ -39,18 +59,26 @@ for cmd in "${COMMANDS[@]}"; do
 
     # Comparaison des résultats
     diff "$TEST_DIR/42sh_output.txt" "$TEST_DIR/default_shell_output.txt"
-    
+
     if [ $? -eq 0 ]; then
-        echo -e "${GREEN}Test passed: $cmd ${NC}"
-        TEST_SUCESS=$((TEST_SUCESS + 1))
+        # echo -e "${GREEN}Test passed: $cmd ${NC}"
+        echo -e "${GREEN}Test passed${NC}"
+        TEST_SUCCESS=$((TEST_SUCCESS + 1))
     else
-        echo -e "${RED}Test failed: $cmd ${NC}"
+        # echo -e "${RED}Test failed: $cmd ${NC}"
+        echo -e "${RED}Test failed${NC}"
         TEST_ECHEC=$((TEST_ECHEC + 1))
     fi
+
+    # Separation visuelle
+    echo ""
 done
+
+# Separation visuelle
+echo ""
 
 # Nettoyage du répertoire de tests
 rm -r "$TEST_DIR"
 
-echo -e "${GREEN}Test passed: $TEST_SUCESS ${NC}"
+echo -e "${GREEN}Test passed: $TEST_SUCCESS ${NC}"
 echo -e "${RED}Test failed: $TEST_ECHEC ${NC}"

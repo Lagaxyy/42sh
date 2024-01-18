@@ -82,21 +82,33 @@ void echo_print(char *src, int iE)
     {
         if (iE && src[i] == '\\')
         {
-            if (src[i + 1] == 'n')
+            if (src[i + 1] != '\\')
+            {
+                i++;
+                putchar(src[i]);
+            }
+            else if (src[i + 1] == '\0' || src[i + 2] == '\0')
+                break;
+            else if (src[i + 2] == 'n')
             {
                 putchar('\n');
-                i++;
+                i += 2;
             }
-            else if (src[i + 1] == 't')
+            else if (src[i + 2] == 't')
             {
                 putchar('\t');
-                i++;
+                i += 2;
             }
-            else if (src[i + 1] == '\\')
+            else if (src[i + 2] == '\\')
             {
                 putchar('\\');
-                i++;
+                i += 2;
             }
+        }
+        else if (!iE && src[i] == '\\')
+        {
+            i++;
+            putchar(src[i]);
         }
         else
             putchar(src[i]);
