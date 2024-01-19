@@ -3,11 +3,18 @@
 
 #include <stddef.h>
 
+struct Ast;
+
 /*
 ** Struct et enum concernant les tokens
 */
 enum Grammaire
 {
+    IF_GRM,
+    THEN_GRM,
+    ELIF_GRM,
+    ELSE_GRM,
+    SEMICOLON,
     END,
     WORD
 };
@@ -36,10 +43,11 @@ enum Ast_type
     SIMPLE_CMD
 };
 
-// (TODO) A completer
 struct Ast_if
 {
-    void *rien;
+    struct Ast *cdt;
+    struct Ast *cmd1;
+    struct Ast *cmd2;
 };
 
 struct Ast_simple_cmd
@@ -62,7 +70,7 @@ struct Ast
 /*
 ** Fonctions exportees
 */
-struct Ast *parse_command(char *str);
+struct Ast *parse_command(struct Lexer *lexer);
 void print_ast(struct Ast *ast, size_t depth);
 void free_ast(struct Ast *ast);
 

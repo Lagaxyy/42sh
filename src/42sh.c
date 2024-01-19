@@ -31,8 +31,10 @@ void aux_pretty_print(char *input)
 ** Fonction auxiliaire affichant l'AST
 */
 {
-    struct Ast *ast = parse_command(input);
+    struct Lexer *lexer = init_lexer(input);
+    struct Ast *ast = parse_command(lexer);
     print_ast(ast, 0);
+    free_lexer(lexer);
     free_ast(ast);
 
     return;
@@ -52,8 +54,10 @@ void aux_run(char *input)
 ** l'execute
 */
 {
-    struct Ast *ast = parse_command(input);
+    struct Lexer *lexer = init_lexer(input);
+    struct Ast *ast = parse_command(lexer);
     exec_ast(ast);
+    free_lexer(lexer);
     free_ast(ast);
 
     return;

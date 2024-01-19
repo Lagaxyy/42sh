@@ -28,7 +28,7 @@ void ajout_command(struct Command *c, struct Token *token)
     c->nbtoken++;
 }
 
-char *decale_str(struct Token *token)
+void decale_str(struct Lexer *lexer, struct Token *token)
 /*
 ** Renvoie un pointeur sur l'input
 ** mis a jour en fonction du token
@@ -37,7 +37,7 @@ char *decale_str(struct Token *token)
     return token->str + token->len;
 }
 
-struct Ast *simple_command(char *str)
+struct Ast *simple_command(struct Lexer *lex)
 /*
 ** Renvoie un noeud de l'AST de type
 ** simple_command
@@ -49,7 +49,7 @@ struct Ast *simple_command(char *str)
 */
 {
     // Premier WORD necessaire
-    struct Token *token = lexer(str, WORD);
+    struct Token *token = lexer(lex, WORD);
     if (!token)
         // Token incorrect
         return NULL;
@@ -66,15 +66,76 @@ struct Ast *simple_command(char *str)
     // Initialise la struct Command et ajoute le premier token
     sc->cmd = init_command();
     ajout_command(sc->cmd, token);
-    str = decale_str(token);
 
     // Autres WORD
-    token = lexer(str, WORD);
+    token = lexer(lex, WORD);
     while (token != NULL)
     {
         ajout_command(sc->cmd, token);
-        str = decale_str(token);
-        token = lexer(str, WORD);
+        token = lexer(lex, WORD);
+    }
+
+    return ast;
+}
+
+struct Ast *if_command(struct Lexer *lex)
+/*
+** Renvoie un noeud de l'AST de type
+** if_command
+**
+** Grammaire:
+**
+** if_command =
+**      'if' compound_list 'then' compound_list [ else_clause ] 'fi' ;
+*/
+{
+    // si if pas trouver
+    if (!lexerVerif(lex, IF_GRM))
+    {
+        if (!lexerVerif(lex, ELIF_GRM))
+            // on continue
+            return simple_command(lex);
+    }
+
+    // Alloue la memoire pour la struct Ast et definit le type
+    struct Ast *ast = malloc(sizeof(struct Ast));
+    if (!ast)
+        return NULL;
+    ast->type = IF_CMD;
+    
+    // Alloue la memoire pour la struct Ast_simple_cmd
+    struct Ast_if *aif = &ast->data.aif;
+
+    // trouver la condition
+    aif->cdt = parse_command(lex);
+    if (!aif->cdt)
+    {
+        free_ast(ast);
+        return NULL;
+    }
+
+    // trouver le then
+    if (!lexerVerif(lex, THEN_GRM))
+    {
+        free_ast(ast);
+        return NULL;
+    }
+    aif->cmd1 = parse_command(lex);
+
+    if (lexerVerif(lex, ELIF_GRM))
+    {
+        aif->cmd2 = if_command(lex);
+    }
+    else if (lexerVerif(lex, ELSE_GRM))
+    {
+        aif->cmd2 = parse_command(lex);
+    }
+    else
+        aif->cmd2 = NULL;
+    if (!lexerVerif(lex, ELIF_GRM))
+    {
+        free_ast(ast);
+        return NULL;
     }
 
     return ast;
@@ -120,9 +181,10 @@ void print_ast(struct Ast *ast, size_t depth)
     }
 }
 
-struct Ast *parse_command(char *str)
+struct Ast *parse_command(struct Lexer *lexer)
 {
-    struct Ast *ast = simple_command(str);
+    struct Ast *ast = if_command(lexer);
+    //regarder si sa finit par un ';'
     if (!ast)
         errx(1, "Erreur lors de la construction de l'AST");
 
