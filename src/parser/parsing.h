@@ -2,6 +2,7 @@
 #define PARSING_H
 
 #include <stddef.h>
+#include <stdlib.h>
 
 /*
 ** Struct et enum concernant les tokens
@@ -9,7 +10,8 @@
 enum Grammaire
 {
     END,
-    WORD
+    WORD,
+    SEMICOLON
 };
 
 struct Token
@@ -32,8 +34,9 @@ struct Command
 */
 enum Ast_type
 {
-    IF_CMD,
-    SIMPLE_CMD
+    SIMPLE_CMD,
+    CMD_LIST,
+    IF_CMD
 };
 
 // (TODO) A completer
@@ -47,9 +50,16 @@ struct Ast_simple_cmd
     struct Command *cmd;
 };
 
+struct Ast_cmd_list
+{
+    struct Ast **list;
+    size_t nbnodes;
+};
+
 union Ast_union
 {
     struct Ast_simple_cmd sc;
+    struct Ast_cmd_list cl;
     struct Ast_if aif;
 };
 
@@ -63,6 +73,8 @@ struct Ast
 ** Fonctions exportees
 */
 struct Ast *parse_command(char *str);
+struct Ast *simple_command(char *str);
+struct Ast *command_list(char *str);
 void print_ast(struct Ast *ast, size_t depth);
 void free_ast(struct Ast *ast);
 
