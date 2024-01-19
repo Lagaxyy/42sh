@@ -31,7 +31,10 @@ COMMANDS=(
     "false true"
 
     # command_list
-    # "echo Command 1; echo Command 2; echo Command 3"
+    "echo Command 1; echo Command 2; echo Command 3"
+    "ls /bin;echo ok;"
+    "echo Hello World!; connaispas"
+    "connaispas; echo Test."
 
     # if_command
     # "if true; then echo Condition is true.; fi"

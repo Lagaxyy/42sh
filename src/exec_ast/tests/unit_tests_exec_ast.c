@@ -299,3 +299,31 @@ Test(exec_ast, builtin_false)
 }
 
 // === command_list ===========================================================
+
+Test(exec_ast, cmd_list_multiple_echo)
+{
+    char *cmd = "echo I must;echo not; echo fear. Fear is; echo   the       mind-killer.";
+    struct Ast *test_ast = parse_command(cmd);
+
+    cr_redirect_stdout();
+    exec_ast(test_ast);
+    fflush(NULL);
+
+    char *expected_output = "I must\nnot\nfear. Fear is\nthe mind-killer.\n";
+
+    cr_expect_stdout_eq_str(expected_output);
+
+    free_ast(test_ast);
+}
+
+Test(exec_ast, cmd_list_diff_cmds)
+{
+    char *cmd = "echo Hello World!; ls /bin; echo Test.;";
+    struct Ast *test_ast = parse_command(cmd);
+    cr_redirect_stdout();
+    int exitcode = exec_ast(test_ast);
+    fflush(NULL);
+    free_ast(test_ast);
+
+    cr_expect_eq(exitcode, 0, "Expected: %d. Got: %d.", 0, exitcode);
+}
