@@ -8,6 +8,6 @@
 ** un struct Token contenant un pointeur au debut
 ** du premier token et la taille du token
 */
-struct Token *lexer(char *str, enum Grammaire grm);
+struct Token *lexer(char *str, int *end, enum Grammaire grm);
 
 #endif /* ! LEXER_H */

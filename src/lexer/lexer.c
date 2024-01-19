@@ -23,11 +23,13 @@ bool check_word(char *tok)
     return true;
 }
 
-struct Token *lexer(char *str, enum Grammaire grm)
+struct Token *lexer(char *str, int *end_cmd, enum Grammaire grm)
 /*
 ** Considerant l'input (ici c'est str), renvoie
 ** un struct Token contenant un pointeur au debut
 ** du token et la taille du token
+** Met a jour le pointeur end_cmd vers 1 si on
+** tombe sur un ';' ou la fin de la chaine de caractere
 */
 {
     /*
@@ -46,18 +48,23 @@ struct Token *lexer(char *str, enum Grammaire grm)
     if (*strr == 0)
     {
         free(adr_strr);
+        *end_cmd = 1;
         return NULL;
     }
 
     // Extrait le premier token
     char *token = NULL;
     if (strr[0] == ';')
+    {
         // Cas special: si le premier token est ';'
         token = strdup(";");
+        *end_cmd = 1;
+    }
     else
     {
         char *tmp = strtok(strr, " \t\r\n;");
         token = strdup(tmp);
+        *end_cmd = 0;
     }
 
     // Libere la memoire du dup de str
