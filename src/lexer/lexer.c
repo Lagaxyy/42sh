@@ -23,7 +23,7 @@ struct Lexer *init_lexer(char *str)
 void free_lexer(struct Lexer *lexer)
 {
     if (lexer == NULL)
-        return NULL;
+        return;
     free(lexer->input);
     free(lexer);
 }
@@ -37,6 +37,8 @@ bool check_word(char *tok)
     if (!tok)
         return false;
     if (*tok == 0)
+        return false;
+    if (*tok == ';')
         return false;
     // Autres conditions ??
     return true;
@@ -62,7 +64,7 @@ int lexerVerif(struct Lexer *lex, enum Grammaire grm)
         return 0;
 
     // Extrait le premier token
-    char *token = NULL;
+    char *token = malloc(1024);
     size_t l = 1;
     if (lex->input[lex->pos] == ';')
         // Cas special: si le premier token est ';'
@@ -83,16 +85,21 @@ int lexerVerif(struct Lexer *lex, enum Grammaire grm)
         check_grm = strncmp(token, "else", 4) == 0;
     else if (grm == ELIF_GRM)
         check_grm = strncmp(token, "elif", 4) == 0;
+    else if (grm == FI_GRM)
+        check_grm = strncmp(token, "fi", 2) == 0;
     else if (grm == SEMICOLON)
         check_grm = strncmp(token, ";", 1) == 0;
     else
         check_grm = false;
+    // Libere la memoire du token
+    //free(token);
+    if (check_grm == false)
+    {
+        return check_grm;
+    }
 
     //augmente la position du lexer de l (le mot)
     lex->pos += l;
-
-    // Libere la memoire du token
-    free(token);
 
     return check_grm;
 }
@@ -121,7 +128,7 @@ struct Token *lexer(struct Lexer *lex, enum Grammaire grm)
     }
 
     // Extrait le premier token
-    char *token = NULL;
+    char *token = malloc(1024);
     size_t l = 1;
     if (lex->input[lex->pos] == ';')
         // Cas special: si le premier token est ';'

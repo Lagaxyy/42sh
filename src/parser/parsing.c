@@ -28,15 +28,6 @@ void ajout_command(struct Command *c, struct Token *token)
     c->nbtoken++;
 }
 
-void decale_str(struct Lexer *lexer, struct Token *token)
-/*
-** Renvoie un pointeur sur l'input
-** mis a jour en fonction du token
-*/
-{
-    return token->str + token->len;
-}
-
 struct Ast *simple_command(struct Lexer *lex)
 /*
 ** Renvoie un noeud de l'AST de type
@@ -107,7 +98,7 @@ struct Ast *if_command(struct Lexer *lex)
     struct Ast_if *aif = &ast->data.aif;
 
     // trouver la condition
-    aif->cdt = parse_command(lex);
+    aif->cdt = parse_start(lex);
     if (!aif->cdt)
     {
         free_ast(ast);
@@ -120,7 +111,7 @@ struct Ast *if_command(struct Lexer *lex)
         free_ast(ast);
         return NULL;
     }
-    aif->cmd1 = parse_command(lex);
+    aif->cmd1 = parse_start(lex);
 
     if (lexerVerif(lex, ELIF_GRM))
     {
@@ -128,11 +119,11 @@ struct Ast *if_command(struct Lexer *lex)
     }
     else if (lexerVerif(lex, ELSE_GRM))
     {
-        aif->cmd2 = parse_command(lex);
+        aif->cmd2 = parse_start(lex);
     }
     else
         aif->cmd2 = NULL;
-    if (!lexerVerif(lex, ELIF_GRM))
+    if (!lexerVerif(lex, FI_GRM))
     {
         free_ast(ast);
         return NULL;
@@ -181,12 +172,24 @@ void print_ast(struct Ast *ast, size_t depth)
     }
 }
 
+struct Ast *parse_start(struct Lexer *lex)
+{
+    struct Ast *ast = if_command(lex);
+    if (ast == NULL)
+        return NULL;
+    if (!lexerVerif(lex, SEMICOLON))
+    {
+        return ast;
+    }
+    return ast;
+}
+
 struct Ast *parse_command(struct Lexer *lexer)
 {
-    struct Ast *ast = if_command(lexer);
+    struct Ast *ast = parse_start(lexer);
     //regarder si sa finit par un ';'
     if (!ast)
         errx(1, "Erreur lors de la construction de l'AST");
-
+    print_ast(ast, 0);
     return ast;
 }

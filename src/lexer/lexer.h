@@ -29,6 +29,6 @@ int lexerVerif(struct Lexer *lex, enum Grammaire grm);
 ** un struct Token contenant un pointeur au debut
 ** du premier token et la taille du token
 */
-struct Token *lexe(struct Lexer *lex, enum Grammaire grm);
+struct Token *lexer(struct Lexer *lex, enum Grammaire grm);
 
 #endif /* ! LEXER_H */

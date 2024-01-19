@@ -43,8 +43,8 @@ void exec_ast_if(struct Ast *ast)
         return;
     assert(ast->type == IF_CMD);
 
-    // Alloue la memoire pour la struct Ast_simple_cmd
-    struct Ast_if *aif = &ast->data.aif;
+    /*// Alloue la memoire pour la struct Ast_simple_cmd
+    struct Ast_if *aif = &ast->data.aif;*/
 
     return;
 }

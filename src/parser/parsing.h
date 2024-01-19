@@ -4,6 +4,7 @@
 #include <stddef.h>
 
 struct Ast;
+struct Lexer;
 
 /*
 ** Struct et enum concernant les tokens
@@ -14,6 +15,7 @@ enum Grammaire
     THEN_GRM,
     ELIF_GRM,
     ELSE_GRM,
+    FI_GRM,
     SEMICOLON,
     END,
     WORD
@@ -72,6 +74,7 @@ struct Ast
 */
 struct Ast *parse_command(struct Lexer *lexer);
 void print_ast(struct Ast *ast, size_t depth);
+struct Ast *parse_start(struct Lexer *lex);
 void free_ast(struct Ast *ast);
 
 #endif /* ! PARSING_H */
