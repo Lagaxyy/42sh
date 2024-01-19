@@ -12,7 +12,7 @@ struct Ast *parse_command(char *str)
         // Empty
         return NULL;
 
-    struct Ast *ast = simple_command(str);
+    struct Ast *ast = command_list(str);
     if (!ast)
         errx(1, "Erreur lors de la construction de l'AST");
 

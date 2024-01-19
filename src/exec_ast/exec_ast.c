@@ -43,6 +43,24 @@ int exec_ast_sc(struct Ast *ast)
     return exitcode;
 }
 
+int exec_ast_cl(struct Ast *ast)
+/*
+** Execute le noeud command_list
+*/
+{
+    if (!ast)
+        return 0;
+    assert(ast->type == CMD_LIST);
+
+    struct Ast_cmd_list *cl = &ast->data.cl; // Alias pratique
+    int exitcode = 0;
+
+    for (size_t i = 0; i < cl->nbnodes; i++)
+        exitcode = exec_ast(cl->list[i]);
+
+    return exitcode;
+}
+
 int exec_ast_if(struct Ast *ast)
 /*
 ** Execute le noeud if_command
@@ -65,7 +83,8 @@ int exec_ast(struct Ast *ast)
 
     // Redirige vers les autres fonctions selon le type du noeud
     static const node_type functions[] = {
-        [SIMPLE_CMD] = &exec_ast_sc, [IF_CMD] = &exec_ast_if
+        [SIMPLE_CMD] = &exec_ast_sc, [IF_CMD] = &exec_ast_if,
+        [CMD_LIST] = &exec_ast_cl
     };
     return (*functions[ast->type])(ast);
 }
