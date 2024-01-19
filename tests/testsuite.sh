@@ -23,6 +23,8 @@ COMMANDS=(
     "echo -e Hello World! \\\\\\\\n"
     "echo ;"
     "ls /bin"
+    "ls connaispas"
+    "existepas"
     "true"
     "false"
     "true true false"
@@ -50,17 +52,21 @@ mkdir -p "$TEST_DIR"
 # Boucle sur chaque commande à tester
 for cmd in "${COMMANDS[@]}"; do
     # Exécution de la commande avec votre shell
-    echo "Running command with 42sh: $cmd"
+    echo -e "Running command with 42sh:"
+    echo ">    $cmd"
     $YOUR_SHELL -c "$cmd" > "$TEST_DIR/42sh_output.txt"
+    EXITCODE_YOUR_SHELL=$?
 
     # Exécution de la commande avec le shell par défaut
-    echo "Running command with default shell: $cmd"
+    echo -e "Running command with default shell:"
+    echo ">    $cmd"
     $DEFAULT_SHELL -c "$cmd" > "$TEST_DIR/default_shell_output.txt"
+    EXITCODE_DEFAULT_SHELL=$?
 
     # Comparaison des résultats
     diff "$TEST_DIR/42sh_output.txt" "$TEST_DIR/default_shell_output.txt"
 
-    if [ $? -eq 0 ]; then
+    if [ $? -eq 0 ] && [ $EXITCODE_YOUR_SHELL -eq $EXITCODE_DEFAULT_SHELL ]; then
         # echo -e "${GREEN}Test passed: $cmd ${NC}"
         echo -e "${GREEN}Test passed${NC}"
         TEST_SUCCESS=$((TEST_SUCCESS + 1))
