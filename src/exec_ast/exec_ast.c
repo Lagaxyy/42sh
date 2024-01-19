@@ -10,9 +10,9 @@
 
 // Pointeur de fonction pour rediriger vers les autres
 // fonctions selon le type du noeud
-typedef void (*node_type)(struct Ast *ast);
+typedef int (*node_type)(struct Ast *ast);
 
-void exec_ast_sc(struct Ast *ast)
+int exec_ast_sc(struct Ast *ast)
 /*
 ** Execute le noeud simple_command
 */
@@ -32,9 +32,10 @@ void exec_ast_sc(struct Ast *ast)
         run_cmds(ast);
 
     free(cmd);
+    return 1;
 }
 
-void exec_ast_if(struct Ast *ast)
+int exec_ast_if(struct Ast *ast)
 /*
 ** Execute le noeud if_command
 */
@@ -43,13 +44,24 @@ void exec_ast_if(struct Ast *ast)
         return;
     assert(ast->type == IF_CMD);
 
+    struct Ast_if *aif = &ast->data.aif;
+
+    if (exec_ast(aif->cdt))
+    {
+        return exec_ast(aif->cmd1);
+    }
+    else
+    {
+        return exec_ast(aif->cmd2);
+    }
+    
     /*// Alloue la memoire pour la struct Ast_simple_cmd
     struct Ast_if *aif = &ast->data.aif;*/
 
-    return;
+    return 1;;
 }
 
-void exec_ast(struct Ast *ast)
+int exec_ast(struct Ast *ast)
 /*
 ** Execute l'AST
 ** Etape: simple_command
@@ -62,5 +74,5 @@ void exec_ast(struct Ast *ast)
     static const node_type functions[] = {
         [SIMPLE_CMD] = &exec_ast_sc, [IF_CMD] = &exec_ast_if
     };
-    (*functions[ast->type])(ast);
+    return (*functions[ast->type])(ast);
 }
