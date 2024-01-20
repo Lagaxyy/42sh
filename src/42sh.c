@@ -48,7 +48,7 @@ void aux_verbose(void)
     return;
 }
 
-void aux_run(char *input)
+int aux_run(char *input)
 /*
 ** Construit l'AST de l'input et
 ** l'execute
@@ -56,11 +56,11 @@ void aux_run(char *input)
 {
     struct Lexer *lexer = init_lexer(input);
     struct Ast *ast = parse_command(lexer);
-    exec_ast(ast);
+    int ret = exec_ast(ast);
     free_lexer(lexer);
     free_ast(ast);
 
-    return;
+    return ret;
 }
 
 char *InputStandardInStr(void)
@@ -115,7 +115,7 @@ char *fileInStr(char *path)
 char *get_input(int argc, char *argv[], char **double_dash)
 /*
 ** Renvoie un pointeur vers l'input
-** Memoire allouee a free
+if [ $? -eq 0 ] && [ $EXITCODE_YOUR_SHELL -eq $EXITCODE_DEFAULT_SHELL ]; then** Memoire allouee a free
 */
 {
     // Variables
@@ -171,6 +171,7 @@ int main(int argc, char **argv)
 {
     // Recupere l'input
     char *double_dash = NULL;
+    int ret = 0;
     char *input = get_input(argc, argv, &double_dash);
 
     // Redirection
@@ -184,9 +185,9 @@ int main(int argc, char **argv)
             errx(2, "Option inconnue --%s", double_dash);
     }
     else
-        aux_run(input);
+        ret = aux_run(input) == 0;
 
     //free(input);
 
-    return 0;
+    return ret;
 }

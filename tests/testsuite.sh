@@ -67,21 +67,21 @@ for cmd in "${COMMANDS[@]}"; do
     EXITCODE_DEFAULT_SHELL=$?
 
     # Comparaison des résultats
-    #diff "$TEST_DIR/42sh_output.txt" "$TEST_DIR/default_shell_output.txt"
+    diff "$TEST_DIR/42sh_output.txt" "$TEST_DIR/default_shell_output.txt"
 
     if [ $? -eq 0 ] && [ $EXITCODE_YOUR_SHELL -eq $EXITCODE_DEFAULT_SHELL ]; then
+    #if [ $? -eq 0 ]; then
         # echo -e "${GREEN}Test passed: $cmd ${NC}"
         echo -e "${GREEN}Test passed${NC}"
         TEST_SUCCESS=$((TEST_SUCCESS + 1))
     else
         # echo -e "${RED}Test failed: $cmd ${NC}"
-        echo -e "$TEST_DIR/42sh_output.txt"
         echo -e "${RED}Test failed${NC}"
         TEST_ECHEC=$((TEST_ECHEC + 1))
     fi
 
     # Separation visuelle
-    echo ""
+    echo "-------------------------------------------------------------------"
 done
 
 # Separation visuelle
