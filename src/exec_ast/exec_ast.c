@@ -76,8 +76,10 @@ int exec_ast(struct Ast *ast)
 
     // Redirige vers les autres fonctions selon le type du noeud
     static const node_type functions[] = {
-        [SIMPLE_CMD] = &exec_ast_sc, [IF_CMD] = &exec_ast_if
+        [SIMPLE_CMD] = &exec_ast_sc, [IF_CMD] = &exec_ast_if,
+        [CMD_LIST] = &exec_ast_cl
     };
+  
     int i = (*functions[ast->type])(ast);
     if (ast->next == NULL)
     {

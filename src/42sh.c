@@ -26,7 +26,7 @@ void aux_error(void)
         errx(2, "Caractere inconnu '\\x%x'", optopt);
 }
 
-void aux_pretty_print(char *input)
+int aux_pretty_print(char *input)
 /*
 ** Fonction auxiliaire affichant l'AST
 */
@@ -37,15 +37,15 @@ void aux_pretty_print(char *input)
     free_lexer(lexer);
     free_ast(ast);
 
-    return;
+    return 0;
 }
 
-void aux_verbose(void)
+int aux_verbose(void)
 /*
 ** Fonction auxiliaire permettant l'affichage de logs
 */
 {
-    return;
+    return 0;
 }
 
 int aux_run(char *input)
@@ -171,6 +171,7 @@ Memoire allouee a free
 int main(int argc, char **argv)
 {
     // Recupere l'input
+    int exitcode = 1;
     char *double_dash = NULL;
     int ret = 0;
     char *input = get_input(argc, argv, &double_dash);
@@ -179,9 +180,9 @@ int main(int argc, char **argv)
     if (double_dash != NULL)
     {
         if (strcmp(double_dash, "pretty-print") == 0)
-            aux_pretty_print(input);
+            exitcode = aux_pretty_print(input);
         else if (strcmp(double_dash, "verbose") == 0)
-            aux_verbose(); // A implementer ?
+            exitcode = aux_verbose(); // A implementer ?
         else
             errx(2, "Option inconnue --%s", double_dash);
     }
@@ -189,6 +190,5 @@ int main(int argc, char **argv)
         ret = aux_run(input);
 
     // free(input);
-
     return ret;
 }

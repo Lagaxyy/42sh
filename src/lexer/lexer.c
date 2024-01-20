@@ -139,6 +139,8 @@ struct Token *lexer(struct Lexer *lex, enum Grammaire grm)
 ** Considerant l'input (ici c'est str), renvoie
 ** un struct Token contenant un pointeur au debut
 ** du token et la taille du token
+** Met a jour le pointeur end_cmd vers 1 si on
+** tombe sur un ';' ou la fin de la chaine de caractere
 */
 {
     /*

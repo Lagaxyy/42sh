@@ -67,7 +67,7 @@ Test(exec_ast, echo_n_option)
     exec_ast(test_ast);
     fflush(NULL);
 
-    char *expected_output = "Hello World! \\n";
+    char *expected_output = "Hello World! n";
 
     cr_expect_stdout_eq_str(expected_output);
 
@@ -83,7 +83,7 @@ Test(exec_ast, echo_e_option)
     exec_ast(test_ast);
     fflush(NULL);
 
-    char *expected_output = "Hello World! \n\n";
+    char *expected_output = "Hello World! n\n";
 
     cr_expect_stdout_eq_str(expected_output);
 
@@ -99,7 +99,7 @@ Test(exec_ast, echo_E_option)
     exec_ast(test_ast);
     fflush(NULL);
 
-    char *expected_output = "Hello World! \\n\n";
+    char *expected_output = "Hello World! n\n";
 
     cr_expect_stdout_eq_str(expected_output);
 
@@ -115,7 +115,7 @@ Test(exec_ast, echo_combination_options_1)
     exec_ast(test_ast);
     fflush(NULL);
 
-    char *expected_output = "Hello World! \\n";
+    char *expected_output = "Hello World! n";
 
     cr_expect_stdout_eq_str(expected_output);
 
@@ -131,7 +131,7 @@ Test(exec_ast, echo_combination_options_2)
     exec_ast(test_ast);
     fflush(NULL);
 
-    char *expected_output = "Hello World! \n";
+    char *expected_output = "Hello World! n";
 
     cr_expect_stdout_eq_str(expected_output);
 
@@ -147,7 +147,7 @@ Test(exec_ast, echo_combination_options_3)
     exec_ast(test_ast);
     fflush(NULL);
 
-    char *expected_output = "Hello World! \n";
+    char *expected_output = "Hello World! n";
 
     cr_expect_stdout_eq_str(expected_output);
 
@@ -163,7 +163,7 @@ Test(exec_ast, echo_combination_options_4)
     exec_ast(test_ast);
     fflush(NULL);
 
-    char *expected_output = "Hello World! \\n";
+    char *expected_output = "Hello World! n";
 
     cr_expect_stdout_eq_str(expected_output);
 
@@ -179,7 +179,7 @@ Test(exec_ast, echo_combination_options_5)
     exec_ast(test_ast);
     fflush(NULL);
 
-    char *expected_output = "Hello World! \n";
+    char *expected_output = "Hello World! n";
 
     cr_expect_stdout_eq_str(expected_output);
 
@@ -218,19 +218,121 @@ Test(exec_ast, simple_echo_semicolon_2)
     free_ast(test_ast);
 }
 
+Test(exec_ast, double_echo_1)
+{
+    char *cmd = "echo two /bin/echo inputs;";
+    struct Ast *test_ast = parse_command(cmd);
+
+    cr_redirect_stdout();
+    exec_ast(test_ast);
+    fflush(NULL);
+
+    char *expected_output = "two\ninputs\n";
+
+    cr_expect_stdout_eq_str(expected_output);
+
+    free_ast(test_ast);
+}
+
+Test(exec_ast, double_echo_2)
+{
+    char *cmd = "echo   two      echo   \t   inputs ";
+    struct Ast *test_ast = parse_command(cmd);
+
+    cr_redirect_stdout();
+    exec_ast(test_ast);
+    fflush(NULL);
+
+    char *expected_output = "two\ninputs\n";
+
+    cr_expect_stdout_eq_str(expected_output);
+
+    free_ast(test_ast);
+}
+
+Test(exec_ast, empty)
+{
+    char *cmd = "echo ;";
+    struct Ast *test_ast = parse_command(cmd);
+
+    cr_redirect_stdout();
+    exec_ast(test_ast);
+    fflush(NULL);
+
+    char *expected_output = "\n";
+
+    cr_expect_stdout_eq_str(expected_output);
+
+    free_ast(test_ast);
+}
+
 Test(exec_ast, simple_cmd_non_builtin)
 {
     char *cmd = "ls /bin;";
     struct Ast *test_ast = parse_command(cmd);
     cr_redirect_stdout();
-    exec_ast(test_ast);
+    int exitcode = exec_ast(test_ast);
     fflush(NULL);
     free_ast(test_ast);
 
     // Test seulement pour savoir si tout run bien
     // Creer un dossier temporaire pour check l'output
     // de la commande ?
-    cr_assert(1);
+    cr_expect_eq(exitcode, 0, "Expected: %d. Got: %d.", 0, exitcode);
+}
+
+// === builtin_true_false =====================================================
+
+Test(exec_ast, builtin_true)
+{
+    char *cmd = "true;";
+    struct Ast *test_ast = parse_command(cmd);
+    cr_redirect_stdout();
+    int exitcode = exec_ast(test_ast);
+    fflush(NULL);
+    free_ast(test_ast);
+
+    cr_expect_eq(exitcode, 0, "Expected: %d. Got: %d.", 0, exitcode);
+}
+
+Test(exec_ast, builtin_false)
+{
+    char *cmd = "false;";
+    struct Ast *test_ast = parse_command(cmd);
+    cr_redirect_stdout();
+    int exitcode = exec_ast(test_ast);
+    fflush(NULL);
+    free_ast(test_ast);
+
+    cr_expect_eq(exitcode, 1, "Expected: %d. Got: %d.", 1, exitcode);
 }
 
 // === command_list ===========================================================
+
+Test(exec_ast, cmd_list_multiple_echo)
+{
+    char *cmd = "echo I must;echo not; echo fear. Fear is; echo   the       mind-killer.";
+    struct Ast *test_ast = parse_command(cmd);
+
+    cr_redirect_stdout();
+    exec_ast(test_ast);
+    fflush(NULL);
+
+    char *expected_output = "I must\nnot\nfear. Fear is\nthe mind-killer.\n";
+
+    cr_expect_stdout_eq_str(expected_output);
+
+    free_ast(test_ast);
+}
+
+Test(exec_ast, cmd_list_diff_cmds)
+{
+    char *cmd = "echo Hello World!; ls /bin; echo Test.;";
+    struct Ast *test_ast = parse_command(cmd);
+    cr_redirect_stdout();
+    int exitcode = exec_ast(test_ast);
+    fflush(NULL);
+    free_ast(test_ast);
+
+    cr_expect_eq(exitcode, 0, "Expected: %d. Got: %d.", 0, exitcode);
+}

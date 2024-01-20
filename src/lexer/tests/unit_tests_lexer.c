@@ -15,7 +15,8 @@ Test(lexer, dummy)
 Test(lexer, one_word)
 {
     char *input = "Test";
-    struct Token *test_token = lexer(input, WORD);
+    int end_cmd = 0;
+    struct Token *test_token = lexer(input, &end_cmd, WORD);
 
     size_t expected_len = 4;
     char *expected_str = "Test";
@@ -37,12 +38,13 @@ Test(lexer, many_words)
                                  "bar", "else", "echo", "baz",  "fi" };
     size_t size = 10;
     size_t i = 0;
+    int end_cmd = 0;
 
     struct Token *test_token = NULL;
 
     while (1)
     {
-        test_token = lexer(input, WORD);
+        test_token = lexer(input, &end_cmd, WORD);
         if (!test_token || i > size + 1)
             break;
 
@@ -71,12 +73,13 @@ Test(lexer, blank_first)
     char *expected_strlist[] = { "echo", "52", "1", ";" };
     size_t size = 4;
     size_t i = 0;
+    int end_cmd = 0;
 
     struct Token *test_token = NULL;
 
     while (1)
     {
-        test_token = lexer(input, WORD);
+        test_token = lexer(input, &end_cmd, WORD);
         if (!test_token || i > size + 1)
             break;
 
@@ -107,12 +110,13 @@ Test(lexer, semicolon_first)
     };
     size_t size = 9;
     size_t i = 0;
+    int end_cmd = 0;
 
     struct Token *test_token = NULL;
 
     while (1)
     {
-        test_token = lexer(input, WORD);
+        test_token = lexer(input, &end_cmd, WORD);
         if (!test_token || i > size + 1)
             break;
 
