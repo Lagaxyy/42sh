@@ -12,6 +12,7 @@
 #include "exec_ast/exec_ast.h"
 #include "lexer/lexer.h"
 #include "parser/parsing.h"
+#include "print_ast/print_ast.h"
 
 void aux_error(void)
 /*

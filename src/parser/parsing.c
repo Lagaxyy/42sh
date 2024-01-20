@@ -50,6 +50,7 @@ struct Ast *simple_command(struct Lexer *lex)
     if (!ast)
         return NULL;
     ast->type = SIMPLE_CMD;
+    ast->next = NULL;
 
     // Alloue la memoire pour la struct Ast_simple_cmd
     struct Ast_simple_cmd *sc = &ast->data.sc; // Alias pratique
@@ -93,6 +94,7 @@ struct Ast *if_command(struct Lexer *lex)
     if (!ast)
         return NULL;
     ast->type = IF_CMD;
+    ast->next = NULL;
     
     // Alloue la memoire pour la struct Ast_simple_cmd
     struct Ast_if *aif = &ast->data.aif;
@@ -132,7 +134,7 @@ struct Ast *if_command(struct Lexer *lex)
     return ast;
 }
 
-void print_ast(struct Ast *ast, size_t depth)
+/*void print_ast(struct Ast *ast, size_t depth)
 {
     // Print le type du noeud actuel
     for (size_t i = 0; i < depth; i++)
@@ -170,7 +172,7 @@ void print_ast(struct Ast *ast, size_t depth)
             printf("Token %zu: %.*s\n", i + 1, s, sc->cmd->tokenlist[i]->str);
         }
     }
-}
+}*/
 
 struct Ast *parse_start(struct Lexer *lex)
 {
@@ -187,9 +189,8 @@ struct Ast *parse_start(struct Lexer *lex)
 struct Ast *parse_command(struct Lexer *lexer)
 {
     struct Ast *ast = parse_start(lexer);
-    //regarder si sa finit par un ';'
     if (!ast)
         errx(1, "Erreur lors de la construction de l'AST");
-    print_ast(ast, 0);
+    
     return ast;
 }
