@@ -107,6 +107,29 @@ int lexerVerif(struct Lexer *lex, enum Grammaire grm)
     return check_grm;
 }
 
+bool lexer_chek(struct Lexer *lex)
+{
+    size_t len_blank = strspn(lex->input + lex->pos, " \t\r\n");
+    lex->pos += len_blank;
+    if (strncmp(lex->pos, "then", 4) == 0)
+    {
+        return true;
+    }
+    if (strncmp(lex->pos, "elif", 4) == 0)
+    {
+        return true;
+    }
+    if (strncmp(lex->pos, "else", 4) == 0)
+    {
+        return true;
+    }
+    if (strncmp(lex->pos, "fi", 2) == 0)
+    {
+        return true;
+    }
+    return true;
+}
+
 struct Token *lexer(struct Lexer *lex, enum Grammaire grm)
 /*
 ** Considerant l'input (ici c'est str), renvoie

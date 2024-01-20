@@ -24,6 +24,8 @@ void free_lexer(struct Lexer *lexer);
 
 int lexerVerif(struct Lexer *lex, enum Grammaire grm);
 
+bool lexer_chek(struct Lexer *lex);
+
 /*
 ** Considerant l'input (ici c'est str), renvoie
 ** un struct Token contenant un pointeur au debut
