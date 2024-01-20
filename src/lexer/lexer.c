@@ -67,8 +67,11 @@ int lexerVerif(struct Lexer *lex, enum Grammaire grm)
     char *token = malloc(1024);
     size_t l = 1;
     if (lex->input[lex->pos] == ';')
+    {
         // Cas special: si le premier token est ';'
-        token = ";";
+        token[0] = ';';
+        token[1] = 0;
+    }
     else
     {
         l = strlenSep(lex->input + lex->pos);
@@ -92,7 +95,7 @@ int lexerVerif(struct Lexer *lex, enum Grammaire grm)
     else
         check_grm = false;
     // Libere la memoire du token
-    //free(token);
+    free(token);
     if (check_grm == false)
     {
         return check_grm;
@@ -131,8 +134,11 @@ struct Token *lexer(struct Lexer *lex, enum Grammaire grm)
     char *token = malloc(1024);
     size_t l = 1;
     if (lex->input[lex->pos] == ';')
+    {
         // Cas special: si le premier token est ';'
-        token = ";";
+        token[0] = ';';
+        token[1] = 0;
+    }
     else
     {
         l = strlenSep(lex->input + lex->pos);
