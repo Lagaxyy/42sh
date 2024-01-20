@@ -179,6 +179,8 @@ struct Token *lexer(struct Lexer *lex, enum Grammaire grm)
     else
         // END
         check_grm = false;
+    // Libere la memoire du token
+    free(token);
     if (check_grm == false)
         return NULL;
 
@@ -189,9 +191,6 @@ struct Token *lexer(struct Lexer *lex, enum Grammaire grm)
 
     //augmente la position du lexer de l (le mot)
     lex->pos += l;
-
-    // Libere la memoire du token
-    free(token);
 
     return new;
 }

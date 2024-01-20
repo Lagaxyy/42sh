@@ -64,5 +64,7 @@ void free_ast(struct Ast *ast)
         break;
     }
 
+    free_ast(ast->next);
+
     free(ast);
 }
