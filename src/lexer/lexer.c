@@ -61,7 +61,11 @@ int lexerVerif(struct Lexer *lex, enum Grammaire grm)
     lex->pos += len_blank;
     // return NULL si fin de la string. ajout car sinon sa cracher
     if (lex->input[lex->pos] == 0)
+    {
+        if (grm == END)
+            return 1;
         return 0;
+    }
 
     // Extrait le premier token
     char *token = malloc(1024);
@@ -111,23 +115,23 @@ bool lexer_chek(struct Lexer *lex)
 {
     size_t len_blank = strspn(lex->input + lex->pos, " \t\r\n");
     lex->pos += len_blank;
-    if (strncmp(lex->pos, "then", 4) == 0)
+    if (strncmp(lex->input + lex->pos, "then", 4) == 0)
     {
         return true;
     }
-    if (strncmp(lex->pos, "elif", 4) == 0)
+    if (strncmp(lex->input + lex->pos, "elif", 4) == 0)
     {
         return true;
     }
-    if (strncmp(lex->pos, "else", 4) == 0)
+    if (strncmp(lex->input + lex->pos, "else", 4) == 0)
     {
         return true;
     }
-    if (strncmp(lex->pos, "fi", 2) == 0)
+    if (strncmp(lex->input + lex->pos, "fi", 2) == 0)
     {
         return true;
     }
-    return true;
+    return false;
 }
 
 struct Token *lexer(struct Lexer *lex, enum Grammaire grm)

@@ -71,5 +71,15 @@ int exec_ast(struct Ast *ast)
     static const node_type functions[] = {
         [SIMPLE_CMD] = &exec_ast_sc, [IF_CMD] = &exec_ast_if
     };
-    return (*functions[ast->type])(ast);
+    int i = (*functions[ast->type])(ast);
+    if (ast->next == NULL)
+    {
+        return i;
+    }
+    else
+    {
+        return exec_ast(ast->next);
+    }
+
+
 }

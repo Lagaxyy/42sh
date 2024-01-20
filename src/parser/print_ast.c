@@ -55,7 +55,7 @@ void print_ast(struct Ast *ast, size_t depth)
             break;
     }
 
-    putchar('\n');
+    printf("\n");
 
     // Appel récursif pour imprimer les nœuds suivants dans la liste
     print_ast(ast->next, depth);

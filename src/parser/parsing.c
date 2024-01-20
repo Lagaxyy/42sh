@@ -1,6 +1,7 @@
 #include "parsing.h"
 
 #include <err.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -93,7 +94,7 @@ struct Ast *liste_command(struct Lexer *lex)
 
     while (1)
     {
-        char * s = lex->pos;
+        int s = lex->pos;
         if (lexerVerif(lex, SEMICOLON) == 0 || lexer_chek(lex) == true)
         {
             lex->pos = s;
@@ -182,6 +183,11 @@ struct Ast *parse_start(struct Lexer *lex)
     if (!lexerVerif(lex, SEMICOLON))
     {
         return ast;
+    }
+    else
+    {
+        if (!lexerVerif(lex, END) && lexer_chek(lex) == false)
+            ast->next = parse_start(lex);
     }
     return ast;
 }

@@ -4,6 +4,7 @@
 #include "../parser/parsing.h"
 
 #include <stdio.h>
+#include <stdbool.h>
 
 struct Lexer
 {
