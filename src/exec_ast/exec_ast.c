@@ -23,15 +23,12 @@ int exec_ast_sc(struct Ast *ast)
 
     // Match la commande avec sa fonction correspondante
     struct Ast_simple_cmd *sc = &ast->data.sc; // Alias pratique
-    char *cmd = strdup(sc->cmd->tokenlist[0]->str);
-    cmd[sc->cmd->tokenlist[0]->len] = '\0';
-    if (strcmp(cmd, "echo") == 0)
+    if (strncmp(sc->cmd->tokenlist[0]->str, "echo", 4) == 0)
         // ECHO
         my_echo(ast);
     else
         run_cmds(ast);
 
-    free(cmd);
     return 1;
 }
 

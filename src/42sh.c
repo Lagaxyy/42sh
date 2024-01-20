@@ -186,7 +186,7 @@ int main(int argc, char **argv)
     else
         aux_run(input);
 
-    free(input);
+    //free(input);
 
     return 0;
 }
