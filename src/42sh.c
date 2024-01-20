@@ -185,7 +185,7 @@ int main(int argc, char **argv)
             errx(2, "Option inconnue --%s", double_dash);
     }
     else
-        ret = aux_run(input) == 0;
+        ret = aux_run(input);
 
     //free(input);
 

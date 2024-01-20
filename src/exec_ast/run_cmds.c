@@ -4,6 +4,7 @@
 
 #include <assert.h>
 #include <err.h>
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -26,7 +27,7 @@ int run_cmds(struct Ast *ast)
     struct Ast_simple_cmd *sc = &ast->data.sc; // Alias pratique
     size_t nbt = sc->cmd->nbtoken;
     char *str = NULL;
-    int rep = 1;
+    int exitcode = 0;
 
     // Construction d'un argv a partir de
     // la liste de tokens
@@ -50,14 +51,13 @@ int run_cmds(struct Ast *ast)
     if (pid == 0)
     {
         // Child process
-        rep = execvp(argv[0], argv);
-        errx(1, "Erreur lors de l'execution de la commande");
+        execvp(argv[0], argv);
+        if (errno == EACCES)
+            errx(126, "Permission refusee");
+        errx(127, "Commande inconnue");
     }
     else
-    {
-        waitpid(pid, &rep, 0);
-        rep = rep != -1;
-    }
+        waitpid(pid, &exitcode, 0);
 
     for (size_t j = 0; j < nbt; j++)
     {
@@ -65,5 +65,6 @@ int run_cmds(struct Ast *ast)
             free(argv[j]);
     }
     free(argv);
-    return rep;
+
+    return WEXITSTATUS(exitcode);
 }

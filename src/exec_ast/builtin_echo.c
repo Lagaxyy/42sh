@@ -82,32 +82,72 @@ void echo_print(char *src, int iE)
     {
         if (iE && src[i] == '\\')
         {
-            if (src[i + 1] == 'n')
+            if (src[i + 1] != '\\')
+            {
+                i++;
+                putchar(src[i]);
+            }
+            else if (src[i + 1] == '\0' || src[i + 2] == '\0')
+                break;
+            else if (src[i + 2] == 'n')
             {
                 putchar('\n');
-                i++;
+                i += 2;
             }
-            else if (src[i + 1] == 't')
+            else if (src[i + 2] == 't')
             {
                 putchar('\t');
-                i++;
+                i += 2;
             }
-            else if (src[i + 1] == '\\')
+            else if (src[i + 2] == '\\')
             {
                 putchar('\\');
-                i++;
+                i += 2;
             }
+        }
+        else if (!iE && src[i] == '\\')
+        {
+            i++;
+            putchar(src[i]);
         }
         else
             putchar(src[i]);
     }
 }
 
+int is_token_echo(char *str)
+/*
+** Check si le token en entree
+** est la commande echo (cf test 'two_inputs')
+*/
+{
+    size_t len = strlen(str);
+    if (len < 4)
+        return 0;
+    return str[len - 4] == 'e' && str[len - 3] == 'c' && str[len - 2] == 'h'
+        && str[len - 1] == 'o';
+}
+
+char *alias_src(char *str, size_t len)
+/*
+** Renvoie le token isole de
+** la chaine de caractere d'origine
+*/
+{
+    char *src = strdup(str);
+    src[len] = '\0';
+    return src;
+}
+
 int my_echo(struct Ast *ast)
+/*
+** Implementation du
+** builtin echo
+*/
 {
     if (!ast)
         return 1;
-    assert(ast->type == SIMPLE_CMD);
+    // assert(ast->type == SIMPLE_CMD); (limite 40 lignes atteinte)
 
     char *src = NULL;
     size_t i = 0;
@@ -119,7 +159,14 @@ int my_echo(struct Ast *ast)
 
     // Pas d'arguments
     if (sc->cmd->nbtoken < 2)
+    {
+        if (printNewline)
+        {
+            putchar('\n');
+            fflush(stdout);
+        }
         return 0;
+    }
 
     // Print les arguments de echo suivi d'un espace
     for (i = check_options; i < sc->cmd->nbtoken - 1; i++)
@@ -127,28 +174,34 @@ int my_echo(struct Ast *ast)
         if (sc->cmd->tokenlist[i]->str[0] == ';'
             && sc->cmd->tokenlist[i]->len == 1)
             break;
-        src = strdup(sc->cmd->tokenlist[i]->str);
-        src[sc->cmd->tokenlist[i]->len] = '\0';
+        src = alias_src(sc->cmd->tokenlist[i]->str, sc->cmd->tokenlist[i]->len);
+        if (is_token_echo(src))
+        {
+            free(src);
+            putchar('\n');
+            continue;
+        }
         echo_print(src, interpretEscapes);
         free(src);
-        if (sc->cmd->tokenlist[i + 1]->str[0] != ';'
-            || sc->cmd->tokenlist[i + 1]->len != 1)
+
+        // Check si on peut rajouter un espace
+        char *next_src = alias_src(sc->cmd->tokenlist[i + 1]->str,
+                                   sc->cmd->tokenlist[i + 1]->len);
+        if ((sc->cmd->tokenlist[i + 1]->str[0] != ';'
+             || sc->cmd->tokenlist[i + 1]->len != 1)
+            && !is_token_echo(next_src))
             putchar(' ');
+        free(next_src);
     }
 
     // Print le dernier argument de echo sans l'espace
-    if (sc->cmd->tokenlist[i]->str[0] == ';' && sc->cmd->tokenlist[i]->len == 1)
+    if (sc->cmd->tokenlist[i]->str[0] != ';' || sc->cmd->tokenlist[i]->len != 1)
     {
-        if (printNewline)
-            putchar('\n');
-
-        fflush(stdout);
-        return 0;
+        src = alias_src(sc->cmd->tokenlist[i]->str, sc->cmd->tokenlist[i]->len);
+        if (!is_token_echo(src))
+            echo_print(src, interpretEscapes);
+        free(src);
     }
-    src = strdup(sc->cmd->tokenlist[i]->str);
-    src[sc->cmd->tokenlist[i]->len] = '\0';
-    echo_print(src, interpretEscapes);
-    free(src);
 
     if (printNewline)
         putchar('\n');

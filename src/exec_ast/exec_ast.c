@@ -27,11 +27,11 @@ int exec_ast_sc(struct Ast *ast)
     struct Ast_simple_cmd *sc = &ast->data.sc; // Alias pratique
     if (strncmp(sc->cmd->tokenlist[0]->str, "echo", 4) == 0)
         // ECHO
-        my_echo(ast);
+        rep = my_echo(ast);
     else if (strncmp(sc->cmd->tokenlist[0]->str, "true", 4) == 0)
-        rep = 1;
-    else if (strncmp(sc->cmd->tokenlist[0]->str, "false", 4) == 0)
         rep = 0;
+    else if (strncmp(sc->cmd->tokenlist[0]->str, "false", 4) == 0)
+        rep = 1;
     else
         rep = run_cmds(ast);
 
@@ -49,7 +49,7 @@ int exec_ast_if(struct Ast *ast)
 
     struct Ast_if *aif = &ast->data.aif;
 
-    if (exec_ast(aif->cdt))
+    if (!exec_ast(aif->cdt))
     {
         return exec_ast(aif->cmd1);
     }
