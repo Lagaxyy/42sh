@@ -31,8 +31,10 @@ int aux_pretty_print(char *input)
 ** Fonction auxiliaire affichant l'AST
 */
 {
-    struct Ast *ast = parse_command(input);
+    struct Lexer *lexer = init_lexer(input);
+    struct Ast *ast = parse_command(lexer);
     print_ast(ast, 0);
+    free_lexer(lexer);
     free_ast(ast);
 
     return 0;
@@ -52,13 +54,13 @@ int aux_run(char *input)
 ** l'execute
 */
 {
-    int exitcode = 1;
-
-    struct Ast *ast = parse_command(input);
-    exitcode = exec_ast(ast);
+    struct Lexer *lexer = init_lexer(input);
+    struct Ast *ast = parse_command(lexer);
+    int ret = exec_ast(ast);
+    free_lexer(lexer);
     free_ast(ast);
 
-    return exitcode;
+    return ret;
 }
 
 char *InputStandardInStr(void)
@@ -113,7 +115,8 @@ char *fileInStr(char *path)
 char *get_input(int argc, char *argv[], char **double_dash)
 /*
 ** Renvoie un pointeur vers l'input
-** Memoire allouee a free
+if [ $? -eq 0 ] && [ $EXITCODE_YOUR_SHELL -eq $EXITCODE_DEFAULT_SHELL ]; then**
+Memoire allouee a free
 */
 {
     // Variables
@@ -170,6 +173,7 @@ int main(int argc, char **argv)
     // Recupere l'input
     int exitcode = 1;
     char *double_dash = NULL;
+    int ret = 0;
     char *input = get_input(argc, argv, &double_dash);
 
     // Redirection
@@ -183,9 +187,8 @@ int main(int argc, char **argv)
             errx(2, "Option inconnue --%s", double_dash);
     }
     else
-        exitcode = aux_run(input);
+        ret = aux_run(input);
 
-    free(input);
-
-    return exitcode;
+    // free(input);
+    return ret;
 }

@@ -6,6 +6,7 @@ libparser_a_SOURCES = parsing.c \
   parsing_list.c \
   pretty_print.c \
   free_func.c \
+  print_ast.c \
   ../lexer/lexer.c \
   ../lexer/lexer.h
 libparser_a_CFLAGS = -std=c99 -Werror -Wall -Wextra -Wvla -pedantic

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Emplacement de votre shell 42sh
 YOUR_SHELL="../src/42sh"
@@ -37,7 +37,9 @@ COMMANDS=(
     "connaispas; echo Test."
 
     # if_command
-    # "if true; then echo Condition is true.; fi"
+    "if true; then echo Condition is true.; fi"
+    "if false;then echo Never happened;else echo Condition is false,;fi;"
+    "if false; then echo Non; elif true;then echo Oui; else echo Non; fi;"
 )
 
 # couleur
@@ -55,14 +57,14 @@ mkdir -p "$TEST_DIR"
 # Boucle sur chaque commande à tester
 for cmd in "${COMMANDS[@]}"; do
     # Exécution de la commande avec votre shell
-    echo -e "Running command with 42sh:"
-    echo ">    $cmd"
+    #echo -e "Running command with 42sh:"
+    echo "test:    $cmd"
     $YOUR_SHELL -c "$cmd" > "$TEST_DIR/42sh_output.txt"
     EXITCODE_YOUR_SHELL=$?
 
     # Exécution de la commande avec le shell par défaut
-    echo -e "Running command with default shell:"
-    echo ">    $cmd"
+    #echo -e "Running command with default shell:"
+    #echo ">    $cmd"
     $DEFAULT_SHELL -c "$cmd" > "$TEST_DIR/default_shell_output.txt"
     EXITCODE_DEFAULT_SHELL=$?
 
@@ -70,6 +72,7 @@ for cmd in "${COMMANDS[@]}"; do
     diff "$TEST_DIR/42sh_output.txt" "$TEST_DIR/default_shell_output.txt"
 
     if [ $? -eq 0 ] && [ $EXITCODE_YOUR_SHELL -eq $EXITCODE_DEFAULT_SHELL ]; then
+    #if [ $? -eq 0 ]; then
         # echo -e "${GREEN}Test passed: $cmd ${NC}"
         echo -e "${GREEN}Test passed${NC}"
         TEST_SUCCESS=$((TEST_SUCCESS + 1))
@@ -80,7 +83,7 @@ for cmd in "${COMMANDS[@]}"; do
     fi
 
     # Separation visuelle
-    echo ""
+    echo "-------------------------------------------------------------------"
 done
 
 # Separation visuelle

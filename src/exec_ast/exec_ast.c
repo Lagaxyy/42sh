@@ -18,47 +18,24 @@ int exec_ast_sc(struct Ast *ast)
 */
 {
     if (!ast)
-        return 0;
+        return 1;
     assert(ast->type == SIMPLE_CMD);
+
+    int rep = 1;
 
     // Match la commande avec sa fonction correspondante
     struct Ast_simple_cmd *sc = &ast->data.sc; // Alias pratique
-    char *cmd = strdup(sc->cmd->tokenlist[0]->str);
-    cmd[sc->cmd->tokenlist[0]->len] = '\0';
-    int exitcode = 0;
-    if (strcmp(cmd, "echo") == 0)
+    if (strncmp(sc->cmd->tokenlist[0]->str, "echo", 4) == 0)
         // ECHO
-        exitcode = my_echo(ast);
-    else if (strcmp(cmd, "true") == 0)
-        // TRUE
-        exitcode = 0;
-    else if (strcmp(cmd, "false") == 0)
-        // FALSE
-        exitcode = 1;
+        rep = my_echo(ast);
+    else if (strncmp(sc->cmd->tokenlist[0]->str, "true", 4) == 0)
+        rep = 0;
+    else if (strncmp(sc->cmd->tokenlist[0]->str, "false", 4) == 0)
+        rep = 1;
     else
-        exitcode = run_cmds(ast);
+        rep = run_cmds(ast);
 
-    free(cmd);
-
-    return exitcode;
-}
-
-int exec_ast_cl(struct Ast *ast)
-/*
-** Execute le noeud command_list
-*/
-{
-    if (!ast)
-        return 0;
-    assert(ast->type == CMD_LIST);
-
-    struct Ast_cmd_list *cl = &ast->data.cl; // Alias pratique
-    int exitcode = 0;
-
-    for (size_t i = 0; i < cl->nbnodes; i++)
-        exitcode = exec_ast(cl->list[i]);
-
-    return exitcode;
+    return rep;
 }
 
 int exec_ast_if(struct Ast *ast)
@@ -67,9 +44,25 @@ int exec_ast_if(struct Ast *ast)
 */
 {
     if (!ast)
-        return 0;
+        return 1;
     assert(ast->type == IF_CMD);
-    return 0;
+
+    struct Ast_if *aif = &ast->data.aif;
+
+    if (!exec_ast(aif->cdt))
+    {
+        return exec_ast(aif->cmd1);
+    }
+    else
+    {
+        return exec_ast(aif->cmd2);
+    }
+
+    /*// Alloue la memoire pour la struct Ast_simple_cmd
+    struct Ast_if *aif = &ast->data.aif;*/
+
+    return 1;
+    ;
 }
 
 int exec_ast(struct Ast *ast)
@@ -79,12 +72,21 @@ int exec_ast(struct Ast *ast)
 */
 {
     if (!ast)
-        return 0;
+        return 1;
 
     // Redirige vers les autres fonctions selon le type du noeud
     static const node_type functions[] = {
         [SIMPLE_CMD] = &exec_ast_sc, [IF_CMD] = &exec_ast_if,
         [CMD_LIST] = &exec_ast_cl
     };
-    return (*functions[ast->type])(ast);
+  
+    int i = (*functions[ast->type])(ast);
+    if (ast->next == NULL)
+    {
+        return i;
+    }
+    else
+    {
+        return exec_ast(ast->next);
+    }
 }

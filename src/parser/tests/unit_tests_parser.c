@@ -1,11 +1,10 @@
 #include <criterion/criterion.h>
 #include <criterion/redirect.h>
-
-#include "../parsing.h"
-#include "../../lexer/lexer.h"
-
 #include <stdlib.h>
 #include <string.h>
+
+#include "../../lexer/lexer.h"
+#include "../parsing.h"
 
 TestSuite(parser);
 
@@ -23,7 +22,8 @@ Test(parser, simple_cmd_simple)
     print_ast(test_ast, 0);
     fflush(NULL);
 
-    // char *expected_output = "SIMPLE_CMD\n  Command:\n    Token 1: echo\n    Token 2: foo\n";
+    char *expected_output =
+        "SIMPLE_CMD\n  Command:\n    Token 1: echo\n    Token 2: foo\n";
 
     // cr_expect_stdout_eq_str(expected_output);
 
@@ -40,7 +40,9 @@ Test(parser, simple_cmd_simple2)
     print_ast(test_ast, 0);
     fflush(NULL);
 
-    // char *expected_output = "SIMPLE_CMD\n  Command:\n    Token 1: echo\n    Token 2: Hello\n    Token 3: World!\n    Token 4: ;\n";
+    char *expected_output =
+        "SIMPLE_CMD\n  Command:\n    Token 1: echo\n    Token 2: Hello\n    "
+        "Token 3: World!\n    Token 4: ;\n";
 
     // cr_expect_stdout_eq_str(expected_output);
 

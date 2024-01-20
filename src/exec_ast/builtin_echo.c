@@ -147,7 +147,7 @@ int my_echo(struct Ast *ast)
 {
     if (!ast)
         return 1;
-    assert(ast->type == SIMPLE_CMD);
+    // assert(ast->type == SIMPLE_CMD); (limite 40 lignes atteinte)
 
     char *src = NULL;
     size_t i = 0;
@@ -159,7 +159,14 @@ int my_echo(struct Ast *ast)
 
     // Pas d'arguments
     if (sc->cmd->nbtoken < 2)
+    {
+        if (printNewline)
+        {
+            putchar('\n');
+            fflush(stdout);
+        }
         return 0;
+    }
 
     // Print les arguments de echo suivi d'un espace
     for (i = check_options; i < sc->cmd->nbtoken - 1; i++)

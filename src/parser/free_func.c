@@ -49,7 +49,15 @@ void free_ast_if(struct Ast *ast)
 {
     if (!ast)
         return;
-    // (TODO) A completer
+    // Alias pratique
+
+    struct Ast_if *aif = &ast->data.aif;
+
+    // Libere la memoire allouee pour la liste des tokens
+    free_ast(aif->cdt);
+    free_ast(aif->cmd1);
+    free_ast(aif->cmd2);
+
     return;
 }
 
@@ -76,6 +84,8 @@ void free_ast(struct Ast *ast)
     default:
         break;
     }
+
+    free_ast(ast->next);
 
     free(ast);
 }
