@@ -1,5 +1,6 @@
-#include "../parser/parsing.h"
 #include <stdio.h>
+
+#include "../parser/parsing.h"
 
 void print_simple_cmd(struct Ast *ast, size_t depth)
 {
@@ -33,26 +34,26 @@ void print_ast(struct Ast *ast, size_t depth)
 
     for (size_t i = 0; i < depth; ++i)
     {
-        putchar(' ');  // Indentation pour représenter la profondeur de l'arbre
+        putchar(' '); // Indentation pour représenter la profondeur de l'arbre
     }
 
     switch (ast->type)
     {
-        case IF_CMD:
-            printf("IF\n");
-            print_ast(ast->data.aif.cdt, depth + 2);
-            printf("THEN\n");
-            print_ast(ast->data.aif.cmd1, depth + 2);
-            printf("ELSE\n");
-            print_ast(ast->data.aif.cmd2, depth + 2);
-            break;
-        case SIMPLE_CMD:
-            printf("SIMPLE COMMAND\n");
-            print_simple_cmd(ast, depth);
-            break;
-        default:
-            fprintf(stderr, "Type d'AST inconnu\n");
-            break;
+    case IF_CMD:
+        printf("IF\n");
+        print_ast(ast->data.aif.cdt, depth + 2);
+        printf("THEN\n");
+        print_ast(ast->data.aif.cmd1, depth + 2);
+        printf("ELSE\n");
+        print_ast(ast->data.aif.cmd2, depth + 2);
+        break;
+    case SIMPLE_CMD:
+        printf("SIMPLE COMMAND\n");
+        print_simple_cmd(ast, depth);
+        break;
+    default:
+        fprintf(stderr, "Type d'AST inconnu\n");
+        break;
     }
 
     printf("\n");

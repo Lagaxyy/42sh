@@ -14,7 +14,7 @@ struct Lexer *init_lexer(char *str)
     struct Lexer *lexer = malloc(sizeof(struct Lexer));
     if (lexer == NULL)
         return NULL;
-    
+
     lexer->input = str;
     lexer->pos = 0;
     return lexer;
@@ -47,8 +47,8 @@ bool check_word(char *tok)
 size_t strlenSep(char *str)
 {
     size_t i = 0;
-    while (str[i] != '\0' && str[i] != '\t' && str[i] != '\r' &&
-            str[i] != '\n' && str[i] != ' ' && str[i] != ';')
+    while (str[i] != '\0' && str[i] != '\t' && str[i] != '\r' && str[i] != '\n'
+           && str[i] != ' ' && str[i] != ';')
     {
         i++;
     }
@@ -105,7 +105,7 @@ int lexerVerif(struct Lexer *lex, enum Grammaire grm)
         return check_grm;
     }
 
-    //augmente la position du lexer de l (le mot)
+    // augmente la position du lexer de l (le mot)
     lex->pos += l;
 
     return check_grm;
@@ -189,7 +189,7 @@ struct Token *lexer(struct Lexer *lex, enum Grammaire grm)
     new->str = lex->input + lex->pos;
     new->len = l;
 
-    //augmente la position du lexer de l (le mot)
+    // augmente la position du lexer de l (le mot)
     lex->pos += l;
 
     return new;

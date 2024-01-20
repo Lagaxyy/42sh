@@ -32,7 +32,7 @@ void free_ast_if(struct Ast *ast)
     if (!ast)
         return;
     // Alias pratique
-    
+
     struct Ast_if *aif = &ast->data.aif;
 
     // Libere la memoire allouee pour la liste des tokens
