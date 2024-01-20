@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Emplacement de votre shell 42sh
 YOUR_SHELL="../src/42sh"

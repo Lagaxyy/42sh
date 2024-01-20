@@ -21,15 +21,21 @@ int exec_ast_sc(struct Ast *ast)
         return 1;
     assert(ast->type == SIMPLE_CMD);
 
+    int rep = 1;
+
     // Match la commande avec sa fonction correspondante
     struct Ast_simple_cmd *sc = &ast->data.sc; // Alias pratique
     if (strncmp(sc->cmd->tokenlist[0]->str, "echo", 4) == 0)
         // ECHO
         my_echo(ast);
+    else if (strncmp(sc->cmd->tokenlist[0]->str, "true", 4) == 0)
+        rep = 1;
+    else if (strncmp(sc->cmd->tokenlist[0]->str, "false", 4) == 0)
+        rep = 0;
     else
-        run_cmds(ast);
+        rep = run_cmds(ast);
 
-    return 1;
+    return rep;
 }
 
 int exec_ast_if(struct Ast *ast)
