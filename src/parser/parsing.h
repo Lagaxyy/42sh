@@ -74,7 +74,7 @@ struct Ast
 ** Fonctions exportees
 */
 struct Ast *parse_command(struct Lexer *lexer);
-//void print_ast(struct Ast *ast, size_t depth);
+void print_ast(struct Ast *ast, size_t depth);
 struct Ast *parse_start(struct Lexer *lex);
 void free_ast(struct Ast *ast);
 
