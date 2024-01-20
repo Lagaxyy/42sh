@@ -19,6 +19,8 @@ autoreconf --install
 make
 ```
 
+## Clean le repo
+
 Les commandes pour supprimer tous les fichiers produits sont:
 ```
 make distclean
