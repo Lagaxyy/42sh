@@ -37,7 +37,9 @@ COMMANDS=(
     "connaispas; echo Test."
 
     # if_command
-    # "if true; then echo Condition is true.; fi"
+    "if true; then echo Condition is true.; fi"
+    "if false;then echo Never happened;else echo Condition is false,;fi;"
+    "if false; then echo Non; elif true;then echo Oui; else echo Non; fi;"
 )
 
 # couleur
