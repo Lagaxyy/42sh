@@ -73,15 +73,15 @@ struct Ast *simple_command(struct Lexer *lex)
 
 struct Ast *liste_command(struct Lexer *lex)
 {
-/*
-** Renvoie un noeud de l'AST de type
-** simple_command
-**
-** Grammaire:
-**
-** liste_command =
-**      simple_command { ';' simple_command}
-*/
+    /*
+    ** Renvoie un noeud de l'AST de type
+    ** simple_command
+    **
+    ** Grammaire:
+    **
+    ** liste_command =
+    **      simple_command { ';' simple_command}
+    */
     // simple_command
     struct Ast *ast = simple_command(lex);
     if (ast == NULL || ast->type != SIMPLE_CMD)
@@ -174,7 +174,7 @@ struct Ast *if_command(struct Lexer *lex)
         return NULL;
     ast->type = IF_CMD;
     ast->next = NULL;
-    
+
     // Alloue la memoire pour la struct Ast_simple_cmd
     struct Ast_if *aif = &ast->data.aif;
 
@@ -235,6 +235,6 @@ struct Ast *parse_command(struct Lexer *lexer)
     struct Ast *ast = parse_start(lexer);
     if (!ast)
         errx(1, "Erreur lors de la construction de l'AST");
-    
+
     return ast;
 }

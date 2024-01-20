@@ -1,10 +1,10 @@
 #ifndef LEXER_H
 #define LEXER_H
 
-#include "../parser/parsing.h"
-
-#include <stdio.h>
 #include <stdbool.h>
+#include <stdio.h>
+
+#include "../parser/parsing.h"
 
 struct Lexer
 {

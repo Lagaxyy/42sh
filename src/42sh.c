@@ -115,7 +115,8 @@ char *fileInStr(char *path)
 char *get_input(int argc, char *argv[], char **double_dash)
 /*
 ** Renvoie un pointeur vers l'input
-if [ $? -eq 0 ] && [ $EXITCODE_YOUR_SHELL -eq $EXITCODE_DEFAULT_SHELL ]; then** Memoire allouee a free
+if [ $? -eq 0 ] && [ $EXITCODE_YOUR_SHELL -eq $EXITCODE_DEFAULT_SHELL ]; then**
+Memoire allouee a free
 */
 {
     // Variables
@@ -187,7 +188,7 @@ int main(int argc, char **argv)
     else
         ret = aux_run(input);
 
-    //free(input);
+    // free(input);
 
     return ret;
 }

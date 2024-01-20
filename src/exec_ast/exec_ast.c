@@ -57,11 +57,12 @@ int exec_ast_if(struct Ast *ast)
     {
         return exec_ast(aif->cmd2);
     }
-    
+
     /*// Alloue la memoire pour la struct Ast_simple_cmd
     struct Ast_if *aif = &ast->data.aif;*/
 
-    return 1;;
+    return 1;
+    ;
 }
 
 int exec_ast(struct Ast *ast)
@@ -86,6 +87,4 @@ int exec_ast(struct Ast *ast)
     {
         return exec_ast(ast->next);
     }
-
-
 }
