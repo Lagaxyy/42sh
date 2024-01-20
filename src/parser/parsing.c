@@ -111,6 +111,44 @@ struct Ast *liste_command(struct Lexer *lex)
     return ast;
 }
 
+struct Ast *elif_command(struct Lexer *lex)
+{
+    struct Ast *ast = malloc(sizeof(struct Ast));
+    if (!ast)
+        return NULL;
+    ast->type = IF_CMD;
+    ast->next = NULL;
+
+    struct Ast_if *aif = &ast->data.aif;
+
+    aif->cdt = parse_start(lex);
+
+    if (!aif->cdt)
+    {
+        free_ast(ast);
+        return NULL;
+    }
+    if (!lexerVerif(lex, THEN_GRM))
+    {
+        free_ast(ast);
+        return NULL;
+    }
+    aif->cmd1 = parse_start(lex);
+
+    if (lexerVerif(lex, ELIF_GRM))
+    {
+        aif->cmd2 = elif_command(lex);
+    }
+    else if (lexerVerif(lex, ELSE_GRM))
+    {
+        aif->cmd2 = parse_start(lex);
+    }
+    else
+        aif->cmd2 = NULL;
+
+    return ast;
+}
+
 struct Ast *if_command(struct Lexer *lex)
 /*
 ** Renvoie un noeud de l'AST de type
@@ -158,7 +196,7 @@ struct Ast *if_command(struct Lexer *lex)
 
     if (lexerVerif(lex, ELIF_GRM))
     {
-        aif->cmd2 = if_command(lex);
+        aif->cmd2 = elif_command(lex);
     }
     else if (lexerVerif(lex, ELSE_GRM))
     {
