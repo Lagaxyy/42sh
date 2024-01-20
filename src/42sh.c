@@ -171,18 +171,17 @@ Memoire allouee a free
 int main(int argc, char **argv)
 {
     // Recupere l'input
-    int exitcode = 1;
-    char *double_dash = NULL;
     int ret = 0;
+    char *double_dash = NULL;
     char *input = get_input(argc, argv, &double_dash);
 
     // Redirection
     if (double_dash != NULL)
     {
         if (strcmp(double_dash, "pretty-print") == 0)
-            exitcode = aux_pretty_print(input);
+            ret = aux_pretty_print(input);
         else if (strcmp(double_dash, "verbose") == 0)
-            exitcode = aux_verbose(); // A implementer ?
+            ret = aux_verbose(); // A implementer ?
         else
             errx(2, "Option inconnue --%s", double_dash);
     }

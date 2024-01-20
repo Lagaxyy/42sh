@@ -17,7 +17,6 @@ enum Grammaire
     ELIF_GRM,
     ELSE_GRM,
     FI_GRM,
-    SEMICOLON,
     END,
     WORD,
     SEMICOLON
