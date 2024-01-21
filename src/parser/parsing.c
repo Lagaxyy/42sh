@@ -163,9 +163,8 @@ struct Ast *if_command(struct Lexer *lex)
     // si if pas trouver
     if (!lexerVerif(lex, IF_GRM))
     {
-        if (!lexerVerif(lex, ELIF_GRM))
-            // on continue
-            return simple_command(lex);
+        // on continue
+        return simple_command(lex);
     }
 
     // Alloue la memoire pour la struct Ast et definit le type

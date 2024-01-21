@@ -2,6 +2,14 @@
 
 #include "../parser/parsing.h"
 
+void print_space(size_t depth)
+{
+    for (size_t i = 0; i < depth; ++i)
+    {
+        putchar(' '); // Indentation pour représenter la profondeur de l'arbre
+    }
+}
+
 void print_simple_cmd(struct Ast *ast, size_t depth)
 {
     // Alias pratique
@@ -10,15 +18,13 @@ void print_simple_cmd(struct Ast *ast, size_t depth)
     // Print la commande si elle existe
     if (ast->type == SIMPLE_CMD && sc->cmd != NULL)
     {
-        for (size_t i = 0; i < depth + 1; i++)
-            printf("  ");
+        print_space(depth);
 
         printf("Command:\n");
 
         for (size_t i = 0; i < sc->cmd->nbtoken; i++)
         {
-            for (size_t j = 0; j < depth + 2; j++)
-                printf("  ");
+            print_space(depth);
             int s = sc->cmd->tokenlist[i]->len;
             printf("Token %zu: %.*s\n", i + 1, s, sc->cmd->tokenlist[i]->str);
         }
@@ -32,24 +38,23 @@ void print_ast(struct Ast *ast, size_t depth)
         return;
     }
 
-    for (size_t i = 0; i < depth; ++i)
-    {
-        putchar(' '); // Indentation pour représenter la profondeur de l'arbre
-    }
+    print_space(depth);
 
     switch (ast->type)
     {
     case IF_CMD:
         printf("IF\n");
         print_ast(ast->data.aif.cdt, depth + 2);
+        print_space(depth);
         printf("THEN\n");
         print_ast(ast->data.aif.cmd1, depth + 2);
+        print_space(depth);
         printf("ELSE\n");
         print_ast(ast->data.aif.cmd2, depth + 2);
         break;
     case SIMPLE_CMD:
         printf("SIMPLE COMMAND\n");
-        print_simple_cmd(ast, depth);
+        print_simple_cmd(ast, depth + 2);
         break;
     default:
         fprintf(stderr, "Type d'AST inconnu\n");

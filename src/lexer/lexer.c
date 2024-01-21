@@ -28,17 +28,20 @@ void free_lexer(struct Lexer *lexer)
     free(lexer);
 }
 
-bool check_word(char *tok)
+bool check_word(char *tok, size_t len)
 /*
 ** Renvoie true si le token est un WORD
 ** sinon renvoie false
 */
 {
-    if (!tok)
+    if (!tok || len == 0)
         return false;
     if (*tok == 0)
         return false;
     if (*tok == ';')
+        return false;
+    // si il y a une ' ouvrante mais pas fermante
+    if (tok[0] == '\'' && tok[len - 1] != '\'')
         return false;
     // Autres conditions ??
     return true;
@@ -47,6 +50,18 @@ bool check_word(char *tok)
 size_t strlenSep(char *str)
 {
     size_t i = 0;
+    if (str[i] == '\'')
+    {
+        i++;
+        while (str[i] != '\'' || str[i] == 0)
+        {
+            i++;
+        }
+        if (str[i] == '\'')
+            return i + 1;
+        return i;
+        
+    }
     while (str[i] != '\0' && str[i] != '\t' && str[i] != '\r' && str[i] != '\n'
            && str[i] != ' ' && str[i] != ';')
     {
@@ -177,7 +192,7 @@ struct Token *lexer(struct Lexer *lex, enum Grammaire grm)
     // (TODO) Verifie la grammaire donnee (a completer au fur et a mesure)
     bool check_grm = true;
     if (grm == WORD)
-        check_grm = check_word(token);
+        check_grm = check_word(token, l);
     else
         // END
         check_grm = false;
@@ -188,8 +203,16 @@ struct Token *lexer(struct Lexer *lex, enum Grammaire grm)
 
     // Cree la structure Token
     struct Token *new = malloc(sizeof(struct Token));
-    new->str = lex->input + lex->pos;
-    new->len = l;
+    if (*(lex->input + lex->pos) == '\'')
+    {
+        new->str = lex->input + lex->pos + 1;
+        new->len = l - 2;
+    }
+    else
+    {
+        new->str = lex->input + lex->pos;
+        new->len = l;
+    }
 
     // augmente la position du lexer de l (le mot)
     lex->pos += l;
