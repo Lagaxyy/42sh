@@ -234,7 +234,7 @@ struct Ast *parse_command(struct Lexer *lexer)
 {
     struct Ast *ast = parse_start(lexer);
     if (!ast)
-        errx(1, "Erreur lors de la construction de l'AST");
+        errx(2, "Erreur lors de la construction de l'AST");
 
     return ast;
 }

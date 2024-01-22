@@ -160,7 +160,9 @@ struct Token *lexer(struct Lexer *lex, enum Grammaire grm)
     }
 
     // Extrait le premier token
-    char *token = malloc(1024);
+    //   Calcule la taille du token
+    size_t dynamic_size = strcspn(lex->input + lex->pos, " \t\r\n");
+    char *token = malloc(dynamic_size + 1);
     size_t l = 1;
     if (lex->input[lex->pos] == ';')
     {

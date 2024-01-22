@@ -54,6 +54,13 @@ int aux_run(char *input)
 ** l'execute
 */
 {
+    // Input vide
+    if (strlen(input) == 0)
+    {
+        free(input);
+        return 0;
+    }
+
     struct Lexer *lexer = init_lexer(input);
     struct Ast *ast = parse_command(lexer);
     int ret = exec_ast(ast);
@@ -188,6 +195,5 @@ int main(int argc, char **argv)
     else
         ret = aux_run(input);
 
-    // free(input);
     return ret;
 }

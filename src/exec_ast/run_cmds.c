@@ -54,7 +54,7 @@ int run_cmds(struct Ast *ast)
         execvp(argv[0], argv);
         if (errno == EACCES)
             errx(126, "Permission refusee");
-        errx(127, "Commande inconnue");
+        errx(127, "Commande inconnue: \n=> %s", argv[0]);
     }
     else
         waitpid(pid, &exitcode, 0);
