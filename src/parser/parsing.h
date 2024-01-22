@@ -18,6 +18,10 @@ enum Grammaire
     ELIF_GRM,
     ELSE_GRM,
     FI_GRM,
+    WHILE_GRM,
+    UNTIL_GRM,
+    DO_GRM,
+    DONE_GRM,
     SEMICOLON,
     PIPELINES,
     END
@@ -46,6 +50,8 @@ enum Ast_type
     SIMPLE_CMD,
     //CMD_LIST,
     PIPELINE_CMD,
+    WHILE_CMD,
+    UNTIL_CMD,
     IF_CMD
 };
 
@@ -67,6 +73,18 @@ struct Ast_pipelines
     struct Ast *right;
 };
 
+struct Ast_while
+{
+    struct Ast *cdt;
+    struct Ast *do_cdt;
+};
+
+
+struct Ast_until
+{
+    struct Ast *cdt;
+    struct Ast *do_cdt;
+};
 
 /*struct Ast_cmd_list
 {
@@ -79,6 +97,8 @@ union Ast_union
     struct Ast_simple_cmd sc;
     //struct Ast_cmd_list cl;
     struct Ast_pipelines pl;
+    struct Ast_while wh;
+    struct Ast_until ut;
     struct Ast_if aif;
 };
 

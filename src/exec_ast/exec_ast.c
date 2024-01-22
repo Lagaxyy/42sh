@@ -77,6 +77,38 @@ int exec_ast_pipe(struct Ast *ast)
     return exec_pipe(pl->left, pl->right);
 }
 
+int exec_ast_until(struct Ast *ast)
+{
+    if (!ast)
+        return 1;
+    assert(ast->type == UNTIL_CMD);
+
+    struct Ast_until *ut = &ast->data.ut;
+    int res = 0;
+    // si s'est 0 continue
+    while (exec_ast(ut->cdt) != 0)
+    {
+        res = exec_ast(ut->do_cdt);
+    }
+    return res;
+}
+
+int exec_ast_while(struct Ast *ast)
+{
+    if (!ast)
+        return 1;
+    assert(ast->type == WHILE_CMD);
+
+    struct Ast_while *wh = &ast->data.wh;
+    int res = 0;
+    // si s'est 0 continue
+    while (exec_ast(wh->cdt) == 0)
+    {
+        res = exec_ast(wh->do_cdt);
+    }
+    return res;
+}
+
 int exec_ast(struct Ast *ast)
 /*
 ** Execute l'AST
@@ -88,7 +120,8 @@ int exec_ast(struct Ast *ast)
 
     // Redirige vers les autres fonctions selon le type du noeud
     static const node_type functions[] = {
-        [SIMPLE_CMD] = &exec_ast_sc, [IF_CMD] = &exec_ast_if, [PIPELINE_CMD] = &exec_ast_pipe
+        [SIMPLE_CMD] = &exec_ast_sc, [IF_CMD] = &exec_ast_if, [PIPELINE_CMD] = &exec_ast_pipe,
+        [WHILE_CMD] = &exec_ast_while, [UNTIL_CMD] = &exec_ast_until
     };
 
     int i = (*functions[ast->type])(ast);

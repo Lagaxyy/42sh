@@ -128,6 +128,14 @@ int lexerVerif(struct Lexer *lex, enum Grammaire grm)
         check_grm = strncmp(token, "elif", 4) == 0;
     else if (grm == FI_GRM)
         check_grm = strncmp(token, "fi", 2) == 0;
+    else if (grm == WHILE_GRM)
+        check_grm = strncmp(token, "while", 5) == 0;
+    else if (grm == UNTIL_GRM)
+        check_grm = strncmp(token, "until", 5) == 0;
+    else if (grm == DO_GRM)
+        check_grm = strncmp(token, "do", 2) == 0;
+    else if (grm == DONE_GRM)
+        check_grm = strncmp(token, "done", 4) == 0;
     else if (grm == SEMICOLON)
         check_grm = strncmp(token, ";", 1) == 0;
     else
@@ -162,6 +170,14 @@ bool lexer_chek(struct Lexer *lex)
         return true;
     }
     if (strncmp(lex->input + lex->pos, "fi", 2) == 0)
+    {
+        return true;
+    }
+    if (strncmp(lex->input + lex->pos, "do", 2) == 0)
+    {
+        return true;
+    }
+    if (strncmp(lex->input + lex->pos, "done", 4) == 0)
     {
         return true;
     }

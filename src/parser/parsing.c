@@ -212,6 +212,92 @@ struct Ast *if_command(struct Lexer *lex)
     return ast;
 }
 
+struct Ast *until_cmd(struct Lexer *lex)
+/*
+** rule_until = 'until' compound_list 'do' compound_list 'done' ;
+*/
+{
+    if (!lexerVerif(lex, UNTIL_GRM))
+        return if_command(lex);
+    struct Ast *ast = malloc(sizeof(struct Ast));
+    if (!ast)
+        return NULL;
+    ast->type = UNTIL_CMD;
+    ast->next = NULL;
+    // Alloue la memoire pour la struct Ast_while_cmd
+    struct Ast_until *ut = &ast->data.ut;
+    ut->cdt = parse_start(lex);
+    if (ut->cdt == NULL)
+    {
+        free(ast);
+        return NULL;
+    }
+    // recupere do
+    if (!lexerVerif(lex, DO_GRM))
+    {
+        free_ast(ut->cdt);
+        free(ast);
+        return NULL;
+    }
+    ut->do_cdt = parse_start(lex);
+    if (ut->do_cdt == NULL)
+    {
+        free_ast(ut->cdt);
+        free(ast);
+        return NULL;
+    }
+    ///////////// recupere done
+    if (!lexerVerif(lex, DONE_GRM))
+    {
+        free_ast(ast);
+        return NULL;
+    }
+    return ast;
+}
+
+struct Ast *while_cmd(struct Lexer *lex)
+/*
+** rule_while = 'while' compound_list 'do' compound_list 'done' ;
+*/
+{
+    if (!lexerVerif(lex, WHILE_GRM))
+        return until_cmd(lex);
+    struct Ast *ast = malloc(sizeof(struct Ast));
+    if (!ast)
+        return NULL;
+    ast->type = WHILE_CMD;
+    ast->next = NULL;
+    // Alloue la memoire pour la struct Ast_while_cmd
+    struct Ast_while *wh = &ast->data.wh;
+    wh->cdt = parse_start(lex);
+    if (wh->cdt == NULL)
+    {
+        free(ast);
+        return NULL;
+    }
+    // recupere do
+    if (!lexerVerif(lex, DO_GRM))
+    {
+        free_ast(wh->cdt);
+        free(ast);
+        return NULL;
+    }
+    wh->do_cdt = parse_start(lex);
+    if (wh->do_cdt == NULL)
+    {
+        free_ast(wh->cdt);
+        free(ast);
+        return NULL;
+    }
+    ///////////// recupere done
+    if (!lexerVerif(lex, DONE_GRM))
+    {
+        free_ast(ast);
+        return NULL;
+    }
+    return ast;
+}
+
 struct Ast *pipelines_command(struct Lexer *lex)
 /*
 ** Renvoie un noeud de l'AST de type
@@ -222,7 +308,7 @@ struct Ast *pipelines_command(struct Lexer *lex)
 ** pipe = [cmd] '|' [cmd];
 */
 {
-    struct Ast *ast = if_command(lex);
+    struct Ast *ast = while_cmd(lex);
     if (ast == NULL)
         return NULL;
     if (lexerVerif(lex, PIPELINES))

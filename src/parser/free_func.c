@@ -57,8 +57,6 @@ void free_ast_if(struct Ast *ast)
     free_ast(aif->cdt);
     free_ast(aif->cmd1);
     free_ast(aif->cmd2);
-
-    return;
 }
 
 void free_ast_pl(struct Ast *ast)
@@ -72,6 +70,32 @@ void free_ast_pl(struct Ast *ast)
     // Libere la memoire allouee
     free_ast(pl->left);
     free_ast(pl->right);
+}
+
+void free_ast_while(struct Ast *ast)
+{
+    if (!ast)
+        return;
+    // Alias pratique
+
+    struct Ast_while *wh = &ast->data.wh;
+
+    // Libere la memoire allouee
+    free_ast(wh->cdt);
+    free_ast(wh->do_cdt);
+}
+
+void free_ast_until(struct Ast *ast)
+{
+    if (!ast)
+        return;
+    // Alias pratique
+
+    struct Ast_until *ut = &ast->data.ut;
+
+    // Libere la memoire allouee
+    free_ast(ut->cdt);
+    free_ast(ut ->do_cdt);
 }
 
 void free_ast(struct Ast *ast)
@@ -93,6 +117,12 @@ void free_ast(struct Ast *ast)
         //break;
     case PIPELINE_CMD:
         free_ast_pl(ast);
+        break;
+    case WHILE_CMD:
+        free_ast_while(ast);
+        break;
+    case UNTIL_CMD:
+        free_ast_until(ast);
         break;
     case IF_CMD:
         free_ast_if(ast);
