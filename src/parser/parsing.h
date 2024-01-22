@@ -43,7 +43,7 @@ struct Command
 enum Ast_type
 {
     SIMPLE_CMD,
-    CMD_LIST,
+    //CMD_LIST,
     IF_CMD
 };
 
@@ -59,16 +59,16 @@ struct Ast_simple_cmd
     struct Command *cmd;
 };
 
-struct Ast_cmd_list
+/*struct Ast_cmd_list
 {
     struct Ast **list;
     size_t nbnodes;
-};
+};*/
 
 union Ast_union
 {
     struct Ast_simple_cmd sc;
-    struct Ast_cmd_list cl;
+    //struct Ast_cmd_list cl;
     struct Ast_if aif;
 };
 

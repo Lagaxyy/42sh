@@ -70,6 +70,18 @@ size_t strlenSep(char *str)
     return i;
 }
 
+size_t skipSpace(char *str)
+/*
+** La fonction skipSpace prend en paramètre une chaîne de caractères (str)
+** La renvoie la position du prochain mot à évaluer.
+** Si un caractère '#' est présent, la fonction ignore tout le contenu jusqu'à un '\n'.
+** Si le caractère actuel fait partie des espaces " \t\r\n", la fonction passe au caractère suivant.
+** La position renvoyée indique le début du prochain mot à évaluer dans la chaîne.
+*/
+{
+    //todo
+}
+
 int lexerVerif(struct Lexer *lex, enum Grammaire grm)
 {
     size_t len_blank = strspn(lex->input + lex->pos, " \t\r\n");
