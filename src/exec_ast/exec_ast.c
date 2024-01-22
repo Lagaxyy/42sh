@@ -2,6 +2,7 @@
 #    define _POSIX_C_SOURCE 200809L
 #endif /* ! _POSIX_C_SOURCE */
 
+#include "../mypipe/mypipe.h"
 #include "exec_ast.h"
 
 #include <assert.h>
@@ -65,6 +66,17 @@ int exec_ast_if(struct Ast *ast)
     ;
 }
 
+int exec_ast_pipe(struct Ast *ast)
+{
+    if (!ast)
+        return 1;
+    assert(ast->type == PIPELINE_CMD);
+
+    struct Ast_pipelines *pl = &ast->data.pl;
+
+    return exec_pipe(pl->left, pl->right);
+}
+
 int exec_ast(struct Ast *ast)
 /*
 ** Execute l'AST
@@ -76,7 +88,7 @@ int exec_ast(struct Ast *ast)
 
     // Redirige vers les autres fonctions selon le type du noeud
     static const node_type functions[] = {
-        [SIMPLE_CMD] = &exec_ast_sc, [IF_CMD] = &exec_ast_if
+        [SIMPLE_CMD] = &exec_ast_sc, [IF_CMD] = &exec_ast_if, [PIPELINE_CMD] = &exec_ast_pipe
     };
 
     int i = (*functions[ast->type])(ast);

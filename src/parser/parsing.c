@@ -212,9 +212,48 @@ struct Ast *if_command(struct Lexer *lex)
     return ast;
 }
 
-struct Ast *parse_start(struct Lexer *lex)
+struct Ast *pipelines_command(struct Lexer *lex)
+/*
+** Renvoie un noeud de l'AST de type
+** pipelines_command
+**
+** Grammaire:
+**
+** pipe = [cmd] '|' [cmd];
+*/
 {
     struct Ast *ast = if_command(lex);
+    if (ast == NULL)
+        return NULL;
+    if (lexerVerif(lex, PIPELINES))
+    {
+        // Alloue la memoire pour la struct Ast et definit le type
+        struct Ast *ast_aux = malloc(sizeof(struct Ast));
+        if (!ast_aux)
+        {
+            free_ast(ast);
+            return NULL;
+        }
+        ast_aux->type = PIPELINE_CMD;
+        ast_aux->next = NULL;
+
+        // Alloue la memoire pour la struct Ast_simple_cmd
+        struct Ast_pipelines *pl = &ast_aux->data.pl;
+
+        pl->left = ast;
+        pl->right = if_command(lex);
+        if (pl->right == NULL)
+        {
+            free_ast(ast_aux);
+        }
+        return ast_aux;
+    }
+    return ast;
+}
+
+struct Ast *parse_start(struct Lexer *lex)
+{
+    struct Ast *ast = pipelines_command(lex);
     if (ast == NULL)
         return NULL;
     if (!lexerVerif(lex, SEMICOLON))

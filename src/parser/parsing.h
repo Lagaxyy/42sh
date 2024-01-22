@@ -12,14 +12,15 @@ struct Lexer;
 */
 enum Grammaire
 {
+    WORD,
     IF_GRM,
     THEN_GRM,
     ELIF_GRM,
     ELSE_GRM,
     FI_GRM,
-    END,
-    WORD,
-    SEMICOLON
+    SEMICOLON,
+    PIPELINES,
+    END
 };
 
 struct Token
@@ -44,6 +45,7 @@ enum Ast_type
 {
     SIMPLE_CMD,
     //CMD_LIST,
+    PIPELINE_CMD,
     IF_CMD
 };
 
@@ -59,6 +61,13 @@ struct Ast_simple_cmd
     struct Command *cmd;
 };
 
+struct Ast_pipelines
+{
+    struct Ast *left;
+    struct Ast *right;
+};
+
+
 /*struct Ast_cmd_list
 {
     struct Ast **list;
@@ -69,6 +78,7 @@ union Ast_union
 {
     struct Ast_simple_cmd sc;
     //struct Ast_cmd_list cl;
+    struct Ast_pipelines pl;
     struct Ast_if aif;
 };
 

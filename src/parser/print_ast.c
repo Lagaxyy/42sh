@@ -52,6 +52,11 @@ void print_ast(struct Ast *ast, size_t depth)
         printf("ELSE\n");
         print_ast(ast->data.aif.cmd2, depth + 2);
         break;
+    case PIPELINE_CMD:
+        printf("PIPELINES\n");
+        print_ast(ast->data.pl.left, depth + 2);
+        print_ast(ast->data.pl.right, depth + 2);
+        break;
     case SIMPLE_CMD:
         printf("SIMPLE COMMAND\n");
         print_simple_cmd(ast, depth + 2);

@@ -61,6 +61,19 @@ void free_ast_if(struct Ast *ast)
     return;
 }
 
+void free_ast_pl(struct Ast *ast)
+{
+    if (!ast)
+        return;
+    // Alias pratique
+
+    struct Ast_pipelines *pl = &ast->data.pl;
+
+    // Libere la memoire allouee
+    free_ast(pl->left);
+    free_ast(pl->right);
+}
+
 void free_ast(struct Ast *ast)
 /*
 ** Libere la memoire allouee pour l'AST
@@ -77,6 +90,9 @@ void free_ast(struct Ast *ast)
         break;
     //case CMD_LIST:
         //free_ast_cl(ast);
+        //break;
+    case PIPELINE_CMD:
+        free_ast_pl(ast);
         break;
     case IF_CMD:
         free_ast_if(ast);

@@ -63,14 +63,14 @@ size_t strlenSep(char *str)
         
     }
     while (str[i] != '\0' && str[i] != '\t' && str[i] != '\r' && str[i] != '\n'
-           && str[i] != ' ' && str[i] != ';')
+           && str[i] != ' ' && str[i] != ';' && str[i] != '|')
     {
         i++;
     }
     return i;
 }
 
-size_t skipSpace(char *str)
+//size_t skipSpace(char *str)
 /*
 ** La fonction skipSpace prend en paramètre une chaîne de caractères (str)
 ** La renvoie la position du prochain mot à évaluer.
@@ -78,9 +78,9 @@ size_t skipSpace(char *str)
 ** Si le caractère actuel fait partie des espaces " \t\r\n", la fonction passe au caractère suivant.
 ** La position renvoyée indique le début du prochain mot à évaluer dans la chaîne.
 */
-{
+//{
     //todo
-}
+//}
 
 int lexerVerif(struct Lexer *lex, enum Grammaire grm)
 {
@@ -92,6 +92,13 @@ int lexerVerif(struct Lexer *lex, enum Grammaire grm)
         if (grm == END)
             return 1;
         return 0;
+    }
+
+    // si s'est une pipelines
+    if (grm == PIPELINES && *(lex->input + lex->pos) == '|')
+    {
+        lex->pos++;
+        return 1;
     }
 
     // Extrait le premier token
@@ -182,9 +189,10 @@ struct Token *lexer(struct Lexer *lex, enum Grammaire grm)
 
     // return NULL si fin de la string. ajout car sinon sa cracher
     if (lex->input[lex->pos] == 0)
-    {
         return NULL;
-    }
+
+    if (lex->input[lex->pos] == '|')
+        return NULL;
 
     // Extrait le premier token
     char *token = malloc(1024);
