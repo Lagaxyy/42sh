@@ -1,7 +1,6 @@
 #include "parsing.h"
 
 #include <err.h>
-#include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -219,13 +218,16 @@ struct Ast *parse_start(struct Lexer *lex)
     if (ast == NULL)
         return NULL;
     if (!lexerVerif(lex, SEMICOLON))
-    {
         return ast;
-    }
-    else
+    if (!lexerVerif(lex, END) && lexer_chek(lex) == false)
     {
-        if (!lexerVerif(lex, END) && lexer_chek(lex) == false)
-            ast->next = parse_start(lex);
+        struct Ast *next_ast = parse_start(lex);
+        if (!next_ast)
+        {
+            free_ast(ast);
+            return NULL;
+        }
+        ast->next = next_ast;
     }
     return ast;
 }
