@@ -14,10 +14,9 @@ Test(lexer, dummy)
 
 Test(lexer, one_word)
 {
-    char *input = "Test";
-    int end_cmd = 0;
-    struct Lexer *lexer = init_lexer(input);
-    struct Token *test_token = lexer(input, &end_cmd, WORD);
+    char *input = strdup("Test");
+    struct Lexer *test_lexer = init_lexer(input);
+    struct Token *test_token = lexer(test_lexer, WORD);
 
     size_t expected_len = 4;
     char *expected_str = "Test";
@@ -30,23 +29,24 @@ Test(lexer, one_word)
                      test_token->str[i]);
 
     free(test_token);
+    free_lexer(test_lexer);
 }
 
-/*
 Test(lexer, many_words)
 {
-    char *input = "if echo foo then echo bar else echo baz fi";
+    char *input = strdup("if echo foo then echo bar else echo baz fi");
     char *expected_strlist[] = { "if",  "echo", "foo",  "then", "echo",
                                  "bar", "else", "echo", "baz",  "fi" };
     size_t size = 10;
     size_t i = 0;
     int end_cmd = 0;
 
+    struct Lexer *test_lexer = init_lexer(input);
     struct Token *test_token = NULL;
 
     while (1)
     {
-        test_token = lexer(input, &end_cmd, WORD);
+        test_token = lexer(test_lexer, WORD);
         if (!test_token || i > size + 1)
             break;
 
@@ -67,21 +67,23 @@ Test(lexer, many_words)
     }
 
     cr_expect_eq(i, size, "Expected: %d. Got: %d.", size, i);
+    free_lexer(test_lexer);
 }
 
 Test(lexer, blank_first)
 {
-    char *input = "   \t \t\t echo 52 1;";
-    char *expected_strlist[] = { "echo", "52", "1", ";" };
-    size_t size = 4;
+    char *input = strdup("   \t \t\t echo 52 1;");
+    char *expected_strlist[] = { "echo", "52", "1" };
+    size_t size = 3;
     size_t i = 0;
     int end_cmd = 0;
 
+    struct Lexer *test_lexer = init_lexer(input);
     struct Token *test_token = NULL;
 
     while (1)
     {
-        test_token = lexer(input, &end_cmd, WORD);
+        test_token = lexer(test_lexer, WORD);
         if (!test_token || i > size + 1)
             break;
 
@@ -102,42 +104,5 @@ Test(lexer, blank_first)
     }
 
     cr_expect_eq(i, size, "Expected: %d. Got: %d.", size, i);
+    free_lexer(test_lexer);
 }
-
-Test(lexer, semicolon_first)
-{
-    char *input = ";;;;;  echo ok;;";
-    char *expected_strlist[] = {
-        ";", ";", ";", ";", ";", "echo", "ok", ";", ";"
-    };
-    size_t size = 9;
-    size_t i = 0;
-    int end_cmd = 0;
-
-    struct Token *test_token = NULL;
-
-    while (1)
-    {
-        test_token = lexer(input, &end_cmd, WORD);
-        if (!test_token || i > size + 1)
-            break;
-
-        char *expected_str = expected_strlist[i];
-        size_t expected_len = strlen(expected_str);
-
-        cr_expect_eq(test_token->len, expected_len, "Expected: %d. Got: %d.",
-                     expected_len, test_token->len);
-        for (size_t j = 0; j < test_token->len; j++)
-            cr_expect_eq(test_token->str[j], expected_str[j],
-                         "Expected: %c. Got: %c.", expected_str[j],
-                         test_token->str[j]);
-
-        input = test_token->str + test_token->len;
-
-        free(test_token);
-        i++;
-    }
-
-    cr_expect_eq(i, size, "Expected: %d. Got: %d.", size, i);
-}
-*/
