@@ -79,9 +79,18 @@ struct Ast
 };
 
 /*
-** Fonctions exportees
+** Fonctions exportées
+*/
+
+/*
+** Lance le parsing de l'input
 */
 struct Ast *parse_command(struct Lexer *lexer);
+
+/*
+** Exécute le parsing en liant les
+** fonctions propres aux features
+*/
 struct Ast *parse_start(struct Lexer *lex);
 void print_ast(struct Ast *ast, size_t depth);
 void free_ast(struct Ast *ast);

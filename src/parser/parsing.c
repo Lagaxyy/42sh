@@ -7,7 +7,7 @@
 
 struct Command *init_command(void)
 /*
-** Renvoie une struct Command initialisee
+** Renvoie une struct Command initialisée
 */
 {
     struct Command *c = malloc(sizeof(struct Command));
@@ -35,23 +35,24 @@ struct Ast *simple_command(struct Lexer *lex)
 ** Grammaire:
 **
 ** simple_command =
-**      WORD { WORD }
+**      WORD { element }
+**
+** element = WORD
 */
 {
-    // Premier WORD necessaire
+    // Premier WORD nécessaire
     struct Token *token = lexer(lex, WORD);
     if (!token)
         // Token incorrect
         return NULL;
 
-    // Alloue la memoire pour la struct Ast et definit le type
+    // Alloue la mémoire pour la struct Ast et définit le type
     struct Ast *ast = malloc(sizeof(struct Ast));
     if (!ast)
         return NULL;
     ast->type = SIMPLE_CMD;
     ast->next = NULL;
 
-    // Alloue la memoire pour la struct Ast_simple_cmd
     struct Ast_simple_cmd *sc = &ast->data.sc; // Alias pratique
 
     // Initialise la struct Command et ajoute le premier token
@@ -93,7 +94,7 @@ struct Ast *liste_command(struct Lexer *lex)
     while (1)
     {
         int s = lex->pos;
-        if (lexerVerif(lex, SEMICOLON) == 0 || lexer_chek(lex) == true)
+        if (lexerVerif(lex, SEMICOLON) == 0 || lexer_check(lex) == true)
         {
             lex->pos = s;
             return ast;
@@ -110,7 +111,12 @@ struct Ast *liste_command(struct Lexer *lex)
 }
 
 struct Ast *elif_command(struct Lexer *lex)
+/*
+** Est appelée si le token "elif" est trouvé
+** et s'occupe de continuer le parsing
+*/
 {
+    // Alloue la mémoire pour la struct Ast et définit le type
     struct Ast *ast = calloc(1, sizeof(struct Ast));
     if (!ast)
         return NULL;
@@ -120,6 +126,7 @@ struct Ast *elif_command(struct Lexer *lex)
 
     aif->cdt = parse_start(lex);
 
+    // Vérifie la présence de la condition et du THEN
     if (!aif->cdt)
     {
         free_ast(ast);
@@ -132,6 +139,7 @@ struct Ast *elif_command(struct Lexer *lex)
     }
     aif->cmd1 = parse_start(lex);
 
+    // Vérifie la présence du ELSE ou du ELIF
     if (lexerVerif(lex, ELIF_GRM))
     {
         aif->cmd2 = elif_command(lex);
@@ -157,24 +165,23 @@ struct Ast *if_command(struct Lexer *lex)
 **      'if' compound_list 'then' compound_list [ else_clause ] 'fi' ;
 */
 {
-    // si if pas trouver
+    // Si IF pas trouvé
     if (!lexerVerif(lex, IF_GRM))
     {
         if (!lexerVerif(lex, ELIF_GRM))
-            // on continue
+            // On continue
             return simple_command(lex);
     }
 
-    // Alloue la memoire pour la struct Ast et definit le type
+    // Alloue la mémoire pour la struct Ast et définit le type
     struct Ast *ast = calloc(1, sizeof(struct Ast));
     if (!ast)
         return NULL;
     ast->type = IF_CMD;
 
-    // Alloue la memoire pour la struct Ast_simple_cmd
     struct Ast_if *aif = &ast->data.aif;
 
-    // trouver la condition
+    // Trouve la condition
     aif->cdt = parse_start(lex);
     if (!aif->cdt)
     {
@@ -182,7 +189,7 @@ struct Ast *if_command(struct Lexer *lex)
         return NULL;
     }
 
-    // trouver le then
+    // Trouve le THEN
     if (!lexerVerif(lex, THEN_GRM))
     {
         free_ast(ast);
@@ -190,6 +197,7 @@ struct Ast *if_command(struct Lexer *lex)
     }
     aif->cmd1 = parse_start(lex);
 
+    // Trouve le ELSE ou ELIF
     if (lexerVerif(lex, ELIF_GRM))
     {
         aif->cmd2 = elif_command(lex);
@@ -200,6 +208,8 @@ struct Ast *if_command(struct Lexer *lex)
     }
     else
         aif->cmd2 = NULL;
+
+    // Trouve le FI
     if (!lexerVerif(lex, FI_GRM))
     {
         free_ast(ast);
@@ -210,17 +220,27 @@ struct Ast *if_command(struct Lexer *lex)
 }
 
 struct Ast *parse_start(struct Lexer *lex)
+/*
+** Exécute le parsing en liant les
+** fonctions propres aux features
+*/
 {
+    // Parse la première commande
     struct Ast *ast = if_command(lex);
+
     if (ast == NULL)
+        // Pas d'AST
         return NULL;
     if (!lexerVerif(lex, SEMICOLON))
+        // Prochain token n'est pas un ';'
         return ast;
-    if (!lexerVerif(lex, END) && lexer_chek(lex) == false)
+    if (!lexerVerif(lex, END) && lexer_check(lex) == false)
     {
+        // Parse la prochaine commande
         struct Ast *next_ast = parse_start(lex);
         if (!next_ast)
         {
+            // Prochaine commande vide
             free_ast(ast);
             return NULL;
         }
@@ -230,6 +250,9 @@ struct Ast *parse_start(struct Lexer *lex)
 }
 
 struct Ast *parse_command(struct Lexer *lexer)
+/*
+** Lance le parsing de l'input
+*/
 {
     struct Ast *ast = parse_start(lexer);
     if (!ast)
