@@ -18,7 +18,7 @@ int exec_ast_sc(struct Ast *ast)
 */
 {
     if (!ast)
-        return 1;
+        return 0;
     assert(ast->type == SIMPLE_CMD);
 
     int rep = 1;
@@ -44,7 +44,7 @@ int exec_ast_if(struct Ast *ast)
 */
 {
     if (!ast)
-        return 1;
+        return 0;
     assert(ast->type == IF_CMD);
 
     struct Ast_if *aif = &ast->data.aif;
@@ -72,7 +72,7 @@ int exec_ast(struct Ast *ast)
 */
 {
     if (!ast)
-        return 1;
+        return 0;
 
     // Redirige vers les autres fonctions selon le type du noeud
     static const node_type functions[] = {

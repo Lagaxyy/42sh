@@ -112,11 +112,10 @@ struct Ast *liste_command(struct Lexer *lex)
 
 struct Ast *elif_command(struct Lexer *lex)
 {
-    struct Ast *ast = malloc(sizeof(struct Ast));
+    struct Ast *ast = calloc(1, sizeof(struct Ast));
     if (!ast)
         return NULL;
     ast->type = IF_CMD;
-    ast->next = NULL;
 
     struct Ast_if *aif = &ast->data.aif;
 
@@ -168,11 +167,10 @@ struct Ast *if_command(struct Lexer *lex)
     }
 
     // Alloue la memoire pour la struct Ast et definit le type
-    struct Ast *ast = malloc(sizeof(struct Ast));
+    struct Ast *ast = calloc(1, sizeof(struct Ast));
     if (!ast)
         return NULL;
     ast->type = IF_CMD;
-    ast->next = NULL;
 
     // Alloue la memoire pour la struct Ast_simple_cmd
     struct Ast_if *aif = &ast->data.aif;

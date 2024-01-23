@@ -44,6 +44,10 @@ COMMANDS=(
     "if true; then echo Condition is true.; fi"
     "if false;then echo Never happened;else echo Condition is false,;fi;"
     "if false; then echo Non; elif true;then echo Oui; else echo Non; fi;"
+    "if true echo OK; else echo KO; fi;"
+    "if false; then echo OK; elif true; echo OK2; else echo KO; fi"
+    "if true; then echo OK; echo KO; fi;"
+    "if false; then echo Ok; fi;"
 )
 
 # couleur
