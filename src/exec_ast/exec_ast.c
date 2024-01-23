@@ -5,7 +5,6 @@
 #include "exec_ast.h"
 
 #include <assert.h>
-#include <stdlib.h>
 #include <string.h>
 
 // Pointeur de fonction pour rediriger vers les autres

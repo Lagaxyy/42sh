@@ -2,7 +2,6 @@
 #define PARSING_H
 
 #include <stddef.h>
-#include <stdlib.h>
 
 struct Ast;
 struct Lexer;

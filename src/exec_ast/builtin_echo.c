@@ -2,7 +2,6 @@
 #    define _POSIX_C_SOURCE 200809L
 #endif /* ! _POSIX_C_SOURCE */
 
-#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -146,8 +145,7 @@ int my_echo(struct Ast *ast)
 */
 {
     if (!ast)
-        return 1;
-    // assert(ast->type == SIMPLE_CMD); (limite 40 lignes atteinte)
+        return 0;
 
     char *src = NULL;
     size_t i = 0;

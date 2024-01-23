@@ -2,7 +2,6 @@
 #define LEXER_H
 
 #include <stdbool.h>
-#include <stdio.h>
 
 #include "../parser/parsing.h"
 
