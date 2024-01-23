@@ -70,7 +70,7 @@ char *InputStandardInStr(void)
     size_t inputSize = 0;
     while (1)
     {
-        if (fgets(chunk, sizeof(chunk), stdin) == NULL)
+        if (fgets(chunk, sizeof(chunk), stdout) == NULL)
             break;
         size_t chunkSize = strlen(chunk);
         inputStr = realloc(inputStr, inputSize + chunkSize + 1);
@@ -176,6 +176,8 @@ int main(int argc, char **argv)
     char *input = get_input(argc, argv, &double_dash);
 
     // Redirection
+    if (input == NULL)
+        return 1;
     if (double_dash != NULL)
     {
         if (strcmp(double_dash, "pretty-print") == 0)

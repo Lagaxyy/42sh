@@ -109,6 +109,45 @@ int exec_ast_while(struct Ast *ast)
     return res;
 }
 
+int exec_ast_and(struct Ast *ast)
+{
+    if (!ast)
+        return 1;
+    assert(ast->type == AND_CMD);
+
+    struct Ast_and *and = &ast->data.and;
+
+    int res = exec_ast(and->left);
+    if (res != 0)
+        return res;
+    return exec_ast(and->right);
+}
+
+int exec_ast_or(struct Ast *ast)
+{
+    if (!ast)
+        return 1;
+    assert(ast->type == OR_CMD);
+
+    struct Ast_or *or = &ast->data.or;
+
+    int res = exec_ast(or->left);
+    if (res != 0)
+        return exec_ast(or->right);
+    return res;
+}
+
+int exec_ast_neg(struct Ast *ast)
+{
+    if (!ast)
+        return 1;
+    assert(ast->type == NEG_CMD);
+
+    struct Ast_neg *neg = &ast->data.neg;
+
+    return ! exec_ast(neg->prg);
+}
+
 int exec_ast(struct Ast *ast)
 /*
 ** Execute l'AST
@@ -121,7 +160,8 @@ int exec_ast(struct Ast *ast)
     // Redirige vers les autres fonctions selon le type du noeud
     static const node_type functions[] = {
         [SIMPLE_CMD] = &exec_ast_sc, [IF_CMD] = &exec_ast_if, [PIPELINE_CMD] = &exec_ast_pipe,
-        [WHILE_CMD] = &exec_ast_while, [UNTIL_CMD] = &exec_ast_until
+        [WHILE_CMD] = &exec_ast_while, [UNTIL_CMD] = &exec_ast_until, [AND_CMD] = &exec_ast_and,
+        [OR_CMD] = &exec_ast_or, [NEG_CMD] = &exec_ast_neg
     };
 
     int i = (*functions[ast->type])(ast);

@@ -98,6 +98,44 @@ void free_ast_until(struct Ast *ast)
     free_ast(ut ->do_cdt);
 }
 
+void free_ast_and(struct Ast *ast)
+{
+    if (!ast)
+        return;
+    // Alias pratique
+
+    struct Ast_and *and = &ast->data.and;
+
+    // Libere la memoire allouee
+    free_ast(and->left);
+    free_ast(and->right);
+}
+
+void free_ast_or(struct Ast *ast)
+{
+    if (!ast)
+        return;
+    // Alias pratique
+
+    struct Ast_or *or = &ast->data.or;
+
+    // Libere la memoire allouee
+    free_ast(or->left);
+    free_ast(or->right);
+}
+
+void free_ast_neg(struct Ast *ast)
+{
+    if (!ast)
+        return;
+    // Alias pratique
+
+    struct Ast_neg *neg = &ast->data.neg;
+
+    // Libere la memoire allouee
+    free_ast(neg->prg);
+}
+
 void free_ast(struct Ast *ast)
 /*
 ** Libere la memoire allouee pour l'AST
@@ -126,6 +164,15 @@ void free_ast(struct Ast *ast)
         break;
     case IF_CMD:
         free_ast_if(ast);
+        break;
+    case AND_CMD:
+        free_ast_and(ast);
+        break;
+    case OR_CMD:
+        free_ast_or(ast);
+        break;
+    case NEG_CMD:
+        free_ast_neg(ast);
         break;
     default:
         break;

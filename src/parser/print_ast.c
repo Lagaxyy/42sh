@@ -49,7 +49,11 @@ void print_if_cmd(struct Ast *ast, size_t depth)
 void print_pipeline_cmd(struct Ast *ast, size_t depth)
 {
     printf("PIPELINES\n");
+    print_space(depth);
+    printf("left");
     print_ast(ast->data.pl.left, depth + 2);
+    print_space(depth);
+    printf("right");
     print_ast(ast->data.pl.right, depth + 2);
 }
 
@@ -69,6 +73,34 @@ void print_until_cmd(struct Ast *ast, size_t depth)
     print_space(depth);
     printf("DO\n");
     print_ast(ast->data.wh.do_cdt, depth + 2);
+}
+
+void print_and_cmd(struct Ast *ast, size_t depth)
+{
+    printf("AND\n");
+    print_space(depth);
+    printf("left");
+    print_ast(ast->data.and.left, depth + 2);
+    print_space(depth);
+    printf("right");
+    print_ast(ast->data.and.right, depth + 2);
+}
+
+void print_or_cmd(struct Ast *ast, size_t depth)
+{
+    printf("OR\n");
+    print_space(depth);
+    printf("left");
+    print_ast(ast->data.or.left, depth + 2);
+    print_space(depth);
+    printf("right");
+    print_ast(ast->data.or.right, depth + 2);
+}
+
+void print_neg_cmd(struct Ast *ast, size_t depth)
+{
+    printf("NEG\n");
+    print_ast(ast->data.neg.prg, depth + 2);
 }
 
 void print_ast(struct Ast *ast, size_t depth)
@@ -92,6 +124,15 @@ void print_ast(struct Ast *ast, size_t depth)
         break;
     case UNTIL_CMD:
         print_until_cmd(ast, depth);
+        break;
+    case AND_CMD:
+        print_and_cmd(ast, depth);
+        break;
+    case OR_CMD:
+        print_or_cmd(ast, depth);
+        break;
+    case NEG_CMD:
+        print_neg_cmd(ast, depth);
         break;
     default:
         fprintf(stderr, "Type d'AST inconnu\n");

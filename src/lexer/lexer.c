@@ -63,14 +63,25 @@ size_t strlenSep(char *str)
         
     }
     while (str[i] != '\0' && str[i] != '\t' && str[i] != '\r' && str[i] != '\n'
-           && str[i] != ' ' && str[i] != ';' && str[i] != '|')
+           && str[i] != ' ' && str[i] != ';' && str[i] != '|' && strncmp(str + i, "&&", 2) != 0)
     {
         i++;
     }
     return i;
 }
 
-//size_t skipSpace(char *str)
+size_t skipSpace_build(char *str)
+{
+    size_t ind = 0;
+    while (str[ind] == ' ' || str[ind] == '\t' || str[ind] == '\r' || str[ind] == '\n')
+    {
+        ind++;
+    }
+    return ind;
+}
+
+
+size_t skipSpace(char *str)
 /*
 ** La fonction skipSpace prend en paramètre une chaîne de caractères (str)
 ** La renvoie la position du prochain mot à évaluer.
@@ -78,13 +89,48 @@ size_t strlenSep(char *str)
 ** Si le caractère actuel fait partie des espaces " \t\r\n", la fonction passe au caractère suivant.
 ** La position renvoyée indique le début du prochain mot à évaluer dans la chaîne.
 */
-//{
-    //todo
-//}
+{
+    size_t rep = skipSpace_build(str);
+    if (str[rep] == '#')
+    {
+        while (str[rep] != 0 && str[rep] != '\n')
+        {
+            rep++;
+        }
+        rep += skipSpace(str +rep);
+    }
+    return rep;
+}
+
+int check_token(char *token, enum Grammaire grm)
+{
+    if (grm == IF_GRM)
+        return strncmp(token, "if", 2) == 0;
+    else if (grm == THEN_GRM)
+        return strncmp(token, "then", 4) == 0;
+    else if (grm == ELSE_GRM)
+        return strncmp(token, "else", 4) == 0;
+    else if (grm == ELIF_GRM)
+        return strncmp(token, "elif", 4) == 0;
+    else if (grm == FI_GRM)
+        return strncmp(token, "fi", 2) == 0;
+    else if (grm == WHILE_GRM)
+        return strncmp(token, "while", 5) == 0;
+    else if (grm == UNTIL_GRM)
+        return strncmp(token, "until", 5) == 0;
+    else if (grm == DO_GRM)
+        return strncmp(token, "do", 2) == 0;
+    else if (grm == DONE_GRM)
+        return strncmp(token, "done", 4) == 0;
+    else if (grm == SEMICOLON)
+        return strncmp(token, ";", 1) == 0;
+    else
+        return false;
+}
 
 int lexerVerif(struct Lexer *lex, enum Grammaire grm)
 {
-    size_t len_blank = strspn(lex->input + lex->pos, " \t\r\n");
+    size_t len_blank = skipSpace(lex->input + lex->pos);
     lex->pos += len_blank;
     // return NULL si fin de la string. ajout car sinon sa cracher
     if (lex->input[lex->pos] == 0)
@@ -95,9 +141,18 @@ int lexerVerif(struct Lexer *lex, enum Grammaire grm)
     }
 
     // si s'est une pipelines
-    if (grm == PIPELINES && *(lex->input + lex->pos) == '|')
+    if ((grm == PIPELINES && *(lex->input + lex->pos) == '|'
+            && *(lex->input + lex->pos + 1) != '|')
+            || (grm == NEG_GRM && *(lex->input + lex->pos) == '!'))
     {
         lex->pos++;
+        return 1;
+    }
+
+    if ((grm == AND_GRM && strncmp(lex->input + lex->pos, "&&", 2) == 0)
+        || (grm == OR_GRM && strncmp(lex->input + lex->pos, "||", 2) == 0))
+    {
+        lex->pos += 2;
         return 1;
     }
 
@@ -117,29 +172,7 @@ int lexerVerif(struct Lexer *lex, enum Grammaire grm)
     }
 
     // (TODO) Verifie la grammaire donnee (a completer au fur et a mesure)
-    int check_grm = 0;
-    if (grm == IF_GRM)
-        check_grm = strncmp(token, "if", 2) == 0;
-    else if (grm == THEN_GRM)
-        check_grm = strncmp(token, "then", 4) == 0;
-    else if (grm == ELSE_GRM)
-        check_grm = strncmp(token, "else", 4) == 0;
-    else if (grm == ELIF_GRM)
-        check_grm = strncmp(token, "elif", 4) == 0;
-    else if (grm == FI_GRM)
-        check_grm = strncmp(token, "fi", 2) == 0;
-    else if (grm == WHILE_GRM)
-        check_grm = strncmp(token, "while", 5) == 0;
-    else if (grm == UNTIL_GRM)
-        check_grm = strncmp(token, "until", 5) == 0;
-    else if (grm == DO_GRM)
-        check_grm = strncmp(token, "do", 2) == 0;
-    else if (grm == DONE_GRM)
-        check_grm = strncmp(token, "done", 4) == 0;
-    else if (grm == SEMICOLON)
-        check_grm = strncmp(token, ";", 1) == 0;
-    else
-        check_grm = false;
+    int check_grm = check_token(token, grm);
     // Libere la memoire du token
     free(token);
     if (check_grm == false)
@@ -158,29 +191,17 @@ bool lexer_chek(struct Lexer *lex)
     size_t len_blank = strspn(lex->input + lex->pos, " \t\r\n");
     lex->pos += len_blank;
     if (strncmp(lex->input + lex->pos, "then", 4) == 0)
-    {
         return true;
-    }
     if (strncmp(lex->input + lex->pos, "elif", 4) == 0)
-    {
         return true;
-    }
     if (strncmp(lex->input + lex->pos, "else", 4) == 0)
-    {
         return true;
-    }
     if (strncmp(lex->input + lex->pos, "fi", 2) == 0)
-    {
         return true;
-    }
     if (strncmp(lex->input + lex->pos, "do", 2) == 0)
-    {
         return true;
-    }
     if (strncmp(lex->input + lex->pos, "done", 4) == 0)
-    {
         return true;
-    }
     return false;
 }
 
@@ -200,14 +221,15 @@ struct Token *lexer(struct Lexer *lex, enum Grammaire grm)
     ** de str (char *) avec strtok par exemple
     */
     // Skip les premiers caracteres BLANK si besoin
-    size_t len_blank = strspn(lex->input + lex->pos, " \t\r\n");
+    size_t len_blank = skipSpace(lex->input + lex->pos);
     lex->pos += len_blank;
 
     // return NULL si fin de la string. ajout car sinon sa cracher
     if (lex->input[lex->pos] == 0)
         return NULL;
 
-    if (lex->input[lex->pos] == '|')
+    if (lex->input[lex->pos] == '|' || lex->input[lex->pos] == '!'
+        || strncmp(lex->input + lex->pos, "&&", 2) == 0)
         return NULL;
 
     // Extrait le premier token

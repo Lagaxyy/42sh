@@ -47,7 +47,7 @@ struct Ast *simple_command(struct Lexer *lex)
         return NULL;
 
     // Alloue la memoire pour la struct Ast et definit le type
-    struct Ast *ast = malloc(sizeof(struct Ast));
+    struct Ast *ast = calloc(1, sizeof(struct Ast));
     if (!ast)
         return NULL;
     ast->type = SIMPLE_CMD;
@@ -71,9 +71,9 @@ struct Ast *simple_command(struct Lexer *lex)
     return ast;
 }
 
-struct Ast *liste_command(struct Lexer *lex)
+/*struct Ast *liste_command(struct Lexer *lex)
 {
-    /*
+    /
     ** Renvoie un noeud de l'AST de type
     ** simple_command
     **
@@ -81,7 +81,7 @@ struct Ast *liste_command(struct Lexer *lex)
     **
     ** liste_command =
     **      simple_command { ';' simple_command}
-    */
+    /
     // simple_command
     struct Ast *ast = simple_command(lex);
     if (ast == NULL || ast->type != SIMPLE_CMD)
@@ -109,11 +109,11 @@ struct Ast *liste_command(struct Lexer *lex)
         }
     }
     return ast;
-}
+}*/
 
 struct Ast *elif_command(struct Lexer *lex)
 {
-    struct Ast *ast = malloc(sizeof(struct Ast));
+    struct Ast *ast = calloc(1, sizeof(struct Ast));
     if (!ast)
         return NULL;
     ast->type = IF_CMD;
@@ -168,7 +168,7 @@ struct Ast *if_command(struct Lexer *lex)
     }
 
     // Alloue la memoire pour la struct Ast et definit le type
-    struct Ast *ast = malloc(sizeof(struct Ast));
+    struct Ast *ast = calloc(1, sizeof(struct Ast));
     if (!ast)
         return NULL;
     ast->type = IF_CMD;
@@ -219,7 +219,7 @@ struct Ast *until_cmd(struct Lexer *lex)
 {
     if (!lexerVerif(lex, UNTIL_GRM))
         return if_command(lex);
-    struct Ast *ast = malloc(sizeof(struct Ast));
+    struct Ast *ast = calloc(1, sizeof(struct Ast));
     if (!ast)
         return NULL;
     ast->type = UNTIL_CMD;
@@ -262,7 +262,7 @@ struct Ast *while_cmd(struct Lexer *lex)
 {
     if (!lexerVerif(lex, WHILE_GRM))
         return until_cmd(lex);
-    struct Ast *ast = malloc(sizeof(struct Ast));
+    struct Ast *ast = calloc(1, sizeof(struct Ast));
     if (!ast)
         return NULL;
     ast->type = WHILE_CMD;
@@ -314,7 +314,7 @@ struct Ast *pipelines_command(struct Lexer *lex)
     if (lexerVerif(lex, PIPELINES))
     {
         // Alloue la memoire pour la struct Ast et definit le type
-        struct Ast *ast_aux = malloc(sizeof(struct Ast));
+        struct Ast *ast_aux = calloc(1, sizeof(struct Ast));
         if (!ast_aux)
         {
             free_ast(ast);
@@ -327,8 +327,95 @@ struct Ast *pipelines_command(struct Lexer *lex)
         struct Ast_pipelines *pl = &ast_aux->data.pl;
 
         pl->left = ast;
-        pl->right = if_command(lex);
+        pl->right = pipelines_command(lex);
         if (pl->right == NULL)
+        {
+            free_ast(ast_aux);
+        }
+        return ast_aux;
+    }
+    return ast;
+}
+
+// implémentation 'not' command '!'
+struct Ast *neg_command(struct Lexer *lex)
+{
+    if (!lexerVerif(lex, NEG_GRM))
+        return pipelines_command(lex);
+    struct Ast *ast = calloc(1, sizeof(struct Ast));
+    if (!ast)
+    {
+        free_ast(ast);
+        return NULL;
+    }
+    ast->type = NEG_CMD;
+    ast->next = NULL;
+
+    // Alloue la memoire pour la struct Ast_simple_cmd
+    struct Ast_neg *neg = &ast->data.neg;
+
+    neg->prg = pipelines_command(lex);
+    if (neg->prg == NULL)
+    {
+        free(ast);
+    }
+    return ast;
+}
+
+// implémentation de 'or' command '||'
+struct Ast *or_command(struct Lexer *lex)
+{
+    struct Ast *ast = neg_command(lex);
+    if (ast == NULL)
+        return NULL;
+    if (lexerVerif(lex, OR_GRM))
+    {
+        struct Ast *ast_aux = calloc(1, sizeof(struct Ast));
+        if (!ast_aux)
+        {
+            free_ast(ast);
+            return NULL;
+        }
+        ast_aux->type = OR_CMD;
+        ast_aux->next = NULL;
+
+        // Alloue la memoire pour la struct Ast_simple_cmd
+        struct Ast_or *or = &ast_aux->data.or;
+
+        or->left = ast;
+        or->right = or_command(lex);
+        if (or->right == NULL)
+        {
+            free_ast(ast_aux);
+        }
+        return ast_aux;
+    }
+    return ast;
+}
+
+// implémentation de 'and' command '&&'
+struct Ast *and_command(struct Lexer *lex)
+{
+    struct Ast *ast = or_command(lex);
+    if (ast == NULL)
+        return NULL;
+    if (lexerVerif(lex, AND_GRM))
+    {
+        struct Ast *ast_aux = calloc(1, sizeof(struct Ast));
+        if (!ast_aux)
+        {
+            free_ast(ast);
+            return NULL;
+        }
+        ast_aux->type = AND_CMD;
+        ast_aux->next = NULL;
+
+        // Alloue la memoire pour la struct Ast_simple_cmd
+        struct Ast_and *and = &ast_aux->data.and;
+
+        and->left = ast;
+        and->right = and_command(lex);
+        if (and->right == NULL)
         {
             free_ast(ast_aux);
         }
@@ -339,7 +426,7 @@ struct Ast *pipelines_command(struct Lexer *lex)
 
 struct Ast *parse_start(struct Lexer *lex)
 {
-    struct Ast *ast = pipelines_command(lex);
+    struct Ast *ast = and_command(lex);
     if (ast == NULL)
         return NULL;
     if (!lexerVerif(lex, SEMICOLON))
@@ -356,6 +443,8 @@ struct Ast *parse_start(struct Lexer *lex)
 
 struct Ast *parse_command(struct Lexer *lexer)
 {
+    if (lexer->input == NULL)
+        errx(1, "Cannot open file t.txt");
     struct Ast *ast = parse_start(lexer);
     if (!ast)
         errx(1, "Erreur lors de la construction de l'AST");

@@ -22,6 +22,9 @@ enum Grammaire
     UNTIL_GRM,
     DO_GRM,
     DONE_GRM,
+    NEG_GRM,
+    AND_GRM,
+    OR_GRM,
     SEMICOLON,
     PIPELINES,
     END
@@ -52,6 +55,9 @@ enum Ast_type
     PIPELINE_CMD,
     WHILE_CMD,
     UNTIL_CMD,
+    NEG_CMD,
+    AND_CMD,
+    OR_CMD,
     IF_CMD
 };
 
@@ -86,6 +92,23 @@ struct Ast_until
     struct Ast *do_cdt;
 };
 
+struct Ast_neg
+{
+    struct Ast *prg;
+};
+
+struct Ast_and
+{
+    struct Ast *left;
+    struct Ast *right;
+};
+
+struct Ast_or
+{
+    struct Ast *left;
+    struct Ast *right;
+};
+
 /*struct Ast_cmd_list
 {
     struct Ast **list;
@@ -100,6 +123,9 @@ union Ast_union
     struct Ast_while wh;
     struct Ast_until ut;
     struct Ast_if aif;
+    struct Ast_neg neg;
+    struct Ast_and and;
+    struct Ast_or or;
 };
 
 struct Ast
