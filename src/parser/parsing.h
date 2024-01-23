@@ -26,6 +26,7 @@ enum Grammaire
     AND_GRM,
     OR_GRM,
     SEMICOLON,
+    IS_FUNC,
     PIPELINES,
     END
 };
