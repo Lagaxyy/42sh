@@ -51,6 +51,17 @@ bool check_word(char *tok)
     return true;
 }
 
+size_t strlenSep(char *str)
+{
+    size_t i = 0;
+    while (str[i] != '\0' && str[i] != '\t' && str[i] != '\r' && str[i] != '\n'
+           && str[i] != ' ' && str[i] != ';')
+    {
+        i++;
+    }
+    return i;
+}
+
 int lexerVerif(struct Lexer *lex, enum Grammaire grm)
 /*
 ** Récupère le premier token et
@@ -83,7 +94,7 @@ int lexerVerif(struct Lexer *lex, enum Grammaire grm)
     }
     else
     {
-        l = strcspn(lex->input + lex->pos, " \t\r\n;");
+        l = strlenSep(lex->input + lex->pos);
         token = strncpy(token, lex->input + lex->pos, l);
     }
 
@@ -178,7 +189,7 @@ struct Token *lexer(struct Lexer *lex, enum Grammaire grm)
     }
     else
     {
-        l = strcspn(lex->input + lex->pos, " \t\r\n;");
+        l = strlenSep(lex->input + lex->pos);
         token = strncpy(token, lex->input + lex->pos, l);
     }
 

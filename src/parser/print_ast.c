@@ -3,6 +3,9 @@
 #include "../parser/parsing.h"
 
 void print_simple_cmd(struct Ast *ast, size_t depth)
+/*
+** Affiche le noeud simple_command
+*/
 {
     // Alias pratique
     struct Ast_simple_cmd *sc = &ast->data.sc;
@@ -26,6 +29,9 @@ void print_simple_cmd(struct Ast *ast, size_t depth)
 }
 
 void print_ast(struct Ast *ast, size_t depth)
+/*
+** Affiche l'AST
+*/
 {
     if (!ast)
     {

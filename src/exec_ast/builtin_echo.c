@@ -10,8 +10,8 @@
 
 int aux_get_options(char *str, int *pN, int *iE)
 /*
-** Check la validite des options et met a jour
-** les valeurs des pointeurs dans la cas valide
+** Check la validité des options et met à jour
+** les valeurs des pointeurs si c'est valide
 ** Renvoie 0 si c'est valide, 1 sinon
 */
 {
@@ -41,7 +41,7 @@ int aux_get_options(char *str, int *pN, int *iE)
 
 size_t get_options(struct Ast *ast, int *pN, int *iE)
 /*
-** Recupere les options de la commande
+** Récupère les options de la commande
 ** Renvoie l'indice du premier token qui
 ** n'est pas une option
 */
@@ -50,7 +50,7 @@ size_t get_options(struct Ast *ast, int *pN, int *iE)
     size_t ind = 1;
     struct Ast_simple_cmd *sc = &ast->data.sc; // Alias pratique
 
-    // Check tous les tokens jusqu'a trouver le premier
+    // Check tous les tokens jusqu'à trouver le premier
     // token qui n'est pas une option
     for (size_t i = 1; i < sc->cmd->nbtoken; i++)
     {
@@ -116,8 +116,8 @@ void echo_print(char *src, int iE)
 
 int is_token_echo(char *str)
 /*
-** Check si le token en entree
-** est la commande echo (cf test 'two_inputs')
+** Check si le token en entrée
+** est la commande echo (cf test 'two_echo')
 */
 {
     size_t len = strlen(str);
@@ -129,8 +129,8 @@ int is_token_echo(char *str)
 
 char *alias_src(char *str, size_t len)
 /*
-** Renvoie le token isole de
-** la chaine de caractere d'origine
+** Renvoie le token isolé de
+** la chaine de caractère d'origine
 */
 {
     char *src = strdup(str);
@@ -140,7 +140,7 @@ char *alias_src(char *str, size_t len)
 
 int my_echo(struct Ast *ast)
 /*
-** Implementation du
+** Implémentation du
 ** builtin echo
 */
 {
@@ -171,10 +171,12 @@ int my_echo(struct Ast *ast)
     {
         if (sc->cmd->tokenlist[i]->str[0] == ';'
             && sc->cmd->tokenlist[i]->len == 1)
+            // Token ";" trouvé
             break;
         src = alias_src(sc->cmd->tokenlist[i]->str, sc->cmd->tokenlist[i]->len);
         if (is_token_echo(src))
         {
+            // Token "echo" trouvé
             free(src);
             putchar('\n');
             continue;
