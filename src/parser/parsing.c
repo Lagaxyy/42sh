@@ -71,21 +71,6 @@ struct Ast *simple_command(struct Lexer *lex)
     return ast;
 }
 
-/*struct Ast *variable_cmd(struct Lexer *lex)
-{
-    struct Ast *ast = simple_command(lex);
-    if (parserVerif(lex, IS_FUNC))
-    {
-        struct Ast_simple_cmd *sc = &ast->data.sc;
-        struct Ast *ast_aux = variable_parsing(lex, sc->cmd);
-        free(ast);
-        if (ast_aux == NULL)
-            return NULL;
-        return ast_aux;
-    }
-    return ast;
-}*/
-
 /*struct Ast *liste_command(struct Lexer *lex)
 {
     /

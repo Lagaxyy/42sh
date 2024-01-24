@@ -63,7 +63,7 @@ size_t strlenSep(char *str)
     }
     while (str[i] != '\0' && str[i] != '\t' && str[i] != '\r' && str[i] != '\n'
            && str[i] != ' ' && str[i] != ';' && str[i] != '|' && strncmp(str + i, "&&", 2) != 0
-           && str[i] != '=')
+           && str[i] != '\'')
     {
         i++;
     }
@@ -143,8 +143,7 @@ int lexerVerif(struct Lexer *lex, enum Grammaire grm)
     // si s'est une pipelines
     if ((grm == PIPELINES && *(lex->input + lex->pos) == '|'
             && *(lex->input + lex->pos + 1) != '|')
-            || (grm == NEG_GRM && *(lex->input + lex->pos) == '!')
-            || (grm == IS_FUNC && *(lex->input + lex->pos) == '='))
+            || (grm == NEG_GRM && *(lex->input + lex->pos) == '!'))
     {
         lex->pos++;
         return 1;
