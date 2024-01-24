@@ -115,6 +115,12 @@ struct Ast_or
     size_t nbnodes;
 };*/
 
+struct Variable
+{
+    struct Token *name;
+    char *valeur; // penser a free
+};
+
 union Ast_union
 {
     struct Ast_simple_cmd sc;
