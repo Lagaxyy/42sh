@@ -2,7 +2,6 @@
 #define PARSING_H
 
 #include <stddef.h>
-#include <stdlib.h>
 
 struct Ast;
 struct Lexer;
@@ -80,11 +79,28 @@ struct Ast
 };
 
 /*
-** Fonctions exportees
+** Fonctions exportées
+*/
+
+/*
+** Lance le parsing de l'input
 */
 struct Ast *parse_command(struct Lexer *lexer);
-void print_ast(struct Ast *ast, size_t depth);
+
+/*
+** Exécute le parsing en liant les
+** fonctions propres aux features
+*/
 struct Ast *parse_start(struct Lexer *lex);
+
+/*
+** Affiche l'AST
+*/
+void print_ast(struct Ast *ast, size_t depth);
+
+/*
+** Libère la mémoire allouée pour l'AST
+*/
 void free_ast(struct Ast *ast);
 
 #endif /* ! PARSING_H */

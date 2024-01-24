@@ -5,20 +5,21 @@
 #include "exec_ast.h"
 
 #include <assert.h>
-#include <stdlib.h>
 #include <string.h>
 
-// Pointeur de fonction pour rediriger vers les autres
-// fonctions selon le type du noeud
+/*
+** Pointeur de fonction pour rediriger vers les autres
+** fonctions selon le type du noeud
+*/
 typedef int (*node_type)(struct Ast *ast);
 
 int exec_ast_sc(struct Ast *ast)
 /*
-** Execute le noeud simple_command
+** Exécute le noeud simple_command
 */
 {
     if (!ast)
-        return 1;
+        return 0;
     assert(ast->type == SIMPLE_CMD);
 
     int rep = 1;
@@ -29,10 +30,13 @@ int exec_ast_sc(struct Ast *ast)
         // ECHO
         rep = my_echo(ast);
     else if (strncmp(sc->cmd->tokenlist[0]->str, "true", 4) == 0)
+        // TRUE (0)
         rep = 0;
     else if (strncmp(sc->cmd->tokenlist[0]->str, "false", 4) == 0)
+        // FALSE (1)
         rep = 1;
     else
+        // Autres commandes
         rep = run_cmds(ast);
 
     return rep;
@@ -40,39 +44,34 @@ int exec_ast_sc(struct Ast *ast)
 
 int exec_ast_if(struct Ast *ast)
 /*
-** Execute le noeud if_command
+** Exécute le noeud if_command
 */
 {
     if (!ast)
-        return 1;
+        return 0;
     assert(ast->type == IF_CMD);
 
     struct Ast_if *aif = &ast->data.aif;
 
     if (!exec_ast(aif->cdt))
     {
+        // THEN
         return exec_ast(aif->cmd1);
     }
     else
     {
+        // ELSE ou ELIF
         return exec_ast(aif->cmd2);
     }
-
-    /*// Alloue la memoire pour la struct Ast_simple_cmd
-    struct Ast_if *aif = &ast->data.aif;*/
-
-    return 1;
-    ;
 }
 
 int exec_ast(struct Ast *ast)
 /*
-** Execute l'AST
-** Etape: simple_command
+** Exécute l'AST
 */
 {
     if (!ast)
-        return 1;
+        return 0;
 
     // Redirige vers les autres fonctions selon le type du noeud
     static const node_type functions[] = {
