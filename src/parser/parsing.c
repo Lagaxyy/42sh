@@ -426,7 +426,7 @@ struct Ast *and_command(struct Lexer *lex)
 
 struct Ast *parse_start(struct Lexer *lex)
 {
-    struct Ast *ast = if_command(lex);
+    struct Ast *ast = and_command(lex);
 
     if (ast == NULL)
         // Pas d'AST
@@ -455,7 +455,7 @@ struct Ast *parse_command(struct Lexer *lexer)
         errx(1, "Cannot open file t.txt");
     struct Ast *ast = parse_start(lexer);
     if (!ast)
-        errx(1, "Erreur lors de la construction de l'AST");
+        errx(2, "Erreur lors de la construction de l'AST");
 
     return ast;
 }

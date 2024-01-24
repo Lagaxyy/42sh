@@ -187,7 +187,7 @@ int lexerVerif(struct Lexer *lex, enum Grammaire grm)
     return check_grm;
 }
 
-bool lexer_chek(struct Lexer *lex)
+bool lexer_check(struct Lexer *lex)
 {
     size_t len_blank = strspn(lex->input + lex->pos, " \t\r\n");
     lex->pos += len_blank;
