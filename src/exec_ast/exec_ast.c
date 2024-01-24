@@ -9,13 +9,16 @@
 #include <stdlib.h>
 #include <string.h>
 
-// Pointeur de fonction pour rediriger vers les autres
-// fonctions selon le type du noeud
+
+/*
+** Pointeur de fonction pour rediriger vers les autres
+** fonctions selon le type du noeud
+*/
 typedef int (*node_type)(struct Ast *ast);
 
 int exec_ast_sc(struct Ast *ast)
 /*
-** Execute le noeud simple_command
+** Exécute le noeud simple_command
 */
 {
     if (!ast)
@@ -150,8 +153,7 @@ int exec_ast_neg(struct Ast *ast)
 
 int exec_ast(struct Ast *ast)
 /*
-** Execute l'AST
-** Etape: simple_command
+** Exécute l'AST
 */
 {
     if (!ast)

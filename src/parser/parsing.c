@@ -425,18 +425,31 @@ struct Ast *and_command(struct Lexer *lex)
 }
 
 struct Ast *parse_start(struct Lexer *lex)
+/*
+** Exécute le parsing en liant les
+** fonctions propres aux features
+*/
 {
-    struct Ast *ast = and_command(lex);
+    // Parse la première commande
+    struct Ast *ast = if_command(lex);
+
     if (ast == NULL)
+        // Pas d'AST
         return NULL;
     if (!lexerVerif(lex, SEMICOLON))
-    {
+        // Prochain token n'est pas un ';'
         return ast;
-    }
-    else
+    if (!lexerVerif(lex, END) && lexer_check(lex) == false)
     {
-        if (!lexerVerif(lex, END) && lexer_chek(lex) == false)
-            ast->next = parse_start(lex);
+        // Parse la prochaine commande
+        struct Ast *next_ast = parse_start(lex);
+        if (!next_ast)
+        {
+            // Prochaine commande vide
+            free_ast(ast);
+            return NULL;
+        }
+        ast->next = next_ast;
     }
     return ast;
 }
@@ -444,10 +457,10 @@ struct Ast *parse_start(struct Lexer *lex)
 struct Ast *parse_command(struct Lexer *lexer)
 {
     if (lexer->input == NULL)
-        errx(1, "Cannot open file t.txt");
+        errx(2, "Cannot open file t.txt");
     struct Ast *ast = parse_start(lexer);
     if (!ast)
-        errx(1, "Erreur lors de la construction de l'AST");
+        errx(2, "Erreur lors de la construction de l'AST");
 
     return ast;
 }

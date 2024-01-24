@@ -15,7 +15,7 @@
 
 void aux_error(void)
 /*
-** Fonction auxiliaire qui gere les erreurs de getopt
+** Fonction auxiliaire qui gère les erreurs de getopt
 */
 {
     if (optopt == 'c')
@@ -51,9 +51,16 @@ int aux_verbose(void)
 int aux_run(char *input)
 /*
 ** Construit l'AST de l'input et
-** l'execute
+** l'exécute
 */
 {
+    // Input vide
+    if (strlen(input) == 0)
+    {
+        free(input);
+        return 0;
+    }
+
     struct Lexer *lexer = init_lexer(input);
     struct Ast *ast = parse_command(lexer);
     int ret = exec_ast(ast);
@@ -64,13 +71,17 @@ int aux_run(char *input)
 }
 
 char *InputStandardInStr(void)
+/*
+** Récupère l'input depuis
+** stdin
+*/
 {
     char *inputStr = NULL;
     char chunk[1024];
     size_t inputSize = 0;
     while (1)
     {
-        if (fgets(chunk, sizeof(chunk), stdout) == NULL)
+        if (fgets(chunk, sizeof(chunk), stdin) == NULL)
             break;
         size_t chunkSize = strlen(chunk);
         inputStr = realloc(inputStr, inputSize + chunkSize + 1);
@@ -89,6 +100,10 @@ char *InputStandardInStr(void)
 }
 
 char *fileInStr(char *path)
+/*
+** Récupère l'input depuis
+** un fichier
+*/
 {
     FILE *file = fopen(path, "r");
     if (file == NULL)
@@ -115,8 +130,7 @@ char *fileInStr(char *path)
 char *get_input(int argc, char *argv[], char **double_dash)
 /*
 ** Renvoie un pointeur vers l'input
-if [ $? -eq 0 ] && [ $EXITCODE_YOUR_SHELL -eq $EXITCODE_DEFAULT_SHELL ]; then**
-Memoire allouee a free
+** (mémoire allouée à free)
 */
 {
     // Variables
@@ -125,7 +139,7 @@ Memoire allouee a free
     char *script = NULL;
     char *input = NULL;
 
-    // Desactive l'affichage du message d'erreur par getopt
+    // Désactive l'affichage du message d'erreur par getopt
     opterr = 0;
 
     // Parse les options
@@ -156,7 +170,7 @@ Memoire allouee a free
     }
 
     if (script != NULL)
-        // Input depuis une chaine de caractere
+        // Input depuis une chaine de caractère
         input = strdup(script);
     else if (filename != NULL)
         // Input depuis un fichier
@@ -170,26 +184,23 @@ Memoire allouee a free
 
 int main(int argc, char **argv)
 {
-    // Recupere l'input
+    // Recupère l'input
     int ret = 0;
     char *double_dash = NULL;
     char *input = get_input(argc, argv, &double_dash);
 
     // Redirection
-    if (input == NULL)
-        return 1;
     if (double_dash != NULL)
     {
         if (strcmp(double_dash, "pretty-print") == 0)
             ret = aux_pretty_print(input);
         else if (strcmp(double_dash, "verbose") == 0)
-            ret = aux_verbose(); // A implementer ?
+            ret = aux_verbose(); // A implémenter ?
         else
             errx(2, "Option inconnue --%s", double_dash);
     }
     else
         ret = aux_run(input);
 
-    // free(input);
     return ret;
 }
