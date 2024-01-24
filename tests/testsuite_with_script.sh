@@ -15,7 +15,7 @@ TEST_FILES_DIR="fichiers_test"
 # Liste des fichiers à tester
 TEST_FILES=("$TEST_FILES_DIR"/*)
 
-# couleur
+# Couleurs pour la mise en forme des résultats
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 NC='\033[0m' # No Color
@@ -30,12 +30,18 @@ mkdir -p "$TEST_DIR"
 for file in "${TEST_FILES[@]}"; do
     # Exécution de la commande avec votre shell
     echo "Test:    $file"
-    $YOUR_SHELL < "$file" > "$TEST_DIR/42sh_output.txt"
+    $YOUR_SHELL "$file" < "$file" > "$TEST_DIR/42sh_output.txt"
     EXITCODE_YOUR_SHELL=$?
 
     # Exécution de la commande avec le shell par défaut
     $DEFAULT_SHELL < "$file" > "$TEST_DIR/default_shell_output.txt"
     EXITCODE_DEFAULT_SHELL=$?
+
+    # Affichage des chemins des fichiers appelés en paramètre avec votre shell
+    echo "Fichiers appelés par $YOUR_SHELL :"
+    grep -E "^[^#]" "$file" | while read -r line; do
+        echo "  $line"
+    done
 
     # Comparaison des résultats
     diff "$TEST_DIR/42sh_output.txt" "$TEST_DIR/default_shell_output.txt"
@@ -48,11 +54,11 @@ for file in "${TEST_FILES[@]}"; do
         TEST_ECHEC=$((TEST_ECHEC + 1))
     fi
 
-    # Separation visuelle
+    # Séparation visuelle
     echo "-------------------------------------------------------------------"
 done
 
-# Separation visuelle
+# Séparation visuelle
 echo ""
 
 # Nettoyage du répertoire de tests
@@ -60,3 +66,4 @@ rm -r "$TEST_DIR"
 
 echo -e "${GREEN}Tests passed: $TEST_SUCCESS${NC}"
 echo -e "${RED}Tests failed: $TEST_ECHEC${NC}"
+  
