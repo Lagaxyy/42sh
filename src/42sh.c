@@ -105,48 +105,26 @@ char *fileInStr(char *path)
 ** un fichier
 */
 {
-    // Ouverture du fichier en mode lecture
     FILE *file = fopen(path, "r");
-    
-    // Vérification si le fichier a été ouvert avec succès
-    if (file == NULL) {
-        perror("Erreur lors de l'ouverture du fichier");
-        exit(EXIT_FAILURE);
+    if (file == NULL)
+    {
+        fprintf(stderr, "Cannot open file %s\n", path);
+        return NULL;
     }
-
-    // Allocation dynamique pour stocker le contenu du fichier
-    char *content = NULL;
-    char *res = malloc(1);
-    res[0] = 0;
-    size_t contentSize = 0;
-    size_t len = 0;
-    size_t l = 0;
-    
-    // Lecture du fichier ligne par ligne
-    while (getline(&content, &contentSize, file) != -1) {
-        // Vérification de ligne vide
-        l = strlen(content);
-        if (content[l - 1] != '\n')
-        {
-            strcat(res, content);
-            break;
-        }
-        if (l > 2) {
-            // Ajout d'un point-virgule a la fin de la ligne
-            len += l + 1;
-            res = realloc(res, len + 1);
-            strcat(res, content);
-            res[len - 2] = ';';
-            res[len - 1] = '\n';
-            res[len] = 0;
-        }
+    fseek(file, 0, SEEK_END);
+    long fileSize = ftell(file);
+    fseek(file, 0, SEEK_SET);
+    char *fileContent = malloc(fileSize + 1);
+    if (fileContent == NULL)
+    {
+        fclose(file);
+        fprintf(stderr, "Memory allocation failed\n");
+        return NULL;
     }
-    free(content);
-
-    // Fermeture du fichier
+    size_t bytesRead = fread(fileContent, 1, fileSize, file);
+    fileContent[bytesRead] = '\0';
     fclose(file);
-
-    return res;
+    return fileContent;
 }
 
 char *get_input(int argc, char *argv[], char **double_dash)
