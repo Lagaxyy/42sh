@@ -1,8 +1,11 @@
+#include "../lexer/lexer.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include "../parser/parsing.h"
-#include "../lexer/lexer.h"
+#include <string.h>
+
+#include "variable.h"
 
 bool lettre(char c)
 {
@@ -76,6 +79,9 @@ bool verif_nom_variable2(struct Token *token)
 }
 
 bool is_variable(struct Command *command)
+/*
+** verifi si le nom de variable est bon
+*/
 {
     if (command->nbtoken == 2)
     {
@@ -98,7 +104,7 @@ struct Variable *varialble_parsing(struct Command *command)
 {
     if (is_variable(command) == false)
     {
-        return false;
+        return NULL;
     }
     struct Variable *variable = malloc(sizeof(struct Variable));
     variable->name = malloc(sizeof(struct Token));
@@ -142,4 +148,12 @@ struct Variable *varialble_parsing(struct Command *command)
     }
     
     return variable;
+}
+
+void free_var(struct Variable *var)
+{
+    if (var == NULL)
+        return;
+    free(var->name);
+    free(var->valeur);
 }

@@ -3,13 +3,14 @@
 #endif /* ! _POSIX_C_SOURCE */
 
 #include "../mypipe/mypipe.h"
+//#include "../variable/variable.h"
 #include "exec_ast.h"
 
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
 
-struct ListVariable *variables = NULL;
+//struct ListVariable *variables = NULL;
 
 // Pointeur de fonction pour rediriger vers les autres
 // fonctions selon le type du noeud
@@ -29,6 +30,12 @@ int exec_ast_sc(struct Ast *ast)
     // Match la commande avec sa fonction correspondante
     struct Ast_simple_cmd *sc = &ast->data.sc; // Alias pratique
     //si s'est une initialisation de variable
+    //struct Variable *var = varialble_parsing(sc->cmd);
+    //if (var != NULL)
+    //{
+        // l'ajouter dans variables quand on l'aura créer
+        //return 1;
+    //}
     if (strncmp(sc->cmd->tokenlist[0]->str, "echo", 4) == 0)
         // ECHO
         rep = my_echo(ast);
@@ -36,8 +43,6 @@ int exec_ast_sc(struct Ast *ast)
         rep = 0;
     else if (strncmp(sc->cmd->tokenlist[0]->str, "false", 4) == 0)
         rep = 1;
-    //else if (*(sc->cmd->tokenlist[0]->str) == '$')
-        //rep = __;
     else
         rep = run_cmds(ast);
 
