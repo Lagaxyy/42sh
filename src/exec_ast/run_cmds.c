@@ -5,7 +5,6 @@
 #include <assert.h>
 #include <err.h>
 #include <errno.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/wait.h>
@@ -15,8 +14,7 @@
 
 int run_cmds(struct Ast *ast)
 /*
-** Execute les commandes non builtin
-** Etape: simple_command
+** Exécute les commandes non builtin
 */
 {
     if (!ast)
@@ -29,7 +27,7 @@ int run_cmds(struct Ast *ast)
     char *str = NULL;
     int exitcode = 0;
 
-    // Construction d'un argv a partir de
+    // Construction d'un argv à partir de
     // la liste de tokens
     char **argv = malloc(sizeof(char *) * (nbt + 1));
     for (size_t i = 0; i < nbt; i++)
@@ -46,19 +44,21 @@ int run_cmds(struct Ast *ast)
     }
     argv[nbt] = NULL; // NULL marque la fin de l'array
 
-    // Execute la commande
+    // Exécute la commande
     int pid = fork();
     if (pid == 0)
     {
-        // Child process
+        // Processus enfant
         execvp(argv[0], argv);
         if (errno == EACCES)
             errx(126, "Permission refusee");
-        errx(127, "Commande inconnue");
+        errx(127, "Commande inconnue: \n=> %s", argv[0]);
     }
     else
+        // Processus parent
         waitpid(pid, &exitcode, 0);
 
+    // Libère la mémoire allouée pour l'argv
     for (size_t j = 0; j < nbt; j++)
     {
         if (argv[j])

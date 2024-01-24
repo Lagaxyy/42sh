@@ -426,17 +426,25 @@ struct Ast *and_command(struct Lexer *lex)
 
 struct Ast *parse_start(struct Lexer *lex)
 {
-    struct Ast *ast = and_command(lex);
+    struct Ast *ast = if_command(lex);
+
     if (ast == NULL)
+        // Pas d'AST
         return NULL;
     if (!lexerVerif(lex, SEMICOLON))
-    {
+        // Prochain token n'est pas un ';'
         return ast;
-    }
-    else
+    if (!lexerVerif(lex, END) && lexer_check(lex) == false)
     {
-        if (!lexerVerif(lex, END) && lexer_chek(lex) == false)
-            ast->next = parse_start(lex);
+        // Parse la prochaine commande
+        struct Ast *next_ast = parse_start(lex);
+        if (!next_ast)
+        {
+            // Prochaine commande vide
+            free_ast(ast);
+            return NULL;
+        }
+        ast->next = next_ast;
     }
     return ast;
 }
