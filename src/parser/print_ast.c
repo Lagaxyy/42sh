@@ -2,68 +2,142 @@
 
 #include "../parser/parsing.h"
 
-void print_simple_cmd(struct Ast *ast, size_t depth)
-/*
-** Affiche le noeud simple_command
-*/
+void print_ast(struct Ast *ast, size_t depth);
+
+void print_space(size_t depth)
 {
+    for (size_t i = 0; i < depth; ++i)
+    {
+        putchar(' '); // Indentation pour représenter la profondeur de l'arbre
+    }
+}
+
+void print_simple_cmd(struct Ast *ast, size_t depth)
+{
+    printf("SIMPLE COMMAND\n");
     // Alias pratique
     struct Ast_simple_cmd *sc = &ast->data.sc;
 
     // Print la commande si elle existe
     if (ast->type == SIMPLE_CMD && sc->cmd != NULL)
     {
-        for (size_t i = 0; i < depth + 1; i++)
-            printf("  ");
+        print_space(depth + 2);
 
         printf("Command:\n");
 
         for (size_t i = 0; i < sc->cmd->nbtoken; i++)
         {
-            for (size_t j = 0; j < depth + 2; j++)
-                printf("  ");
+            print_space(depth + 2);
             int s = sc->cmd->tokenlist[i]->len;
             printf("Token %zu: %.*s\n", i + 1, s, sc->cmd->tokenlist[i]->str);
         }
     }
 }
 
+void print_if_cmd(struct Ast *ast, size_t depth)
+{
+    printf("IF\n");
+    print_ast(ast->data.aif.cdt, depth + 2);
+    print_space(depth);
+    printf("THEN\n");
+    print_ast(ast->data.aif.cmd1, depth + 2);
+    print_space(depth);
+    printf("ELSE\n");
+    print_ast(ast->data.aif.cmd2, depth + 2);
+}
+
+void print_pipeline_cmd(struct Ast *ast, size_t depth)
+{
+    printf("PIPELINES\n");
+    print_space(depth);
+    printf("left");
+    print_ast(ast->data.pl.left, depth + 2);
+    print_space(depth);
+    printf("right");
+    print_ast(ast->data.pl.right, depth + 2);
+}
+
+void print_while_cmd(struct Ast *ast, size_t depth)
+{
+    printf("WHILE\n");
+    print_ast(ast->data.wh.cdt, depth + 2);
+    print_space(depth);
+    printf("DO\n");
+    print_ast(ast->data.wh.do_cdt, depth + 2);
+}
+
+void print_until_cmd(struct Ast *ast, size_t depth)
+{
+    printf("WHILE\n");
+    print_ast(ast->data.wh.cdt, depth + 2);
+    print_space(depth);
+    printf("DO\n");
+    print_ast(ast->data.wh.do_cdt, depth + 2);
+}
+
+void print_and_cmd(struct Ast *ast, size_t depth)
+{
+    printf("AND\n");
+    print_space(depth);
+    printf("left");
+    print_ast(ast->data.and.left, depth + 2);
+    print_space(depth);
+    printf("right");
+    print_ast(ast->data.and.right, depth + 2);
+}
+
+void print_or_cmd(struct Ast *ast, size_t depth)
+{
+    printf("OR\n");
+    print_space(depth);
+    printf("left");
+    print_ast(ast->data.or.left, depth + 2);
+    print_space(depth);
+    printf("right");
+    print_ast(ast->data.or.right, depth + 2);
+}
+
+void print_neg_cmd(struct Ast *ast, size_t depth)
+{
+    printf("NEG\n");
+    print_ast(ast->data.neg.prg, depth + 2);
+}
+
 void print_ast(struct Ast *ast, size_t depth)
-/*
-** Affiche l'AST
-*/
 {
     if (!ast)
-    {
         return;
-    }
-
-    for (size_t i = 0; i < depth; ++i)
-    {
-        putchar(' '); // Indentation pour représenter la profondeur de l'arbre
-    }
-
+    print_space(depth);
     switch (ast->type)
     {
     case IF_CMD:
-        printf("IF\n");
-        print_ast(ast->data.aif.cdt, depth + 2);
-        printf("THEN\n");
-        print_ast(ast->data.aif.cmd1, depth + 2);
-        printf("ELSE\n");
-        print_ast(ast->data.aif.cmd2, depth + 2);
+        print_if_cmd(ast, depth);
+        break;
+    case PIPELINE_CMD:
+        print_pipeline_cmd(ast, depth);
         break;
     case SIMPLE_CMD:
-        printf("SIMPLE COMMAND\n");
         print_simple_cmd(ast, depth);
+        break;
+    case WHILE_CMD:
+        print_while_cmd(ast, depth);
+        break;
+    case UNTIL_CMD:
+        print_until_cmd(ast, depth);
+        break;
+    case AND_CMD:
+        print_and_cmd(ast, depth);
+        break;
+    case OR_CMD:
+        print_or_cmd(ast, depth);
+        break;
+    case NEG_CMD:
+        print_neg_cmd(ast, depth);
         break;
     default:
         fprintf(stderr, "Type d'AST inconnu\n");
         break;
     }
-
-    printf("\n");
-
     // Appel récursif pour imprimer les nœuds suivants dans la liste
     print_ast(ast->next, depth);
 }

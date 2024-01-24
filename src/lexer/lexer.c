@@ -4,15 +4,12 @@
 
 #include "lexer.h"
 
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 struct Lexer *init_lexer(char *str)
-/*
-** Construit le lexer à partir de l'entrée str
-** et initialise la position à 0
-*/
 {
     struct Lexer *lexer = malloc(sizeof(struct Lexer));
     if (lexer == NULL)
@@ -24,10 +21,6 @@ struct Lexer *init_lexer(char *str)
 }
 
 void free_lexer(struct Lexer *lexer)
-/*
-** Libère la mémoire allouée par
-** le lexer
-*/
 {
     if (lexer == NULL)
         return;
@@ -35,17 +28,20 @@ void free_lexer(struct Lexer *lexer)
     free(lexer);
 }
 
-bool check_word(char *tok)
+bool check_word(char *tok, size_t len)
 /*
 ** Renvoie true si le token est un WORD
 ** sinon renvoie false
 */
 {
-    if (!tok)
+    if (!tok || len == 0)
         return false;
     if (*tok == 0)
         return false;
     if (*tok == ';')
+        return false;
+    // si il y a une ' ouvrante mais pas fermante
+    if (tok[0] == '\'' && tok[len - 1] != '\'')
         return false;
     // Autres conditions ??
     return true;
@@ -54,41 +50,119 @@ bool check_word(char *tok)
 size_t strlenSep(char *str)
 {
     size_t i = 0;
+    if (str[i] == '\'')
+    {
+        i++;
+        while (str[i] != '\'' || str[i] == 0)
+        {
+            i++;
+        }
+        if (str[i] == '\'')
+            return i + 1;
+        return i;
+        
+    }
     while (str[i] != '\0' && str[i] != '\t' && str[i] != '\r' && str[i] != '\n'
-           && str[i] != ' ' && str[i] != ';')
+           && str[i] != ' ' && str[i] != ';' && str[i] != '|' && strncmp(str + i, "&&", 2) != 0)
     {
         i++;
     }
     return i;
 }
 
-int lexerVerif(struct Lexer *lex, enum Grammaire grm)
+size_t skipSpace_build(char *str)
+{
+    size_t ind = 0;
+    while (str[ind] == ' ' || str[ind] == '\t' || str[ind] == '\r' || str[ind] == '\n')
+    {
+        ind++;
+    }
+    return ind;
+}
+
+
+size_t skipSpace(char *str)
 /*
-** Récupère le premier token et
-** vérifie si sa grammaire est celle demandée
+** La fonction skipSpace prend en paramètre une chaîne de caractères (str)
+** La renvoie la position du prochain mot à évaluer.
+** Si un caractère '#' est présent, la fonction ignore tout le contenu jusqu'à un '\n'.
+** Si le caractère actuel fait partie des espaces " \t\r\n", la fonction passe au caractère suivant.
+** La position renvoyée indique le début du prochain mot à évaluer dans la chaîne.
 */
 {
-    // Skip les premiers caractères BLANK si besoin
-    size_t len_blank = strspn(lex->input + lex->pos, " \t\r\n");
-    lex->pos += len_blank;
+    size_t rep = skipSpace_build(str);
+    if (str[rep] == '#')
+    {
+        while (str[rep] != 0 && str[rep] != '\n')
+        {
+            rep++;
+        }
+        rep += skipSpace(str +rep);
+    }
+    return rep;
+}
 
-    // Fin de la string
+int check_token(char *token, enum Grammaire grm)
+{
+    if (grm == IF_GRM)
+        return strncmp(token, "if", 2) == 0;
+    else if (grm == THEN_GRM)
+        return strncmp(token, "then", 4) == 0;
+    else if (grm == ELSE_GRM)
+        return strncmp(token, "else", 4) == 0;
+    else if (grm == ELIF_GRM)
+        return strncmp(token, "elif", 4) == 0;
+    else if (grm == FI_GRM)
+        return strncmp(token, "fi", 2) == 0;
+    else if (grm == WHILE_GRM)
+        return strncmp(token, "while", 5) == 0;
+    else if (grm == UNTIL_GRM)
+        return strncmp(token, "until", 5) == 0;
+    else if (grm == DO_GRM)
+        return strncmp(token, "do", 2) == 0;
+    else if (grm == DONE_GRM)
+        return strncmp(token, "done", 4) == 0;
+    else if (grm == SEMICOLON)
+        return strncmp(token, ";", 1) == 0;
+    else
+        return false;
+}
+
+int lexerVerif(struct Lexer *lex, enum Grammaire grm)
+{
+    size_t len_blank = skipSpace(lex->input + lex->pos);
+    lex->pos += len_blank;
+    // return NULL si fin de la string. ajout car sinon sa cracher
     if (lex->input[lex->pos] == 0)
     {
         if (grm == END)
-            // Fin attendue
             return 1;
         return 0;
     }
 
+    // si s'est une pipelines
+    if ((grm == PIPELINES && *(lex->input + lex->pos) == '|'
+            && *(lex->input + lex->pos + 1) != '|')
+            || (grm == NEG_GRM && *(lex->input + lex->pos) == '!'))
+    {
+        lex->pos++;
+        return 1;
+    }
+
+    if ((grm == AND_GRM && strncmp(lex->input + lex->pos, "&&", 2) == 0)
+        || (grm == OR_GRM && strncmp(lex->input + lex->pos, "||", 2) == 0))
+    {
+        lex->pos += 2;
+        return 1;
+    }
+
     // Extrait le premier token
-    //   Calcule la taille du token
     size_t dynamic_size = strcspn(lex->input + lex->pos, " \t\r\n");
     char *token = malloc(dynamic_size + 1);
     size_t l = 1;
     if (lex->input[lex->pos] == ';')
     {
-        // Cas spécial: si le premier token est ';'
+        // Cas special: si le premier token est ';'
         token[0] = ';';
         token[1] = 0;
     }
@@ -98,92 +172,74 @@ int lexerVerif(struct Lexer *lex, enum Grammaire grm)
         token = strncpy(token, lex->input + lex->pos, l);
     }
 
-    // (TODO) Vérifie la grammaire donnée (à compléter au fur et à mesure)
-    int check_grm = 0;
-    if (grm == IF_GRM)
-        check_grm = strncmp(token, "if", 2) == 0;
-    else if (grm == THEN_GRM)
-        check_grm = strncmp(token, "then", 4) == 0;
-    else if (grm == ELSE_GRM)
-        check_grm = strncmp(token, "else", 4) == 0;
-    else if (grm == ELIF_GRM)
-        check_grm = strncmp(token, "elif", 4) == 0;
-    else if (grm == FI_GRM)
-        check_grm = strncmp(token, "fi", 2) == 0;
-    else if (grm == SEMICOLON)
-        check_grm = strncmp(token, ";", 1) == 0;
-    else
-        check_grm = false;
-
-    // Libère la mémoire du token
+    // (TODO) Verifie la grammaire donnee (a completer au fur et a mesure)
+    int check_grm = check_token(token, grm);
+    // Libere la memoire du token
     free(token);
-
-    // Renvoie false et ne bouge pas la position
     if (check_grm == false)
     {
         return check_grm;
     }
 
-    // Augmente la position du lexer de l (le mot)
+    // augmente la position du lexer de l (le mot)
     lex->pos += l;
 
     return check_grm;
 }
 
-bool lexer_check(struct Lexer *lex)
-/*
-** Renvoie true si c'est un token
-** spécial, sinon renvoie false
-*/
+bool lexer_chek(struct Lexer *lex)
 {
-    // Skip les premiers caractères BLANK si besoin
     size_t len_blank = strspn(lex->input + lex->pos, " \t\r\n");
     lex->pos += len_blank;
-
     if (strncmp(lex->input + lex->pos, "then", 4) == 0)
-    {
         return true;
-    }
     if (strncmp(lex->input + lex->pos, "elif", 4) == 0)
-    {
         return true;
-    }
     if (strncmp(lex->input + lex->pos, "else", 4) == 0)
-    {
         return true;
-    }
     if (strncmp(lex->input + lex->pos, "fi", 2) == 0)
-    {
         return true;
-    }
+    if (strncmp(lex->input + lex->pos, "do", 2) == 0)
+        return true;
+    if (strncmp(lex->input + lex->pos, "done", 4) == 0)
+        return true;
     return false;
 }
 
 struct Token *lexer(struct Lexer *lex, enum Grammaire grm)
 /*
 ** Considerant l'input (ici c'est str), renvoie
-** un struct Token contenant un pointeur au début
+** un struct Token contenant un pointeur au debut
 ** du token et la taille du token
+** Met a jour le pointeur end_cmd vers 1 si on
+** tombe sur un ';' ou la fin de la chaine de caractere
 */
 {
-    // Skip les premiers caractères BLANK si besoin
-    size_t len_blank = strspn(lex->input + lex->pos, " \t\r\n");
+    /*
+    ** NB: ici je me retrouve a dupliquer les chaines
+    ** de caractere pour eviter de se prendre un
+    ** segmentation fault au niveau de l'utilisation
+    ** de str (char *) avec strtok par exemple
+    */
+    // Skip les premiers caracteres BLANK si besoin
+    size_t len_blank = skipSpace(lex->input + lex->pos);
     lex->pos += len_blank;
 
-    // Renvoie NULL si fin de la string
+    // return NULL si fin de la string. ajout car sinon sa cracher
     if (lex->input[lex->pos] == 0)
-    {
         return NULL;
-    }
+
+    if (lex->input[lex->pos] == '|' || lex->input[lex->pos] == '!'
+        || strncmp(lex->input + lex->pos, "&&", 2) == 0)
+        return NULL;
 
     // Extrait le premier token
-    //   Calcule la taille du token
     size_t dynamic_size = strcspn(lex->input + lex->pos, " \t\r\n");
     char *token = malloc(dynamic_size + 1);
     size_t l = 1;
     if (lex->input[lex->pos] == ';')
     {
-        // Cas spécial: si le premier token est ';'
+        // Cas special: si le premier token est ';'
         token[0] = ';';
         token[1] = 0;
     }
@@ -193,27 +249,34 @@ struct Token *lexer(struct Lexer *lex, enum Grammaire grm)
         token = strncpy(token, lex->input + lex->pos, l);
     }
 
-    // (TODO) Vérifie la grammaire donnée (à compléter au fur et à mesure)
+    // (TODO) Verifie la grammaire donnee (a completer au fur et a mesure)
     bool check_grm = true;
     if (grm == WORD)
-        check_grm = check_word(token);
+        check_grm = check_word(token, l);
     else
         // END
         check_grm = false;
-
-    // Libère la mémoire du token
+    // Libere la memoire du token
     free(token);
-
     if (check_grm == false)
         return NULL;
 
-    // Crée la structure Token
+    // Cree la structure Token
     struct Token *new = malloc(sizeof(struct Token));
-    new->str = lex->input + lex->pos;
-    new->len = l;
+    if (*(lex->input + lex->pos) == '\'')
+    {
+        new->str = lex->input + lex->pos + 1;
+        new->len = l - 2;
+    }
+    else
+    {
+        new->str = lex->input + lex->pos;
+        new->len = l;
+    }
 
-    // Augmente la position du lexer de l (le mot)
+    // augmente la position du lexer de l (le mot)
     lex->pos += l;
 
     return new;
 }
+
