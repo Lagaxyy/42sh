@@ -16,7 +16,6 @@ AC_CONFIG_FILES([
     src/parser/tests/Makefile
     src/exec_ast/Makefile
     src/exec_ast/tests/Makefile
-    src/mypipe/Makefile
     ])
 
 AC_OUTPUT
