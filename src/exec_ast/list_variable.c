@@ -1,17 +1,7 @@
 #include "../variable/variable.h"
-
 #include "exec_ast.h"
 
-struct Variable *create_variable(struct Token *name, const char *value)
-{
-    struct Variable *new_var = malloc(sizeof(struct Variable));
-    if (new_var != NULL)
-    {
-        new_var->name = name;
-        new_var->valeur = strdup(value);
-    }
-    return new_var;
-}
+#include <string.h>
 
 void free_list(struct ListVariable *list)
 {
@@ -38,22 +28,23 @@ struct Variable *find_variable(struct ListVariable *list, struct Token *name)
     return NULL;
 }
 
-void present_or_add(struct ListVariable **list, struct Variable *new_var)
+int present_or_add(struct ListVariable **list, struct Variable *new_var)
 {
     struct Variable *found_var = find_variable(*list, new_var->name);
 
     if (found_var != NULL)
     {
-        free(found_var->valeur);
-        found_var->valeur = new_var->valeur;
-        return found_var->valeur;//changer la valeur
+        struct Variable *supr = found_var;
+        found_var = new_var;
+        free_var(supr);
+        return 1;
     }
     else
     {
         // Ajout de la nouvelle variable directement à la liste
         struct ListVariable *new_node = malloc(sizeof(struct ListVariable));
         if (new_node == NULL)
-            return NULL;
+            return 0;
         new_node->var = new_var;
         new_node->next = NULL;
         if (*list == NULL)
@@ -69,6 +60,6 @@ void present_or_add(struct ListVariable **list, struct Variable *new_var)
             }
             temp->next = new_node;
         }
-        return new_var->valeur;
+        return 1;
     }
 }

@@ -17,7 +17,7 @@ bool alphanumerique(char c)
     return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9');
 }
 
-bool verif_nom_variable_ancien(struct Token *token)
+/*bool verif_nom_variable_ancien(struct Token *token)
 {
     if (token->str == 0 || lettre(*token->str) == false)
     {
@@ -33,7 +33,7 @@ bool verif_nom_variable_ancien(struct Token *token)
         i++;
     }
     return true;
-}
+}*/
 
 bool verif_nom_variable(struct Token *token)
 {
@@ -42,7 +42,7 @@ bool verif_nom_variable(struct Token *token)
     {
         return false;
     }
-    size_t i = 0;
+    size_t i = 1;
     while (i < token->len && token->str[i] != '=')
     {
         if (alphanumerique(token->str[i]) == false)
@@ -50,6 +50,10 @@ bool verif_nom_variable(struct Token *token)
             return false;
         }
         i++;
+    }
+    if (token->str[i] != '=')//i != token->len
+    {
+        return false;
     }
     return true;
 }
@@ -61,7 +65,7 @@ bool verif_nom_variable2(struct Token *token)
     {
         return false;
     }
-    size_t i = 0;
+    size_t i = 1;
     while (i < token->len && token->str[i] != '=')
     {
         if (alphanumerique(token->str[i]) == false)
@@ -70,7 +74,7 @@ bool verif_nom_variable2(struct Token *token)
         }
         i++;
     }
-    if (i != token->len)
+    if (token->str[i] != '=')//i != token->len
     {
         return false;
     }
@@ -114,8 +118,8 @@ struct Variable *varialble_parsing(struct Command *command)
         variable->name->str = command->tokenlist[0]->str;
         variable->name->len = command->tokenlist[0]->len - 1;
 
-        t = command->tokenlist[1]->len + 1;
-        variable->valeur = malloc(sizeof(char) * t);
+        t = command->tokenlist[1]->len;
+        variable->valeur = malloc(sizeof(char) * (t + 1));
         size_t i = 0;
         while (i < t)
         {
@@ -137,11 +141,11 @@ struct Variable *varialble_parsing(struct Command *command)
         variable->name->len = pos_egal;
 
         t = command->tokenlist[0]->len - pos_egal;
-        variable->valeur = malloc(sizeof(char) * t);
+        variable->valeur = malloc(sizeof(char) * (t + 1));
         size_t i = 0;
         while (i < t)
         {
-            variable->valeur[i + pos_egal + 1] = token->str[i + pos_egal + 1];
+            variable->valeur[i] = token->str[i + pos_egal + 1];
             i++;
         }
         variable->valeur[i] = 0;
@@ -156,4 +160,5 @@ void free_var(struct Variable *var)
         return;
     free(var->name);
     free(var->valeur);
+    free(var);
 }
