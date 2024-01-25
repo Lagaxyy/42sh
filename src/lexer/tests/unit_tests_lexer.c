@@ -1,3 +1,7 @@
+#ifndef _POSIX_C_SOURCE
+#    define _POSIX_C_SOURCE 200809L
+#endif /* ! _POSIX_C_SOURCE */
+
 #include <criterion/criterion.h>
 #include <criterion/redirect.h>
 #include <stdlib.h>
@@ -39,7 +43,6 @@ Test(lexer, many_words)
                                  "bar", "else", "echo", "baz",  "fi" };
     size_t size = 10;
     size_t i = 0;
-    int end_cmd = 0;
 
     struct Lexer *test_lexer = init_lexer(input);
     struct Token *test_token = NULL;
@@ -76,7 +79,6 @@ Test(lexer, blank_first)
     char *expected_strlist[] = { "echo", "52", "1" };
     size_t size = 3;
     size_t i = 0;
-    int end_cmd = 0;
 
     struct Lexer *test_lexer = init_lexer(input);
     struct Token *test_token = NULL;
