@@ -3,6 +3,12 @@
 
 #include "../parser/parsing.h"
 
+struct ListVariable
+{
+    struct Variable *var;
+    struct ListVariable *next;
+};
+
 /*
 ** Exécute l'AST
 */
