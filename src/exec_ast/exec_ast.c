@@ -5,6 +5,7 @@
 #include "../mypipe/mypipe.h"
 #include "../variable/variable.h"
 #include "exec_ast.h"
+#include "merge_token.h"
 
 #include <assert.h>
 #include <stdlib.h>
@@ -39,6 +40,7 @@ int exec_ast_sc(struct Ast *ast)
             return 1;
         return 0;
     }
+    merge_token(sc->cmd, variables);
     if (strncmp(sc->cmd->tokenlist[0]->str, "echo", 4) == 0)
         // ECHO
         rep = my_echo(ast);

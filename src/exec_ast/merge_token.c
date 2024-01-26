@@ -1,13 +1,10 @@
 #include "merge_token.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include "../parser/parsing.h"
-#include "../lexer/lexer.h"
-#include "exec_ast.h"
-#include "../variable/variable.h"
 
-bool is_variable(struct Token *token)
+bool is_variable_tok(struct Token *token)
 {
     if (token->len >= 2 && token->str[0] == '$')
     {
@@ -53,7 +50,7 @@ void merge_token(struct Command *command, struct ListVariable *ListVariable)
     struct Variable *variable;
     while (i < command->nbtoken)
     {
-        if (is_variable(command->tokenlist[i]) && command->tokenlist[i]->is_printVar)
+        if (is_variable_tok(command->tokenlist[i]) && command->tokenlist[i]->is_printVar)
         {
             token.str = command->tokenlist[i]->str + 1;
             token.len = command->tokenlist[i]->len - 1;
@@ -69,6 +66,7 @@ void merge_token(struct Command *command, struct ListVariable *ListVariable)
             if (p == NULL)
             {
                 delet_token_command(command, i);
+                free(lex);
                 break;
             }
             free(command->tokenlist[i]);
@@ -80,6 +78,7 @@ void merge_token(struct Command *command, struct ListVariable *ListVariable)
                 insert_token_command(command,i,p);
                 p = lexer(lex,WORD);
             }
+            free(lex);
         }
         i++;
     }
