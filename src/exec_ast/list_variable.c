@@ -5,6 +5,7 @@
 
 void free_list(struct ListVariable *list)
 {
+    return;
     while (list != NULL)
     {
         struct ListVariable *temp = list;

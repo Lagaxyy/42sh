@@ -24,14 +24,14 @@ void delet_token_command(struct Command *command, size_t i)
         ind++;
     }
     command->nbtoken--;
-    command->tokenlist = realloc(command->tokenlist, command->nbtoken);
+    command->tokenlist = realloc(command->tokenlist, command->nbtoken * sizeof(struct Command));
 }
 
 void insert_token_command(struct Command *command, size_t i,
                           struct Token *token)
 {
     size_t ind = command->nbtoken;
-    command->tokenlist = realloc(command->tokenlist, command->nbtoken + 1);
+    command->tokenlist = realloc(command->tokenlist, (command->nbtoken + 1) * sizeof(struct Command));
     while (ind > i)
     {
         command->tokenlist[ind] = command->tokenlist[ind - 1];
