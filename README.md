@@ -26,6 +26,8 @@ Les commandes pour supprimer tous les fichiers produits sont:
 make distclean
 ./rm_autotools_files.sh
 ```
+NB: après avoir fait un make check, faire un make clean pour supprimer les
+fichiers de coverage
 
 ## Autres commandes utiles
 
