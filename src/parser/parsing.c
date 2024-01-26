@@ -342,7 +342,7 @@ struct Ast *or_command(struct Lexer *lex)
         ast_aux->next = NULL;
 
         // Alloue la memoire pour la struct Ast_simple_cmd
-        struct Ast_or *or = &ast_aux->data.or;
+        struct Ast_or * or = &ast_aux->data.or ;
 
         or->left = ast;
         or->right = or_command(lex);

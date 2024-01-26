@@ -1,8 +1,8 @@
 #include "merge_token.h"
 
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 
 bool is_variable_tok(struct Token *token)
 {
@@ -11,7 +11,6 @@ bool is_variable_tok(struct Token *token)
         return true;
     }
     return false;
-    
 }
 
 void delet_token_command(struct Command *command, size_t i)
@@ -25,13 +24,14 @@ void delet_token_command(struct Command *command, size_t i)
         ind++;
     }
     command->nbtoken--;
-    command->tokenlist = realloc(command->tokenlist,command->nbtoken);
+    command->tokenlist = realloc(command->tokenlist, command->nbtoken);
 }
 
-void insert_token_command(struct Command *command, size_t i, struct Token *token)
+void insert_token_command(struct Command *command, size_t i,
+                          struct Token *token)
 {
     size_t ind = command->nbtoken;
-    command->tokenlist = realloc(command->tokenlist,command->nbtoken + 1);
+    command->tokenlist = realloc(command->tokenlist, command->nbtoken + 1);
     while (ind > i)
     {
         command->tokenlist[ind] = command->tokenlist[ind - 1];
@@ -50,7 +50,8 @@ void merge_token(struct Command *command, struct ListVariable *ListVariable)
     struct Variable *variable;
     while (i < command->nbtoken)
     {
-        if (is_variable_tok(command->tokenlist[i]) && command->tokenlist[i]->is_printVar)
+        if (is_variable_tok(command->tokenlist[i])
+            && command->tokenlist[i]->is_printVar)
         {
             token.str = command->tokenlist[i]->str + 1;
             token.len = command->tokenlist[i]->len - 1;
@@ -62,7 +63,7 @@ void merge_token(struct Command *command, struct ListVariable *ListVariable)
                 break;
             }
             lex = init_lexer(variable->valeur);
-            p = lexer(lex,WORD);  // a gere si c'est null
+            p = lexer(lex, WORD); // a gere si c'est null
             if (p == NULL)
             {
                 delet_token_command(command, i);
@@ -71,12 +72,12 @@ void merge_token(struct Command *command, struct ListVariable *ListVariable)
             }
             free(command->tokenlist[i]);
             command->tokenlist[i] = p;
-            p = lexer(lex,WORD);
+            p = lexer(lex, WORD);
             while (p != NULL)
             {
                 i++;
-                insert_token_command(command,i,p);
-                p = lexer(lex,WORD);
+                insert_token_command(command, i, p);
+                p = lexer(lex, WORD);
             }
             free(lex);
         }

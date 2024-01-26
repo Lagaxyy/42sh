@@ -1,10 +1,10 @@
+#include "mypipe.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
-
-#include "mypipe.h"
 
 static int exec_argv_left(struct Ast *ast, int pipe_fd[2])
 {

@@ -1,7 +1,7 @@
+#include <string.h>
+
 #include "../variable/variable.h"
 #include "exec_ast.h"
-
-#include <string.h>
 
 void free_list(struct ListVariable *list)
 {
@@ -18,8 +18,9 @@ struct Variable *find_variable(struct ListVariable *list, struct Token *name)
 {
     while (list != NULL)
     {
-        if (list->var != NULL && list->var->name != NULL && list->var->name->len == name->len &&
-            strncmp(list->var->name->str, name->str, name->len) == 0)
+        if (list->var != NULL && list->var->name != NULL
+            && list->var->name->len == name->len
+            && strncmp(list->var->name->str, name->str, name->len) == 0)
         {
             return list->var;
         }

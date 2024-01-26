@@ -1,11 +1,11 @@
-#include "../lexer/lexer.h"
+#include "variable.h"
 
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 #include <string.h>
 
-#include "variable.h"
+#include "../lexer/lexer.h"
 
 bool lettre(char c)
 {
@@ -14,7 +14,8 @@ bool lettre(char c)
 
 bool alphanumerique(char c)
 {
-    return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9');
+    return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')
+        || (c >= '0' && c <= '9');
 }
 
 bool verif_nom_variable(struct Token *token)
@@ -33,7 +34,7 @@ bool verif_nom_variable(struct Token *token)
         }
         i++;
     }
-    if (token->str[i] != '=')//i != token->len
+    if (token->str[i] != '=') // i != token->len
     {
         return false;
     }
@@ -56,11 +57,11 @@ bool verif_nom_variable2(struct Token *token)
         }
         i++;
     }
-    if (token->str[i] != '=')//i != token->len
+    if (token->str[i] != '=') // i != token->len
     {
         return false;
     }
-    
+
     return true;
 }
 
@@ -77,14 +78,14 @@ bool is_variable(struct Command *command)
         }
         return true;
     }
-    
-    if (command->nbtoken != 1 || verif_nom_variable(command->tokenlist[0]) == false)
+
+    if (command->nbtoken != 1
+        || verif_nom_variable(command->tokenlist[0]) == false)
     {
         return false;
     }
     return true;
 }
-
 
 struct Variable *varialble_parsing(struct Command *command)
 {
@@ -134,7 +135,7 @@ struct Variable *varialble_parsing(struct Command *command)
         }
         variable->valeur[i] = 0;
     }
-    
+
     return variable;
 }
 

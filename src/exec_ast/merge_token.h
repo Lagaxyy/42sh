@@ -1,10 +1,10 @@
 #ifndef MERGE_TOKEN_H
 #define MERGE_TOKEN_H
 
-#include "../parser/parsing.h"
 #include "../lexer/lexer.h"
-#include "exec_ast.h"
+#include "../parser/parsing.h"
 #include "../variable/variable.h"
+#include "exec_ast.h"
 
 void merge_token(struct Command *command, struct ListVariable *ListVariable);
 

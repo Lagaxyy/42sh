@@ -53,7 +53,7 @@ struct Command
 enum Ast_type
 {
     SIMPLE_CMD,
-    //CMD_LIST,
+    // CMD_LIST,
     PIPELINE_CMD,
     WHILE_CMD,
     UNTIL_CMD,
@@ -87,7 +87,6 @@ struct Ast_while
     struct Ast *do_cdt;
 };
 
-
 struct Ast_until
 {
     struct Ast *cdt;
@@ -120,7 +119,7 @@ union Ast_union
     struct Ast_if aif;
     struct Ast_neg neg;
     struct Ast_and and;
-    struct Ast_or or;
+    struct Ast_or or ;
 };
 
 struct Ast

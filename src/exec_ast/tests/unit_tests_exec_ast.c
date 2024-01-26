@@ -312,8 +312,8 @@ Test(exec_ast, builtin_false)
 
 Test(exec_ast, cmd_list_multiple_echo)
 {
-    char *cmd = "echo I must;echo not; echo fear. Fear is; echo   the       mind-killer.";
-    struct Ast *test_ast = parse_command(cmd);
+    char *cmd = "echo I must;echo not; echo fear. Fear is; echo   the
+mind-killer."; struct Ast *test_ast = parse_command(cmd);
 
     cr_redirect_stdout();
     exec_ast(test_ast);
