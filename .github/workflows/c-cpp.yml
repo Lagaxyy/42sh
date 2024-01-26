@@ -5,12 +5,14 @@ on:
     branches: [ "master" ]
 
 jobs:
-  build:
+  test:
 
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v3
+    - name: Install autoconf-archive
+      run: sudo apt-get install -y autoconf-archive
     - name: autoreconf
       run: autoreconf --install
     - name: configure
@@ -18,4 +20,4 @@ jobs:
     - name: make
       run: make
     - name: testsuite
-      run: ./tests/testsuite.sh
+      run: ./tests/CI_testsuite.sh
