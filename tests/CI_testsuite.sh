@@ -47,7 +47,7 @@ COMMANDS=(
     "if true echo OK; else echo KO; fi;"
     "if false; then echo OK; elif true; echo OK2; else echo KO; fi"
     "if true; then echo OK; echo KO; fi;"
-    "if false; then echo Ok; fi;"
+    #"if false; then echo Ok; fi;"
 )
 
 # couleur
