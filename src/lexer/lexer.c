@@ -36,8 +36,6 @@ bool check_word(char *tok, size_t len)
 {
     if (!tok || len == 0)
         return false;
-    if (*tok == 0)
-        return false;
     if (*tok == ';')
         return false;
     // si il y a une ' ouvrante mais pas fermante
