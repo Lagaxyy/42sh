@@ -1,6 +1,7 @@
 #ifndef PARSING_H
 #define PARSING_H
 
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdlib.h>
 
@@ -34,6 +35,7 @@ struct Token
 {
     char *str;
     size_t len;
+    bool is_printVar;
 };
 
 /*
@@ -109,16 +111,9 @@ struct Ast_or
     struct Ast *right;
 };
 
-/*struct Ast_cmd_list
-{
-    struct Ast **list;
-    size_t nbnodes;
-};*/
-
 union Ast_union
 {
     struct Ast_simple_cmd sc;
-    //struct Ast_cmd_list cl;
     struct Ast_pipelines pl;
     struct Ast_while wh;
     struct Ast_until ut;

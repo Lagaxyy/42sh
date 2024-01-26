@@ -17,24 +17,6 @@ bool alphanumerique(char c)
     return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9');
 }
 
-/*bool verif_nom_variable_ancien(struct Token *token)
-{
-    if (token->str == 0 || lettre(*token->str) == false)
-    {
-        return false;
-    }
-    size_t i = 0;
-    while (i < token->len)
-    {
-        if (alphanumerique(token->str[i]) == false)
-        {
-            return false;
-        }
-        i++;
-    }
-    return true;
-}*/
-
 bool verif_nom_variable(struct Token *token)
 {
     // du type (NOM_DE_LA_VARIABLE)*$
@@ -115,6 +97,7 @@ struct Variable *varialble_parsing(struct Command *command)
     size_t t = 0;
     if (command->nbtoken == 2)
     {
+        variable->name->is_printVar = command->tokenlist[0]->is_printVar;
         variable->name->str = command->tokenlist[0]->str;
         variable->name->len = command->tokenlist[0]->len - 1;
 
@@ -130,6 +113,7 @@ struct Variable *varialble_parsing(struct Command *command)
     }
     else
     {
+        variable->name->is_printVar = true;
         size_t pos_egal = 0;
         struct Token *token = command->tokenlist[0]; // alias
         while (token->str[pos_egal] != '=')

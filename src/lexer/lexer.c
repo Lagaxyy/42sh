@@ -61,9 +61,20 @@ size_t strlenSep(char *str)
             return i + 1;
         return i;
     }
+    else if (str[i] == '\"')
+    {
+        i++;
+        while (str[i] != '\"' || str[i] == 0)
+        {
+            i++;
+        }
+        if (str[i] == '\"')
+            return i + 1;
+        return i;
+    }
     while (str[i] != '\0' && str[i] != '\t' && str[i] != '\r' && str[i] != '\n'
            && str[i] != ' ' && str[i] != ';' && str[i] != '|' && strncmp(str + i, "&&", 2) != 0
-           && str[i] != '\'')
+           && str[i] != '\'' && str[i] != '\"')
     {
         i++;
     }
@@ -277,6 +288,13 @@ struct Token *lexer(struct Lexer *lex, enum Grammaire grm)
     {
         new->str = lex->input + lex->pos + 1;
         new->len = l - 2;
+        new->is_printVar = false;
+    }
+    else if (*(lex->input + lex->pos) == '\"')
+    {
+        new->str = lex->input + lex->pos + 1;
+        new->len = l - 2;
+        new->is_printVar = true;
     }
     else
     {
