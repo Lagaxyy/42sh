@@ -67,13 +67,13 @@ for cmd in "${COMMANDS[@]}"; do
     # Exécution de la commande avec votre shell
     #echo -e "Running command with 42sh:"
     echo "test:    $cmd"
-    $YOUR_SHELL -c "$cmd" > "$TEST_DIR/42sh_output.txt"
+    $YOUR_SHELL -c $cmd > "$TEST_DIR/42sh_output.txt"
     EXITCODE_YOUR_SHELL=$?
 
     # Exécution de la commande avec le shell par défaut
     #echo -e "Running command with default shell:"
     #echo ">    $cmd"
-    $DEFAULT_SHELL -c "$cmd" > "$TEST_DIR/default_shell_output.txt"
+    $DEFAULT_SHELL -c $cmd > "$TEST_DIR/default_shell_output.txt"
     EXITCODE_DEFAULT_SHELL=$?
 
     # Comparaison des résultats
