@@ -26,3 +26,12 @@ Les commandes pour supprimer tous les fichiers produits sont:
 make distclean
 ./rm_autotools_files.sh
 ```
+
+## Autres commandes utiles
+
+- En cas d'erreurs hasardeuses/incompréhensibles dans un fichier,
+lancer cette commande sur le fichier en question (enlève le carriage return
+ajouté par Windows)
+```
+sed -i -e 's/\r$//' <nom du fichier>
+```
