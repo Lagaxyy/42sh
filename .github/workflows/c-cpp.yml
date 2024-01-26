@@ -7,7 +7,7 @@ on:
 jobs:
   test:
 
-    runs-on: [self-hosted, linux]
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v3
@@ -20,4 +20,4 @@ jobs:
     - name: make
       run: make
     - name: testsuite
-      run: ./tests/testsuite.sh
+      run: ./tests/CI_testsuite.sh
