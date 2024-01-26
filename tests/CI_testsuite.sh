@@ -102,3 +102,10 @@ rm -r "$TEST_DIR"
 
 echo -e "${GREEN}Test passed: $TEST_SUCCESS ${NC}"
 echo -e "${RED}Test failed: $TEST_ECHEC ${NC}"
+
+# Check si tous les tests sont valides
+if [ $TEST_ECHEC -gt 0 ]; then
+    exit 1
+fi
+
+exit 0
