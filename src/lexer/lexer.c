@@ -53,7 +53,7 @@ size_t strlenSep(char *str)
     if (str[i] == '\'')
     {
         i++;
-        while (str[i] != '\'' || str[i] == 0)
+        while (str[i] != '\'' && str[i] != 0)
         {
             i++;
         }

@@ -12,4 +12,4 @@ unit_tests_lexer.o:
 	gcc -c -o unit_tests_lexer.o unit_tests_lexer.c $(CFLAGS)
 
 clean:
-	rm -rf lexer.o lexer_cov.o unit_tests_lexer.o ut_lexer .deps/ report.* *.gcda *.gcdo
+	rm -rf lexer.o lexer_cov.o unit_tests_lexer.o ut_lexer .deps/ report.* *.gcda *.gcno
