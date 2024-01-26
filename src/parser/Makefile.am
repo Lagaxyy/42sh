@@ -11,4 +11,4 @@ libparser_a_CPPFLAGS = -I$(top_srcdir)
 
 noinst_LIBRARIES = libparser.a
 
-#SUBDIRS = tests
+SUBDIRS = tests
