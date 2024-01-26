@@ -291,6 +291,7 @@ struct Ast *pipelines_command(struct Lexer *lex)
         if (pl->right == NULL)
         {
             free_ast(ast_aux);
+            return NULL;
         }
         return ast_aux;
     }
@@ -318,6 +319,7 @@ struct Ast *neg_command(struct Lexer *lex)
     if (neg->prg == NULL)
     {
         free(ast);
+        return NULL;
     }
     return ast;
 }
@@ -347,6 +349,7 @@ struct Ast *or_command(struct Lexer *lex)
         if (or->right == NULL)
         {
             free_ast(ast_aux);
+            return NULL;
         }
         return ast_aux;
     }
@@ -378,6 +381,7 @@ struct Ast *and_command(struct Lexer *lex)
         if (and->right == NULL)
         {
             free_ast(ast_aux);
+            return NULL;
         }
         return ast_aux;
     }

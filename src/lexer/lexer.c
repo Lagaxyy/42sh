@@ -116,23 +116,23 @@ size_t skipSpace(char *str)
 int check_token(char *token, enum Grammaire grm)
 {
     if (grm == IF_GRM)
-        return strncmp(token, "if", 2) == 0;
+        return strncmp(token, "if", 2) == 0 && strspn(token + 2, " \n\t") > 0;
     else if (grm == THEN_GRM)
-        return strncmp(token, "then", 4) == 0;
+        return strncmp(token, "then", 4) == 0 && strspn(token + 4, " \n\t") > 0;
     else if (grm == ELSE_GRM)
-        return strncmp(token, "else", 4) == 0;
+        return strncmp(token, "else", 4) == 0 && strspn(token + 4, " \n\t") > 0;
     else if (grm == ELIF_GRM)
-        return strncmp(token, "elif", 4) == 0;
+        return strncmp(token, "elif", 4) == 0 && strspn(token + 4, " \n\t") > 0;
     else if (grm == FI_GRM)
-        return strncmp(token, "fi", 2) == 0;
+        return strncmp(token, "fi", 2) == 0 && (*(token + 2) == ';' || *(token + 2) == '\0' || *(token + 2) == ' ');
     else if (grm == WHILE_GRM)
-        return strncmp(token, "while", 5) == 0;
+        return strncmp(token, "while", 5) == 0 && strspn(token + 5, " \n\t") > 0;
     else if (grm == UNTIL_GRM)
-        return strncmp(token, "until", 5) == 0;
+        return strncmp(token, "until", 5) == 0 && strspn(token + 5, " \n\t") > 0;
     else if (grm == DO_GRM)
-        return strncmp(token, "do", 2) == 0;
+        return strncmp(token, "do", 2) == 0 && strspn(token + 2, " \n\t") > 0;
     else if (grm == DONE_GRM)
-        return strncmp(token, "done", 4) == 0;
+        return strncmp(token, "done", 4) == 0 && (*(token + 2) == ';' || *(token + 2) == '\0' || *(token + 2) == ' ');
     else if (grm == SEMICOLON)
         return strncmp(token, ";", 1) == 0;
     else
@@ -182,10 +182,10 @@ int lexerVerif(struct Lexer *lex, enum Grammaire grm)
     else
     {
         l = strlenSep(lex->input + lex->pos);
-        token = malloc((l + 1) * sizeof(char));
+        token = malloc((l + 2) * sizeof(char));
         if (token == NULL)
             return 0;
-        token = strncpy(token, lex->input + lex->pos, l);
+        token = strncpy(token, lex->input + lex->pos, l + 1);
     }
 
     // (TODO) Verifie la grammaire donnee (a completer au fur et a mesure)
@@ -267,7 +267,7 @@ struct Token *lexer(struct Lexer *lex, enum Grammaire grm)
         token = malloc((l + 1) * sizeof(char));
         if (token == NULL)
             return NULL;
-        token = strncpy(token, lex->input + lex->pos, l);
+        token = strncpy(token, lex->input + lex->pos, l + 1);
     }
 
     // (TODO) Verifie la grammaire donnee (a completer au fur et a mesure)
