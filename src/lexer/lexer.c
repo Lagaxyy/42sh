@@ -139,8 +139,8 @@ int check_token(char *token, enum Grammaire grm)
         return strncmp(token, "do", 2) == 0 && strspn(token + 2, " \n\t") > 0;
     else if (grm == DONE_GRM)
         return strncmp(token, "done", 4) == 0
-            && (*(token + 2) == ';' || *(token + 2) == '\0'
-                || *(token + 2) == ' ');
+            && (*(token + 4) == ';' || *(token + 4) == '\0'
+                || *(token + 4) == ' ');
     else if (grm == SEMICOLON)
         return strncmp(token, ";", 1) == 0;
     else

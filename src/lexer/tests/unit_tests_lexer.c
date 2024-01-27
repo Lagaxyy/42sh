@@ -41,7 +41,7 @@ Test(lexer, lexerVerif_word)
 
 Test(lexer, lexerVerif_if)
 {
-    char *input = strdup("if");
+    char *input = strdup("if ");
     struct Lexer *test_lexer = init_lexer(input);
     int check = lexerVerif(test_lexer, IF_GRM);
 
@@ -54,7 +54,7 @@ Test(lexer, lexerVerif_if)
 
 Test(lexer, lexerVerif_then)
 {
-    char *input = strdup("then");
+    char *input = strdup("then ");
     struct Lexer *test_lexer = init_lexer(input);
     int check = lexerVerif(test_lexer, THEN_GRM);
 
@@ -67,7 +67,7 @@ Test(lexer, lexerVerif_then)
 
 Test(lexer, lexerVerif_else)
 {
-    char *input = strdup("else");
+    char *input = strdup("else ");
     struct Lexer *test_lexer = init_lexer(input);
     int check = lexerVerif(test_lexer, ELSE_GRM);
 
@@ -80,7 +80,7 @@ Test(lexer, lexerVerif_else)
 
 Test(lexer, lexerVerif_elif)
 {
-    char *input = strdup("elif");
+    char *input = strdup("elif ");
     struct Lexer *test_lexer = init_lexer(input);
     int check = lexerVerif(test_lexer, ELIF_GRM);
 
@@ -93,7 +93,7 @@ Test(lexer, lexerVerif_elif)
 
 Test(lexer, lexerVerif_fi)
 {
-    char *input = strdup("fi");
+    char *input = strdup("fi;");
     struct Lexer *test_lexer = init_lexer(input);
     int check = lexerVerif(test_lexer, FI_GRM);
 
@@ -106,7 +106,7 @@ Test(lexer, lexerVerif_fi)
 
 Test(lexer, lexerVerif_while)
 {
-    char *input = strdup("while");
+    char *input = strdup("while ");
     struct Lexer *test_lexer = init_lexer(input);
     int check = lexerVerif(test_lexer, WHILE_GRM);
 
@@ -119,7 +119,7 @@ Test(lexer, lexerVerif_while)
 
 Test(lexer, lexerVerif_until)
 {
-    char *input = strdup("until");
+    char *input = strdup("until ");
     struct Lexer *test_lexer = init_lexer(input);
     int check = lexerVerif(test_lexer, UNTIL_GRM);
 
@@ -132,7 +132,7 @@ Test(lexer, lexerVerif_until)
 
 Test(lexer, lexerVerif_do)
 {
-    char *input = strdup("do");
+    char *input = strdup("do ");
     struct Lexer *test_lexer = init_lexer(input);
     int check = lexerVerif(test_lexer, DO_GRM);
 
@@ -145,7 +145,7 @@ Test(lexer, lexerVerif_do)
 
 Test(lexer, lexerVerif_done)
 {
-    char *input = strdup("done");
+    char *input = strdup("done;");
     struct Lexer *test_lexer = init_lexer(input);
     int check = lexerVerif(test_lexer, DONE_GRM);
 
