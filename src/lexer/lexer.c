@@ -36,8 +36,6 @@ bool check_word(char *tok, size_t len)
 {
     if (!tok || len == 0)
         return false;
-    if (*tok == 0)
-        return false;
     if (*tok == ';')
         return false;
     // si il y a une ' ouvrante mais pas fermante
@@ -53,7 +51,7 @@ size_t strlenSep(char *str)
     if (str[i] == '\'')
     {
         i++;
-        while (str[i] != '\'' || str[i] == 0)
+        while (str[i] != '\'' && str[i] != 0)
         {
             i++;
         }

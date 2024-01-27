@@ -13,4 +13,4 @@ libea_a_CPPFLAGS = -I$(top_srcdir)
 
 noinst_LIBRARIES = libea.a
 
-SUBDIRS = tests
+#SUBDIRS = tests

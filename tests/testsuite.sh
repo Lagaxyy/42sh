@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Emplacement de votre shell 42sh
-YOUR_SHELL="../src/42sh"
+YOUR_SHELL="./src/42sh"
 
 # Emplacement du shell par défaut (par exemple, Bash)
 DEFAULT_SHELL="/bin/sh"
