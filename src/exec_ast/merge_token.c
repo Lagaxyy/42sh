@@ -44,6 +44,7 @@ void insert_token_command(struct Command *command, size_t i,
 void merge_token(struct Command *command, struct ListVariable *ListVariable)
 {
     size_t i = 0;
+    size_t j = 0;
     struct Token token;
     struct Token *p;
     struct Lexer *lex;
@@ -75,11 +76,12 @@ void merge_token(struct Command *command, struct ListVariable *ListVariable)
             p = lexer(lex, WORD);
             while (p != NULL)
             {
-                i++;
-                insert_token_command(command, i, p);
+                j++;
+                insert_token_command(command, i + j, p);
                 p = lexer(lex, WORD);
             }
             free(lex);
+            continue;
         }
         i++;
     }
