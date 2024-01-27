@@ -32,7 +32,9 @@ struct Ast *simple_command(struct Lexer *lex)
 ** Grammaire:
 **
 ** simple_command =
-**      WORD { WORD }
+**      WORD { element } ;
+**
+** element = WORD ;
 */
 {
     // Premier WORD necessaire

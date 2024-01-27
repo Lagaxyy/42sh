@@ -40,7 +40,12 @@ struct Ast *parse_command(struct Lexer *lexer)
 {
     struct Ast *ast = parse_start(lexer);
     if (!ast)
+    {
+        if (lexer->input[0] == '#')
+            // Cas spécial: uniquement un commentaire
+            return NULL;
         errx(2, "Erreur lors de la construction de l'AST");
+    }
 
     return ast;
 }
