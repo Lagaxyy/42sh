@@ -24,7 +24,7 @@ int exec_ast_sc(struct Ast *ast)
 */
 {
     if (!ast)
-        return 1;
+        return 0;
     assert(ast->type == SIMPLE_CMD);
 
     int rep = 1;
@@ -61,7 +61,7 @@ int exec_ast_if(struct Ast *ast)
 */
 {
     if (!ast)
-        return 1;
+        return 0;
     assert(ast->type == IF_CMD);
 
     struct Ast_if *aif = &ast->data.aif;
@@ -85,7 +85,7 @@ int exec_ast_if(struct Ast *ast)
 int exec_ast_pipe(struct Ast *ast)
 {
     if (!ast)
-        return 1;
+        return 0;
     assert(ast->type == PIPELINE_CMD);
 
     struct Ast_pipelines *pl = &ast->data.pl;
@@ -96,7 +96,7 @@ int exec_ast_pipe(struct Ast *ast)
 int exec_ast_until(struct Ast *ast)
 {
     if (!ast)
-        return 1;
+        return 0;
     assert(ast->type == UNTIL_CMD);
 
     struct Ast_until *ut = &ast->data.ut;
@@ -112,7 +112,7 @@ int exec_ast_until(struct Ast *ast)
 int exec_ast_while(struct Ast *ast)
 {
     if (!ast)
-        return 1;
+        return 0;
     assert(ast->type == WHILE_CMD);
 
     struct Ast_while *wh = &ast->data.wh;
@@ -128,7 +128,7 @@ int exec_ast_while(struct Ast *ast)
 int exec_ast_and(struct Ast *ast)
 {
     if (!ast)
-        return 1;
+        return 0;
     assert(ast->type == AND_CMD);
 
     struct Ast_and *and = &ast->data.and;
@@ -142,10 +142,10 @@ int exec_ast_and(struct Ast *ast)
 int exec_ast_or(struct Ast *ast)
 {
     if (!ast)
-        return 1;
+        return 0;
     assert(ast->type == OR_CMD);
 
-    struct Ast_or * or = &ast->data.or ;
+    struct Ast_or *or = &ast->data.or;
 
     int res = exec_ast(or->left);
     if (res != 0)
@@ -156,7 +156,7 @@ int exec_ast_or(struct Ast *ast)
 int exec_ast_neg(struct Ast *ast)
 {
     if (!ast)
-        return 1;
+        return 0;
     assert(ast->type == NEG_CMD);
 
     struct Ast_neg *neg = &ast->data.neg;
@@ -171,7 +171,7 @@ int exec_ast(struct Ast *ast)
 */
 {
     if (!ast)
-        return 1;
+        return 0;
 
     // Redirige vers les autres fonctions selon le type du noeud
     static const node_type functions[] = {

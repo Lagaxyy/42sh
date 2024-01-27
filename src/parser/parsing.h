@@ -48,12 +48,11 @@ struct Command
 };
 
 /*
-** Structs et enum definissant l'AST
+** Structs et enum définissant l'AST
 */
 enum Ast_type
 {
     SIMPLE_CMD,
-    // CMD_LIST,
     PIPELINE_CMD,
     WHILE_CMD,
     UNTIL_CMD,
@@ -119,7 +118,7 @@ union Ast_union
     struct Ast_if aif;
     struct Ast_neg neg;
     struct Ast_and and;
-    struct Ast_or or ;
+    struct Ast_or or;
 };
 
 struct Ast
@@ -130,11 +129,22 @@ struct Ast
 };
 
 /*
-** Fonctions exportees
+** Fonctions exportées
 */
 struct Ast *parse_command(struct Lexer *lexer);
-void print_ast(struct Ast *ast, size_t depth);
 struct Ast *parse_start(struct Lexer *lex);
+
+struct Ast *simple_command(struct Lexer *lex);
+struct Ast *if_command(struct Lexer *lex);
+struct Ast *elif_command(struct Lexer *lex);
+struct Ast *until_cmd(struct Lexer *lex);
+struct Ast *while_cmd(struct Lexer *lex);
+struct Ast *pipelines_command(struct Lexer *lex);
+struct Ast *neg_command(struct Lexer *lex);
+struct Ast *or_command(struct Lexer *lex);
+struct Ast *and_command(struct Lexer *lex);
+
+void print_ast(struct Ast *ast, size_t depth);
 void free_ast(struct Ast *ast);
 
 #endif /* ! PARSING_H */
