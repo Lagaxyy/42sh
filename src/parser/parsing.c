@@ -71,46 +71,6 @@ struct Ast *simple_command(struct Lexer *lex)
     return ast;
 }
 
-/*struct Ast *liste_command(struct Lexer *lex)
-{
-    /
-    ** Renvoie un noeud de l'AST de type
-    ** simple_command
-    **
-    ** Grammaire:
-    **
-    ** liste_command =
-    **      simple_command { ';' simple_command}
-    /
-    // simple_command
-    struct Ast *ast = simple_command(lex);
-    if (ast == NULL || ast->type != SIMPLE_CMD)
-    {
-        return NULL;
-    }
-
-    // { ';' simple_command}
-    struct Ast *p = ast;
-
-    while (1)
-    {
-        int s = lex->pos;
-        if (lexerVerif(lex, SEMICOLON) == 0 || lexer_chek(lex) == true)
-        {
-            lex->pos = s;
-            return ast;
-        }
-        p->next = simple_command(lex);
-        p = p->next;
-        if (p == NULL)
-        {
-            lex->pos = s;
-            return ast;
-        }
-    }
-    return ast;
-}*/
-
 struct Ast *elif_command(struct Lexer *lex)
 {
     struct Ast *ast = calloc(1, sizeof(struct Ast));
@@ -331,6 +291,7 @@ struct Ast *pipelines_command(struct Lexer *lex)
         if (pl->right == NULL)
         {
             free_ast(ast_aux);
+            return NULL;
         }
         return ast_aux;
     }
@@ -358,6 +319,7 @@ struct Ast *neg_command(struct Lexer *lex)
     if (neg->prg == NULL)
     {
         free(ast);
+        return NULL;
     }
     return ast;
 }
@@ -380,13 +342,14 @@ struct Ast *or_command(struct Lexer *lex)
         ast_aux->next = NULL;
 
         // Alloue la memoire pour la struct Ast_simple_cmd
-        struct Ast_or *or = &ast_aux->data.or;
+        struct Ast_or * or = &ast_aux->data.or ;
 
         or->left = ast;
         or->right = or_command(lex);
         if (or->right == NULL)
         {
             free_ast(ast_aux);
+            return NULL;
         }
         return ast_aux;
     }
@@ -418,6 +381,7 @@ struct Ast *and_command(struct Lexer *lex)
         if (and->right == NULL)
         {
             free_ast(ast_aux);
+            return NULL;
         }
         return ast_aux;
     }
@@ -451,8 +415,6 @@ struct Ast *parse_start(struct Lexer *lex)
 
 struct Ast *parse_command(struct Lexer *lexer)
 {
-    if (lexer->input == NULL)
-        errx(1, "Cannot open file t.txt");
     struct Ast *ast = parse_start(lexer);
     if (!ast)
         errx(2, "Erreur lors de la construction de l'AST");

@@ -107,9 +107,10 @@ char *fileInStr(char *path)
 {
     // Ouverture du fichier en mode lecture
     FILE *file = fopen(path, "r");
-    
+
     // Vérification si le fichier a été ouvert avec succès
-    if (file == NULL) {
+    if (file == NULL)
+    {
         perror("Erreur lors de l'ouverture du fichier");
         exit(EXIT_FAILURE);
     }
@@ -121,9 +122,10 @@ char *fileInStr(char *path)
     size_t contentSize = 0;
     size_t len = 0;
     size_t l = 0;
-    
+
     // Lecture du fichier ligne par ligne
-    while (getline(&content, &contentSize, file) != -1) {
+    while (getline(&content, &contentSize, file) != -1)
+    {
         // Vérification de ligne vide
         l = strlen(content);
         if (content[l - 1] != '\n')
@@ -131,7 +133,8 @@ char *fileInStr(char *path)
             strcat(res, content);
             break;
         }
-        if (l > 2) {
+        if (l > 2)
+        {
             // Ajout d'un point-virgule a la fin de la ligne
             len += l + 1;
             res = realloc(res, len + 1);

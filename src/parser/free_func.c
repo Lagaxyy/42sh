@@ -23,7 +23,7 @@ void free_ast_sc(struct Ast *ast)
     free(sc->cmd);
 }
 
-//void free_ast_cl(struct Ast *ast)
+// void free_ast_cl(struct Ast *ast)
 /*
 ** Libere la memoire allouee pour le
 ** noeud command_list
@@ -95,7 +95,7 @@ void free_ast_until(struct Ast *ast)
 
     // Libere la memoire allouee
     free_ast(ut->cdt);
-    free_ast(ut ->do_cdt);
+    free_ast(ut->do_cdt);
 }
 
 void free_ast_and(struct Ast *ast)
@@ -117,7 +117,7 @@ void free_ast_or(struct Ast *ast)
         return;
     // Alias pratique
 
-    struct Ast_or *or = &ast->data.or;
+    struct Ast_or * or = &ast->data.or ;
 
     // Libere la memoire allouee
     free_ast(or->left);
@@ -150,9 +150,9 @@ void free_ast(struct Ast *ast)
     case SIMPLE_CMD:
         free_ast_sc(ast);
         break;
-    //case CMD_LIST:
-        //free_ast_cl(ast);
-        //break;
+    // case CMD_LIST:
+    // free_ast_cl(ast);
+    // break;
     case PIPELINE_CMD:
         free_ast_pl(ast);
         break;

@@ -3,6 +3,9 @@ lib_LIBRARIES = libea.a
 libea_a_SOURCES = exec_ast.c \
 				   builtin_echo.c \
 				   run_cmds.c \
+				   list_variable.c \
+				   merge_token.c \
+				   merge_token.h \
 				   exec_ast.h
 
 libea_a_CFLAGS = -std=c99 -Werror -Wall -Wextra -Wvla -pedantic

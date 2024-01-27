@@ -2,15 +2,17 @@
 #    define _POSIX_C_SOURCE 200809L
 #endif /* ! _POSIX_C_SOURCE */
 
-#include "../mypipe/mypipe.h"
-//#include "../variable/variable.h"
 #include "exec_ast.h"
 
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
 
-//struct ListVariable *variables = NULL;
+#include "../mypipe/mypipe.h"
+#include "../variable/variable.h"
+#include "merge_token.h"
+
+struct ListVariable *variables = NULL;
 
 // Pointeur de fonction pour rediriger vers les autres
 // fonctions selon le type du noeud
@@ -29,13 +31,17 @@ int exec_ast_sc(struct Ast *ast)
 
     // Match la commande avec sa fonction correspondante
     struct Ast_simple_cmd *sc = &ast->data.sc; // Alias pratique
-    //si s'est une initialisation de variable
-    //struct Variable *var = varialble_parsing(sc->cmd);
-    //if (var != NULL)
-    //{
-        // l'ajouter dans variables quand on l'aura créer
-        //return 1;
-    //}
+    // si s'est une initialisation de variable
+    struct Variable *var = varialble_parsing(sc->cmd);
+    if (var != NULL)
+    {
+        // l'ajouter ou modifier dans variables
+        int err = present_or_add(&variables, var);
+        if (err == 0)
+            return 1;
+        return 0;
+    }
+    merge_token(sc->cmd, variables);
     if (strncmp(sc->cmd->tokenlist[0]->str, "echo", 4) == 0)
         // ECHO
         rep = my_echo(ast);
@@ -139,7 +145,7 @@ int exec_ast_or(struct Ast *ast)
         return 1;
     assert(ast->type == OR_CMD);
 
-    struct Ast_or *or = &ast->data.or;
+    struct Ast_or * or = &ast->data.or ;
 
     int res = exec_ast(or->left);
     if (res != 0)
@@ -155,7 +161,7 @@ int exec_ast_neg(struct Ast *ast)
 
     struct Ast_neg *neg = &ast->data.neg;
 
-    return ! exec_ast(neg->prg);
+    return !exec_ast(neg->prg);
 }
 
 int exec_ast(struct Ast *ast)
@@ -169,14 +175,16 @@ int exec_ast(struct Ast *ast)
 
     // Redirige vers les autres fonctions selon le type du noeud
     static const node_type functions[] = {
-        [SIMPLE_CMD] = &exec_ast_sc, [IF_CMD] = &exec_ast_if, [PIPELINE_CMD] = &exec_ast_pipe,
-        [WHILE_CMD] = &exec_ast_while, [UNTIL_CMD] = &exec_ast_until, [AND_CMD] = &exec_ast_and,
-        [OR_CMD] = &exec_ast_or, [NEG_CMD] = &exec_ast_neg
+        [SIMPLE_CMD] = &exec_ast_sc,     [IF_CMD] = &exec_ast_if,
+        [PIPELINE_CMD] = &exec_ast_pipe, [WHILE_CMD] = &exec_ast_while,
+        [UNTIL_CMD] = &exec_ast_until,   [AND_CMD] = &exec_ast_and,
+        [OR_CMD] = &exec_ast_or,         [NEG_CMD] = &exec_ast_neg
     };
 
     int i = (*functions[ast->type])(ast);
     if (ast->next == NULL)
     {
+        free_list(variables);
         return i;
     }
     else
