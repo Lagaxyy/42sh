@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 bool is_variable_tok(struct Token *token)
 {
@@ -52,7 +53,7 @@ void merge_token(struct Command *command, struct ListVariable *ListVariable)
     while (i < command->nbtoken)
     {
         if (is_variable_tok(command->tokenlist[i])
-            && command->tokenlist[i]->is_printVar)
+            && command->tokenlist[i]->quote != SIMPLE_QUOTE)
         {
             token.str = command->tokenlist[i]->str + 1;
             token.len = command->tokenlist[i]->len - 1;
@@ -85,4 +86,39 @@ void merge_token(struct Command *command, struct ListVariable *ListVariable)
         }
         i++;
     }
+}
+
+/*
+** copy la command dans cmd
+** renvoi la cmd
+*/
+struct Command *cpy_cmd(struct Command *cmd, struct Command *command)
+{
+    struct Token *token = NULL;
+    struct Token *cpy = NULL;
+    cmd->tokenlist = malloc((command->nbtoken + 1) * sizeof(struct Command));
+    while (cmd->nbtoken < command->nbtoken)
+    {
+        struct Token *token = command->tokenlist[cmd->nbtoken];
+        cpy = malloc(sizeof(struct Token));
+        cpy->len = token->len;
+        cpy->quote = token->quote;
+        cpy->str = malloc((cpy->len + 1) + sizeof(char));
+        cpy->str = strncpy(cpy->str, token->str, cpy->len);
+        cpy->str[cpy->len] = 0;
+        cmd->tokenlist[cmd->nbtoken] = cpy;
+        cmd->nbtoken++;
+    }
+    return cmd;
+}
+
+struct Command *cpy_cmd_with_var(struct Command *command, struct ListVariable *ListVariable)
+{
+    size_t i = 0;
+    struct Command *cmd = malloc(sizeof(struct Command));
+    cmd->nbtoken = 0;
+    cmd->tokenlist = NULL;
+    cmd = cpy_cmd(cmd, command);
+
+    return cmd;
 }

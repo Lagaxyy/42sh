@@ -98,7 +98,7 @@ struct Variable *varialble_parsing(struct Command *command)
     size_t t = 0;
     if (command->nbtoken == 2)
     {
-        variable->name->is_printVar = command->tokenlist[0]->is_printVar;
+        variable->name->quote = command->tokenlist[0]->quote;
         variable->name->str = command->tokenlist[0]->str;
         variable->name->len = command->tokenlist[0]->len - 1;
 
@@ -114,7 +114,7 @@ struct Variable *varialble_parsing(struct Command *command)
     }
     else
     {
-        variable->name->is_printVar = true;
+        variable->name->quote = NOT_QUOTE;
         size_t pos_egal = 0;
         struct Token *token = command->tokenlist[0]; // alias
         while (token->str[pos_egal] != '=')

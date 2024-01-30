@@ -296,18 +296,19 @@ struct Token *lexer(struct Lexer *lex, enum Grammaire grm)
     {
         new->str = lex->input + lex->pos + 1;
         new->len = l - 2;
-        new->is_printVar = false;
+        new->quote = SIMPLE_QUOTE;
     }
     else if (*(lex->input + lex->pos) == '\"')
     {
         new->str = lex->input + lex->pos + 1;
         new->len = l - 2;
-        new->is_printVar = true;
+        new->quote = DOUBLE_QUOTE;
     }
     else
     {
         new->str = lex->input + lex->pos;
         new->len = l;
+        new->quote = NOT_QUOTE;
     }
 
     // augmente la position du lexer de l (le mot)

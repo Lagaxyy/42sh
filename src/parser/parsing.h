@@ -31,11 +31,18 @@ enum Grammaire
     END
 };
 
+enum Quote
+{
+    SIMPLE_QUOTE,
+    DOUBLE_QUOTE,
+    NOT_QUOTE
+};
+
 struct Token
 {
     char *str;
     size_t len;
-    bool is_printVar;
+    enum Quote quote;
 };
 
 /*
@@ -53,7 +60,6 @@ struct Command
 enum Ast_type
 {
     SIMPLE_CMD,
-    // CMD_LIST,
     PIPELINE_CMD,
     WHILE_CMD,
     UNTIL_CMD,

@@ -29,7 +29,12 @@ void print_simple_cmd(struct Ast *ast, size_t depth)
         {
             print_space(depth + 2);
             int s = sc->cmd->tokenlist[i]->len;
-            printf("Token %zu: %.*s\n", i + 1, s, sc->cmd->tokenlist[i]->str);
+            if (sc->cmd->tokenlist[i]->quote == SIMPLE_QUOTE)
+                printf("Token %zu: '%.*s'\n", i + 1, s, sc->cmd->tokenlist[i]->str);
+            else if ((sc->cmd->tokenlist[i]->quote == DOUBLE_QUOTE))
+                printf("Token %zu: \"%.*s\"\n", i + 1, s, sc->cmd->tokenlist[i]->str);
+            else
+                printf("Token %zu: %.*s\n", i + 1, s, sc->cmd->tokenlist[i]->str);
         }
     }
 }
