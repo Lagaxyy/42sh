@@ -77,6 +77,8 @@ static int exec_ast_if(struct Ast *ast)
     }
     else
     {
+        if (aif->cmd2 == NULL)
+            return 0;
         return exec_ast(aif->cmd2);
     }
 
@@ -84,7 +86,6 @@ static int exec_ast_if(struct Ast *ast)
     struct Ast_if *aif = &ast->data.aif;*/
 
     return 1;
-    ;
 }
 
 static int exec_ast_pipe(struct Ast *ast)
