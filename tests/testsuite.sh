@@ -50,7 +50,7 @@ COMMANDS=(
     "if false; then echo Ok; fi;"
 
     # comment
-    # "#Hello"
+    "#Hello"
     "echo \#escaped '#'quoted not#first #commented"
 
     # single_quotes
@@ -60,12 +60,13 @@ COMMANDS=(
 
 
     # Avec des variables
-    'fruit="apple"; echo I like $fruit'
-    'fruit="apple"; fruit="babana"; echo I like $fruit'
+    "fruit='apple'; echo I like \$fruit"
+    "fruit='apple'; fruit='babana'; echo I like \$fruit"
 
     # Avec des boucles for
-    'for planet in Mars Saturne Terre; do echo $planet; done'
-    'Mars="Bruno"; for planet in $Mars Saturne Terre; do echo $planet; done'
+    "for planet in Mars Saturne Terre; do echo \$planet; done"
+    "Mars='Bruno'; for planet in \$Mars Saturne Terre; do echo \$planet; done"
+    "for file in /etc/*.conf; do echo \$file; done"
 
 )
 
@@ -92,7 +93,7 @@ for cmd in "${COMMANDS[@]}"; do
     # Exécution de la commande avec le shell par défaut
     #echo -e "Running command with default shell:"
     #echo ">    $cmd"
-    $DEFAULT_SHELL -c "$cmd"> "$TEST_DIR/default_shell_output.txt"
+    $DEFAULT_SHELL -c "$cmd" > "$TEST_DIR/default_shell_output.txt"
     EXITCODE_DEFAULT_SHELL=$?
 
     # Comparaison des résultats
