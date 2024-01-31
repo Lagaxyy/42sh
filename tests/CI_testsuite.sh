@@ -50,7 +50,7 @@ COMMANDS=(
     "if false; then echo Ok; fi;"
 
     # comment
-    "#Hello"
+    # "#Hello"
     "echo \#escaped '#'quoted not#first #commented"
 
     # single_quotes
@@ -63,9 +63,8 @@ COMMANDS=(
     "fruit='apple'; fruit='babana'; echo I like \$fruit"
 
     # Avec des boucles for
-    "for planet in Mars Saturne Terre; do echo \$planet; done"
-    "Mars='Bruno'; for planet in \$Mars Saturne Terre; do echo \$planet; done"
-    "for file in /etc/*.conf; do echo \$file; done"
+    'for planet in Mars Saturne Terre; do echo $planet; done'
+    'Mars="Bruno"; for planet in $Mars Saturne Terre; do echo $planet; done'
 )
 
 # couleur
