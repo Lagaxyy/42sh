@@ -48,6 +48,15 @@ COMMANDS=(
     "if false; then echo OK; elif true; echo OK2; else echo KO; fi"
     "if true; then echo OK; echo KO; fi;"
     "if false; then echo Ok; fi;"
+
+    # comment
+    "#Hello"
+    "echo \#escaped '#'quoted not#first #commented"
+
+    # single_quotes
+    "echo 'Hello'"
+    # "echo 'Hello" // Recoit un message d'erreur sur la sortie standard ??
+    "/bin/seq '1' '1' '123'"
 )
 
 # couleur

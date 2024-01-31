@@ -136,11 +136,22 @@ struct Ast
 };
 
 /*
-** Fonctions exportees
+** Fonctions exportées
 */
 struct Ast *parse_command(struct Lexer *lexer);
-void print_ast(struct Ast *ast, size_t depth);
 struct Ast *parse_start(struct Lexer *lex);
+
+struct Ast *simple_command(struct Lexer *lex);
+struct Ast *if_command(struct Lexer *lex);
+struct Ast *elif_command(struct Lexer *lex);
+struct Ast *until_cmd(struct Lexer *lex);
+struct Ast *while_cmd(struct Lexer *lex);
+struct Ast *pipelines_command(struct Lexer *lex);
+struct Ast *neg_command(struct Lexer *lex);
+struct Ast *or_command(struct Lexer *lex);
+struct Ast *and_command(struct Lexer *lex);
+
+void print_ast(struct Ast *ast, size_t depth);
 void free_ast(struct Ast *ast);
 
 #endif /* ! PARSING_H */

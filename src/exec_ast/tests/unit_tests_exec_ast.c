@@ -337,4 +337,3 @@ Test(exec_ast, cmd_list_diff_cmds)
 
     cr_expect_eq(exitcode, 0, "Expected: %d. Got: %d.", 0, exitcode);
 }
-*/

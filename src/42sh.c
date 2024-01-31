@@ -55,7 +55,7 @@ int aux_run(char *input)
 */
 {
     // Input vide
-    if (strlen(input) == 0)
+    if (!input || strlen(input) == 0)
     {
         free(input);
         return 0;
@@ -109,6 +109,7 @@ char *InputStandardInStr(void)
 
     return res;
 }
+
 
 char *fileInStr(char *path)
 /*

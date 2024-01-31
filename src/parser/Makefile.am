@@ -2,6 +2,10 @@ lib_LIBRARIES = libparser.a
 
 libparser_a_SOURCES = parsing.c \
   parsing.h \
+  parsing_simple.c \
+  parsing_if.c \
+  parsing_loop.c \
+  parsing_ops.c \
   free_func.c \
   print_ast.c \
   ../lexer/lexer.c \

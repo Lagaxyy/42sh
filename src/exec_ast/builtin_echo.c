@@ -138,6 +138,16 @@ char *alias_src(char *str, size_t len)
     return src;
 }
 
+char *get_str(struct Ast_simple_cmd *sc, size_t i)
+{
+    return sc->cmd->tokenlist[i]->str;
+}
+
+size_t get_len(struct Ast_simple_cmd *sc, size_t i)
+{
+    return sc->cmd->tokenlist[i]->len;
+}
+
 int my_echo(struct Ast *ast)
 /*
 ** Implémentation du
@@ -151,7 +161,9 @@ int my_echo(struct Ast *ast)
     size_t i = 0;
     int printNewline = 1;
     int interpretEscapes = 0;
-    struct Ast_simple_cmd *sc = &ast->data.sc; // Alias pratique
+
+    // Alias pratique
+    struct Ast_simple_cmd *sc = &ast->data.sc;
 
     size_t check_options = get_options(ast, &printNewline, &interpretEscapes);
 
@@ -169,11 +181,10 @@ int my_echo(struct Ast *ast)
     // Print les arguments de echo suivi d'un espace
     for (i = check_options; i < sc->cmd->nbtoken - 1; i++)
     {
-        if (sc->cmd->tokenlist[i]->str[0] == ';'
-            && sc->cmd->tokenlist[i]->len == 1)
+        if (get_str(sc, i)[0] == ';' && get_len(sc, i) == 1)
             // Token ";" trouvé
             break;
-        src = alias_src(sc->cmd->tokenlist[i]->str, sc->cmd->tokenlist[i]->len);
+        src = alias_src(get_str(sc, i), get_len(sc, i));
         if (is_token_echo(src))
         {
             // Token "echo" trouvé
@@ -185,19 +196,18 @@ int my_echo(struct Ast *ast)
         free(src);
 
         // Check si on peut rajouter un espace
-        char *next_src = alias_src(sc->cmd->tokenlist[i + 1]->str,
-                                   sc->cmd->tokenlist[i + 1]->len);
-        if ((sc->cmd->tokenlist[i + 1]->str[0] != ';'
-             || sc->cmd->tokenlist[i + 1]->len != 1)
+        char *next_src = alias_src(get_str(sc, i + 1), get_len(sc, i + 1));
+        if ((get_str(sc, i + 1)[0] != ';' || get_len(sc, i + 1) != 1)
+            && (get_str(sc, i)[0] != '#' || get_len(sc, i) != 1)
             && !is_token_echo(next_src))
             putchar(' ');
         free(next_src);
     }
 
     // Print le dernier argument de echo sans l'espace
-    if (sc->cmd->tokenlist[i]->str[0] != ';' || sc->cmd->tokenlist[i]->len != 1)
+    if (get_str(sc, i)[0] != ';' || get_len(sc, i) != 1)
     {
-        src = alias_src(sc->cmd->tokenlist[i]->str, sc->cmd->tokenlist[i]->len);
+        src = alias_src(get_str(sc, i), get_len(sc, i));
         if (!is_token_echo(src))
             echo_print(src, interpretEscapes);
         free(src);
