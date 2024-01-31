@@ -76,28 +76,40 @@ char *InputStandardInStr(void)
 ** stdin
 */
 {
-    char *inputStr = NULL;
-    char chunk[1024];
-    size_t inputSize = 0;
-    while (1)
+    // Allocation dynamique pour stocker le contenu du fichier
+    char *content = NULL;
+    char *res = malloc(1);
+    res[0] = 0;
+    size_t contentSize = 0;
+    size_t len = 0;
+    size_t l = 0;
+
+    // Lecture du fichier ligne par ligne
+    while (getline(&content, &contentSize, stdin) != -1)
     {
-        if (fgets(chunk, sizeof(chunk), stdin) == NULL)
-            break;
-        size_t chunkSize = strlen(chunk);
-        inputStr = realloc(inputStr, inputSize + chunkSize + 1);
-        if (inputStr == NULL)
+        // Vérification de ligne vide
+        l = strlen(content);
+        if (content[l - 1] != '\n')
         {
-            fprintf(stderr, "Memory allocation failed\n");
-            free(inputStr);
-            return NULL;
-        }
-        strcpy(inputStr + inputSize, chunk);
-        inputSize += chunkSize;
-        if (feof(stdin))
+            strcat(res, content);
             break;
+        }
+        if (l > 2)
+        {
+            // Ajout d'un point-virgule a la fin de la ligne
+            len += l + 1;
+            res = realloc(res, len + 1);
+            strcat(res, content);
+            res[len - 2] = ';';
+            res[len - 1] = '\n';
+            res[len] = 0;
+        }
     }
-    return inputStr;
+    free(content);
+
+    return res;
 }
+
 
 char *fileInStr(char *path)
 /*

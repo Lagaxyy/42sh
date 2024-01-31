@@ -28,7 +28,7 @@ void free_lexer(struct Lexer *lexer)
     free(lexer);
 }
 
-bool check_word(char *tok, size_t len)
+static bool check_word(char *tok, size_t len)
 /*
 ** Renvoie true si le token est un WORD
 ** sinon renvoie false
@@ -45,7 +45,7 @@ bool check_word(char *tok, size_t len)
     return true;
 }
 
-size_t strlenSep(char *str)
+static size_t strlenSep(char *str)
 {
     size_t i = 0;
     if (str[i] == '\'')
@@ -80,7 +80,7 @@ size_t strlenSep(char *str)
     return i;
 }
 
-size_t skipSpace_build(char *str)
+static size_t skipSpace_build(char *str)
 {
     size_t ind = 0;
     while (str[ind] == ' ' || str[ind] == '\t' || str[ind] == '\r'
@@ -91,7 +91,7 @@ size_t skipSpace_build(char *str)
     return ind;
 }
 
-size_t skipSpace(char *str)
+static size_t skipSpace(char *str)
 /*
 ** La fonction skipSpace prend en paramètre une chaîne de caractères (str)
 ** La renvoie la position du prochain mot à évaluer.
@@ -115,7 +115,7 @@ size_t skipSpace(char *str)
     return rep;
 }
 
-int check_token(char *token, enum Grammaire grm)
+static int check_token(char *token, enum Grammaire grm)
 {
     if (grm == IF_GRM)
         return strncmp(token, "if", 2) == 0 && strspn(token + 2, " \n\t") > 0;
@@ -139,8 +139,8 @@ int check_token(char *token, enum Grammaire grm)
         return strncmp(token, "do", 2) == 0 && strspn(token + 2, " \n\t") > 0;
     else if (grm == DONE_GRM)
         return strncmp(token, "done", 4) == 0
-            && (*(token + 4) == ';' || *(token + 4) == '\0'
-                || *(token + 4) == ' ');
+            && (*(token + 2) == ';' || *(token + 2) == '\0'
+                || *(token + 2) == ' ');
     else if (grm == SEMICOLON)
         return strncmp(token, ";", 1) == 0;
     else
@@ -230,6 +230,33 @@ bool lexer_check(struct Lexer *lex)
     return false;
 }
 
+static struct Token *crate_token(struct Lexer *lex, size_t l)
+{
+    struct Token *new = malloc(sizeof(struct Token));
+    if (*(lex->input + lex->pos) == '\'')
+    {
+        new->str = lex->input + lex->pos + 1;
+        new->len = l - 2;
+        new->quote = SIMPLE_QUOTE;
+    }
+    else if (*(lex->input + lex->pos) == '\"')
+    {
+        new->str = lex->input + lex->pos + 1;
+        new->len = l - 2;
+        new->quote = DOUBLE_QUOTE;
+    }
+    else
+    {
+        new->str = lex->input + lex->pos;
+        new->len = l;
+        new->quote = NOT_QUOTE;
+    }
+
+    // augmente la position du lexer de l (le mot)
+    lex->pos += l;
+    return new;
+}
+
 struct Token *lexer(struct Lexer *lex, enum Grammaire grm)
 /*
 ** Considerant l'input (ici c'est str), renvoie
@@ -291,27 +318,7 @@ struct Token *lexer(struct Lexer *lex, enum Grammaire grm)
         return NULL;
 
     // Cree la structure Token
-    struct Token *new = malloc(sizeof(struct Token));
-    if (*(lex->input + lex->pos) == '\'')
-    {
-        new->str = lex->input + lex->pos + 1;
-        new->len = l - 2;
-        new->is_printVar = false;
-    }
-    else if (*(lex->input + lex->pos) == '\"')
-    {
-        new->str = lex->input + lex->pos + 1;
-        new->len = l - 2;
-        new->is_printVar = true;
-    }
-    else
-    {
-        new->str = lex->input + lex->pos;
-        new->len = l;
-    }
-
-    // augmente la position du lexer de l (le mot)
-    lex->pos += l;
+    struct Token *new = crate_token(lex, l);
 
     return new;
 }

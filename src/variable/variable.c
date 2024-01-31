@@ -7,18 +7,18 @@
 
 #include "../lexer/lexer.h"
 
-bool lettre(char c)
+static bool lettre(char c)
 {
     return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
 }
 
-bool alphanumerique(char c)
+static bool alphanumerique(char c)
 {
     return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')
         || (c >= '0' && c <= '9');
 }
 
-bool verif_nom_variable(struct Token *token)
+static bool verif_nom_variable(struct Token *token)
 {
     // du type (NOM_DE_LA_VARIABLE)*$
     if (token->str == 0 || lettre(*token->str) == false)
@@ -41,7 +41,7 @@ bool verif_nom_variable(struct Token *token)
     return true;
 }
 
-bool verif_nom_variable2(struct Token *token)
+static bool verif_nom_variable2(struct Token *token)
 {
     // du type (NOM_DE_LA_VARIABLE)=$
     if (token->str == 0 || lettre(*token->str) == false)
@@ -65,7 +65,7 @@ bool verif_nom_variable2(struct Token *token)
     return true;
 }
 
-bool is_variable(struct Command *command)
+static bool is_variable(struct Command *command)
 /*
 ** verifi si le nom de variable est bon
 */
@@ -98,7 +98,7 @@ struct Variable *varialble_parsing(struct Command *command)
     size_t t = 0;
     if (command->nbtoken == 2)
     {
-        variable->name->is_printVar = command->tokenlist[0]->is_printVar;
+        variable->name->quote = command->tokenlist[1]->quote;
         variable->name->str = command->tokenlist[0]->str;
         variable->name->len = command->tokenlist[0]->len - 1;
 
@@ -114,7 +114,7 @@ struct Variable *varialble_parsing(struct Command *command)
     }
     else
     {
-        variable->name->is_printVar = true;
+        variable->name->quote = NOT_QUOTE;
         size_t pos_egal = 0;
         struct Token *token = command->tokenlist[0]; // alias
         while (token->str[pos_egal] != '=')
@@ -126,6 +126,7 @@ struct Variable *varialble_parsing(struct Command *command)
         variable->name->len = pos_egal;
 
         t = command->tokenlist[0]->len - pos_egal;
+        t--;
         variable->valeur = malloc(sizeof(char) * (t + 1));
         size_t i = 0;
         while (i < t)

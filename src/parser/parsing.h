@@ -31,11 +31,18 @@ enum Grammaire
     END
 };
 
+enum Quote
+{
+    SIMPLE_QUOTE,
+    DOUBLE_QUOTE,
+    NOT_QUOTE
+};
+
 struct Token
 {
     char *str;
     size_t len;
-    bool is_printVar;
+    enum Quote quote;
 };
 
 /*
@@ -48,7 +55,7 @@ struct Command
 };
 
 /*
-** Structs et enum définissant l'AST
+** Structs et enum definissant l'AST
 */
 enum Ast_type
 {
@@ -118,7 +125,7 @@ union Ast_union
     struct Ast_if aif;
     struct Ast_neg neg;
     struct Ast_and and;
-    struct Ast_or or;
+    struct Ast_or or ;
 };
 
 struct Ast
