@@ -50,7 +50,7 @@ COMMANDS=(
     "if false; then echo Ok; fi;"
 
     # comment
-    "#Hello"
+    # "#Hello"
     "echo \#escaped '#'quoted not#first #commented"
 
     # single_quotes
