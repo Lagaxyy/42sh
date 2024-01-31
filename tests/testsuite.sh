@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Emplacement de votre shell 42sh
-YOUR_SHELL="./src/42sh"
+YOUR_SHELL="../src/42sh"
 
 # Emplacement du shell par défaut (par exemple, Bash)
 DEFAULT_SHELL="/bin/sh"
@@ -57,6 +57,17 @@ COMMANDS=(
     "echo 'Hello'"
     # "echo 'Hello" // Recoit un message d'erreur sur la sortie standard ??
     "/bin/seq '1' '1' '123'"
+
+
+    # Avec des variables
+    "fruit='apple'; echo I like \$fruit"
+    "fruit='apple'; fruit='babana'; echo I like \$fruit"
+
+    # Avec des boucles for
+    "for planet in Mars Saturne Terre; do echo \$planet; done"
+    "Mars='Bruno'; for planet in \$Mars Saturne Terre; do echo \$planet; done"
+    "for file in /etc/*.conf; do echo \$file; done"
+
 )
 
 # couleur
