@@ -18,7 +18,7 @@ struct ListVariable *variables = NULL;
 // fonctions selon le type du noeud
 typedef int (*node_type)(struct Ast *ast);
 
-int exec_ast_sc(struct Ast *ast)
+static int exec_ast_sc(struct Ast *ast)
 /*
 ** Execute le noeud simple_command
 */
@@ -41,21 +41,26 @@ int exec_ast_sc(struct Ast *ast)
             return 1;
         return 0;
     }
-    merge_token(sc->cmd, variables);
-    if (strncmp(sc->cmd->tokenlist[0]->str, "echo", 4) == 0)
+    //merge_token(sc->cmd, variables);
+    struct Ast *ast_var = cpy_cmd_with_var(sc->cmd, variables);
+    struct Ast_simple_cmd *scvar = &ast_var->data.sc; // Alias pratique
+    
+    if (strncmp(scvar->cmd->tokenlist[0]->str, "echo", 4) == 0)
         // ECHO
-        rep = my_echo(ast);
-    else if (strncmp(sc->cmd->tokenlist[0]->str, "true", 4) == 0)
+        rep = my_echo(ast_var);
+    else if (strncmp(scvar->cmd->tokenlist[0]->str, "true", 4) == 0)
         rep = 0;
-    else if (strncmp(sc->cmd->tokenlist[0]->str, "false", 4) == 0)
+    else if (strncmp(scvar->cmd->tokenlist[0]->str, "false", 4) == 0)
         rep = 1;
     else
-        rep = run_cmds(ast);
+        rep = run_cmds(ast_var);
+    
+    free_cmd_var(ast_var);
 
     return rep;
 }
 
-int exec_ast_if(struct Ast *ast)
+static int exec_ast_if(struct Ast *ast)
 /*
 ** Execute le noeud if_command
 */
@@ -82,7 +87,7 @@ int exec_ast_if(struct Ast *ast)
     ;
 }
 
-int exec_ast_pipe(struct Ast *ast)
+static int exec_ast_pipe(struct Ast *ast)
 {
     if (!ast)
         return 1;
@@ -93,7 +98,7 @@ int exec_ast_pipe(struct Ast *ast)
     return exec_pipe(pl->left, pl->right);
 }
 
-int exec_ast_until(struct Ast *ast)
+static int exec_ast_until(struct Ast *ast)
 {
     if (!ast)
         return 1;
@@ -109,7 +114,7 @@ int exec_ast_until(struct Ast *ast)
     return res;
 }
 
-int exec_ast_while(struct Ast *ast)
+static int exec_ast_while(struct Ast *ast)
 {
     if (!ast)
         return 1;
@@ -125,7 +130,7 @@ int exec_ast_while(struct Ast *ast)
     return res;
 }
 
-int exec_ast_and(struct Ast *ast)
+static int exec_ast_and(struct Ast *ast)
 {
     if (!ast)
         return 1;
@@ -139,7 +144,7 @@ int exec_ast_and(struct Ast *ast)
     return exec_ast(and->right);
 }
 
-int exec_ast_or(struct Ast *ast)
+static int exec_ast_or(struct Ast *ast)
 {
     if (!ast)
         return 1;
@@ -153,7 +158,7 @@ int exec_ast_or(struct Ast *ast)
     return res;
 }
 
-int exec_ast_neg(struct Ast *ast)
+static int exec_ast_neg(struct Ast *ast)
 {
     if (!ast)
         return 1;

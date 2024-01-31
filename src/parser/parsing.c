@@ -7,7 +7,7 @@
 
 #include "../lexer/lexer.h"
 
-struct Command *init_command(void)
+static struct Command *init_command(void)
 /*
 ** Renvoie une struct Command initialisee
 */
@@ -18,7 +18,7 @@ struct Command *init_command(void)
     return c;
 }
 
-void ajout_command(struct Command *c, struct Token *token)
+static void ajout_command(struct Command *c, struct Token *token)
 /*
 ** Ajoute un WORD a la struct Command
 */
@@ -29,7 +29,7 @@ void ajout_command(struct Command *c, struct Token *token)
     c->nbtoken++;
 }
 
-struct Ast *simple_command(struct Lexer *lex)
+static struct Ast *simple_command(struct Lexer *lex)
 /*
 ** Renvoie un noeud de l'AST de type
 ** simple_command
@@ -71,7 +71,7 @@ struct Ast *simple_command(struct Lexer *lex)
     return ast;
 }
 
-struct Ast *elif_command(struct Lexer *lex)
+static struct Ast *elif_command(struct Lexer *lex)
 {
     struct Ast *ast = calloc(1, sizeof(struct Ast));
     if (!ast)
@@ -109,7 +109,7 @@ struct Ast *elif_command(struct Lexer *lex)
     return ast;
 }
 
-struct Ast *if_command(struct Lexer *lex)
+static struct Ast *if_command(struct Lexer *lex)
 /*
 ** Renvoie un noeud de l'AST de type
 ** if_command
@@ -172,7 +172,7 @@ struct Ast *if_command(struct Lexer *lex)
     return ast;
 }
 
-struct Ast *until_cmd(struct Lexer *lex)
+static struct Ast *until_cmd(struct Lexer *lex)
 /*
 ** rule_until = 'until' compound_list 'do' compound_list 'done' ;
 */
@@ -215,7 +215,7 @@ struct Ast *until_cmd(struct Lexer *lex)
     return ast;
 }
 
-struct Ast *while_cmd(struct Lexer *lex)
+static struct Ast *while_cmd(struct Lexer *lex)
 /*
 ** rule_while = 'while' compound_list 'do' compound_list 'done' ;
 */
@@ -258,7 +258,7 @@ struct Ast *while_cmd(struct Lexer *lex)
     return ast;
 }
 
-struct Ast *pipelines_command(struct Lexer *lex)
+static struct Ast *pipelines_command(struct Lexer *lex)
 /*
 ** Renvoie un noeud de l'AST de type
 ** pipelines_command
@@ -299,7 +299,7 @@ struct Ast *pipelines_command(struct Lexer *lex)
 }
 
 // implémentation 'not' command '!'
-struct Ast *neg_command(struct Lexer *lex)
+static struct Ast *neg_command(struct Lexer *lex)
 {
     if (!lexerVerif(lex, NEG_GRM))
         return pipelines_command(lex);
@@ -325,7 +325,7 @@ struct Ast *neg_command(struct Lexer *lex)
 }
 
 // implémentation de 'or' command '||'
-struct Ast *or_command(struct Lexer *lex)
+static struct Ast *or_command(struct Lexer *lex)
 {
     struct Ast *ast = neg_command(lex);
     if (ast == NULL)
@@ -357,7 +357,7 @@ struct Ast *or_command(struct Lexer *lex)
 }
 
 // implémentation de 'and' command '&&'
-struct Ast *and_command(struct Lexer *lex)
+static struct Ast *and_command(struct Lexer *lex)
 {
     struct Ast *ast = or_command(lex);
     if (ast == NULL)
