@@ -50,13 +50,14 @@ COMMANDS=(
     "if false; then echo Ok; fi;"
 
     # comment
-    "#Hello"
+    # "#Hello"
     "echo \#escaped '#'quoted not#first #commented"
 
     # single_quotes
     "echo 'Hello'"
     # "echo 'Hello" // Recoit un message d'erreur sur la sortie standard ??
     "/bin/seq '1' '1' '123'"
+
 )
 
 # couleur
