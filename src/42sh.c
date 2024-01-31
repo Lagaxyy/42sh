@@ -4,6 +4,7 @@
 
 #include <ctype.h>
 #include <err.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -70,6 +71,20 @@ int aux_run(char *input)
     return ret;
 }
 
+bool present_semicolon(char *str, size_t l)
+{
+    int i = l - 1;
+    while ( i >= 0 && (str[i] == ' ' || str[i] == '\t' || str[i] == '\r' || str[i] == '\n'))
+    {
+        if(str[i] != ';')
+        {
+            return true;
+        }
+        i--;
+    }
+    return false;
+}
+
 char *InputStandardInStr(void)
 /*
 ** Récupère l'input depuis
@@ -91,8 +106,19 @@ char *InputStandardInStr(void)
         l = strlen(content);
         if (content[l - 1] != '\n')
         {
+            len += l;
+            res = realloc(res, len + 1);
             strcat(res, content);
             break;
+        }
+        if (l > 2 && present_semicolon(content, l))
+        {
+            len += l;
+            res = realloc(res, len + 1);
+            strcat(res, content);
+            res[len - 1] = '\n';
+            res[len] = 0;
+            continue;
         }
         if (l > 2)
         {
@@ -106,10 +132,8 @@ char *InputStandardInStr(void)
         }
     }
     free(content);
-
     return res;
 }
-
 
 char *fileInStr(char *path)
 /*
@@ -142,8 +166,19 @@ char *fileInStr(char *path)
         l = strlen(content);
         if (content[l - 1] != '\n')
         {
+            len += l;
+            res = realloc(res, len + 1);
             strcat(res, content);
             break;
+        }
+        if (l > 2 && present_semicolon(content, l))
+        {
+            len += l;
+            res = realloc(res, len + 1);
+            strcat(res, content);
+            res[len - 1] = '\n';
+            res[len] = 0;
+            continue;
         }
         if (l > 2)
         {
