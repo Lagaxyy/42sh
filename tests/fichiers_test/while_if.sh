@@ -1,11 +1,11 @@
-#!/bin/bash
-
 # Script avec while et if
-count=1
+var=true
 
-while [ $count -le 5 ]; do
-    if [ $count -eq 3 ]; then
-        echo "Compte atteint : $count"
+while $var ; do
+    echo $var
+    if $var; then
+        var='false'
     fi
-    ((count++))
+    echo $var
 done
+echo $var

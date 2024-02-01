@@ -1,5 +1,3 @@
-#!/bin/bash
-
 # Exemple d'utilisation de true et false
 if true; then
     echo "Condition vraie."

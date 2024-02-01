@@ -1,10 +1,10 @@
-#!/bin/sh
+#!/bin/bash
 
 # Emplacement de votre shell 42sh
-YOUR_SHELL="../src/42sh"
+YOUR_SHELL="./src/42sh"
 
 # Emplacement du shell par défaut (par exemple, Bash)
-DEFAULT_SHELL="/bin/sh"
+DEFAULT_SHELL="/bin/bash"
 
 # Répertoire de travail pour les tests
 TEST_DIR="d"
@@ -66,3 +66,10 @@ rm -r "$TEST_DIR"
 
 echo -e "${GREEN}Tests passed: $TEST_SUCCESS${NC}"
 echo -e "${RED}Tests failed: $TEST_ECHEC${NC}"
+
+# Check si tous les tests sont valides
+if [ $TEST_ECHEC -gt 0 ]; then
+    exit 1
+fi
+
+exit 0
