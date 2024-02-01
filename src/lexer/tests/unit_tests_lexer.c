@@ -423,7 +423,7 @@ Test(lexer, single_quotes)
     size_t expected_len = 4;
     char *expected_str = "Test";
 
-    cr_expect_eq(test_token->len, expected_len, "Expected: %d. Got: %d.",
+    cr_expect_eq(test_token->len, expected_len, "Expected: %zu. Got: %zu.",
                  expected_len, test_token->len);
     for (size_t i = 0; i < test_token->len; i++)
         cr_expect_eq(test_token->str[i], expected_str[i],
@@ -468,8 +468,7 @@ Test(lexer, comment)
     }
 }
 
-// === Tests classiques
-// =========================================================
+// === Tests classiques =======================================================
 
 Test(lexer, one_word)
 {
@@ -480,7 +479,7 @@ Test(lexer, one_word)
     size_t expected_len = 4;
     char *expected_str = "Test";
 
-    cr_expect_eq(test_token->len, expected_len, "Expected: %d. Got: %d.",
+    cr_expect_eq(test_token->len, expected_len, "Expected: %zu. Got: %zu.",
                  expected_len, test_token->len);
     for (size_t i = 0; i < test_token->len; i++)
         cr_expect_eq(test_token->str[i], expected_str[i],
@@ -511,7 +510,7 @@ Test(lexer, many_words)
         char *expected_str = expected_strlist[i];
         size_t expected_len = strlen(expected_str);
 
-        cr_expect_eq(test_token->len, expected_len, "Expected: %d. Got: %d.",
+        cr_expect_eq(test_token->len, expected_len, "Expected: %zu. Got: %zu.",
                      expected_len, test_token->len);
         for (size_t j = 0; j < test_token->len; j++)
             cr_expect_eq(test_token->str[j], expected_str[j],
@@ -524,7 +523,7 @@ Test(lexer, many_words)
         i++;
     }
 
-    cr_expect_eq(i, size, "Expected: %d. Got: %d.", size, i);
+    cr_expect_eq(i, size, "Expected: %zu. Got: %zu.", size, i);
     free_lexer(test_lexer);
 }
 
@@ -547,7 +546,7 @@ Test(lexer, blank_first)
         char *expected_str = expected_strlist[i];
         size_t expected_len = strlen(expected_str);
 
-        cr_expect_eq(test_token->len, expected_len, "Expected: %d. Got: %d.",
+        cr_expect_eq(test_token->len, expected_len, "Expected: %zu. Got: %zu.",
                      expected_len, test_token->len);
         for (size_t j = 0; j < test_token->len; j++)
             cr_expect_eq(test_token->str[j], expected_str[j],
@@ -560,6 +559,6 @@ Test(lexer, blank_first)
         i++;
     }
 
-    cr_expect_eq(i, size, "Expected: %d. Got: %d.", size, i);
+    cr_expect_eq(i, size, "Expected: %zu. Got: %zu.", size, i);
     free_lexer(test_lexer);
 }
