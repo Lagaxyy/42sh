@@ -63,7 +63,7 @@ int aux_run(char *input)
 
     struct Lexer *lexer = init_lexer(input);
     struct Ast *ast = parse_command(lexer);
-    int ret = exec_ast(ast);
+    int ret = exec_ast_init(ast);
     free_lexer(lexer);
     free_ast(ast);
 

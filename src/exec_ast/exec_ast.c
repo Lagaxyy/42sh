@@ -170,6 +170,40 @@ static int exec_ast_neg(struct Ast *ast)
     return !exec_ast(neg->prg);
 }
 
+static int exec_ast_for(struct Ast *ast)
+{
+    if (!ast)
+        return 1;
+    assert(ast->type == FOR_CMD);
+
+    struct Ast_for *fr = &ast->data.fr;
+    struct Ast_simple_cmd *cd = &fr->valeurs->data.sc;
+    struct Command *cmd = cd->cmd;
+
+    struct Variable *var = NULL;
+    int res = 0;
+    char *c = NULL;
+    for (size_t i = 0; i < cmd->nbtoken; i++)
+    {
+        // créer la variable
+        var = malloc(sizeof(struct Variable));
+        var->name = malloc(sizeof(struct Token));
+        var->name->str = fr->var->str;
+        var->name->len = fr->var->len;
+        var->name->quote = fr->var->quote;
+
+        c = malloc((cmd->tokenlist[i]->len + 1) * sizeof(char));
+        c = strncpy(c, cmd->tokenlist[i]->str, cmd->tokenlist[i]->len);
+        c[cmd->tokenlist[i]->len] = 0;
+        var->valeur = c;
+
+        // appeler present_or_add
+        present_or_add(&variables, var);
+        res = exec_ast(fr->do_cdt);
+    }
+    return res;
+}
+
 int exec_ast(struct Ast *ast)
 /*
 ** Execute l'AST
@@ -184,17 +218,24 @@ int exec_ast(struct Ast *ast)
         [SIMPLE_CMD] = &exec_ast_sc,     [IF_CMD] = &exec_ast_if,
         [PIPELINE_CMD] = &exec_ast_pipe, [WHILE_CMD] = &exec_ast_while,
         [UNTIL_CMD] = &exec_ast_until,   [AND_CMD] = &exec_ast_and,
-        [OR_CMD] = &exec_ast_or,         [NEG_CMD] = &exec_ast_neg
+        [OR_CMD] = &exec_ast_or,         [NEG_CMD] = &exec_ast_neg,
+        [FOR_CMD] = &exec_ast_for
     };
 
     int i = (*functions[ast->type])(ast);
     if (ast->next == NULL)
     {
-        free_list(variables);
         return i;
     }
     else
     {
         return exec_ast(ast->next);
     }
+}
+
+int exec_ast_init(struct Ast *ast)
+{
+    int ret = exec_ast(ast);
+    free_list(variables);
+    return ret;
 }

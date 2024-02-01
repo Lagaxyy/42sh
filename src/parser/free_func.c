@@ -72,6 +72,20 @@ void free_ast_pl(struct Ast *ast)
     free_ast(pl->right);
 }
 
+void free_ast_for(struct Ast *ast)
+{
+    if (!ast)
+        return;
+
+    // Alias pratique
+    struct Ast_for *fr = &ast->data.fr;
+
+    // Libere la memoire allouee
+    free(fr->var);
+    free_ast(fr->valeurs);
+    free_ast(fr->do_cdt);
+}
+
 void free_ast_while(struct Ast *ast)
 {
     if (!ast)
@@ -155,6 +169,9 @@ void free_ast(struct Ast *ast)
     // break;
     case PIPELINE_CMD:
         free_ast_pl(ast);
+        break;
+    case FOR_CMD:
+        free_ast_for(ast);
         break;
     case WHILE_CMD:
         free_ast_while(ast);

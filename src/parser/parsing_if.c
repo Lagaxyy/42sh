@@ -36,6 +36,7 @@ struct Ast *elif_command(struct Lexer *lex)
         free_ast(ast);
         return NULL;
     }
+    lexerVerif(lex, SEMICOLON);
     aif->cmd1 = parse_start(lex);
 
     // Récupère le 'elif' ou 'else'
@@ -45,6 +46,7 @@ struct Ast *elif_command(struct Lexer *lex)
     }
     else if (lexerVerif(lex, ELSE_GRM))
     {
+        lexerVerif(lex, SEMICOLON);
         aif->cmd2 = parse_start(lex);
     }
     else
@@ -68,7 +70,7 @@ struct Ast *if_command(struct Lexer *lex)
     if (!lexerVerif(lex, IF_GRM))
     {
         // On continue
-        return simple_command(lex);
+        return for_cmd(lex);
     }
 
     // Alloue la mémoire pour la struct Ast et définit le type
@@ -95,6 +97,7 @@ struct Ast *if_command(struct Lexer *lex)
         free_ast(ast);
         return NULL;
     }
+    lexerVerif(lex, SEMICOLON);
     aif->cmd1 = parse_start(lex);
 
     // Trouve le 'elif' ou 'else'
@@ -104,6 +107,7 @@ struct Ast *if_command(struct Lexer *lex)
     }
     else if (lexerVerif(lex, ELSE_GRM))
     {
+        lexerVerif(lex, SEMICOLON);
         aif->cmd2 = parse_start(lex);
     }
     else
