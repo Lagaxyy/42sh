@@ -38,7 +38,7 @@ static bool check_word(char *tok, size_t len)
         return false;
     if (*tok == ';')
         return false;
-    if (len == 2 && strncmp(tok, "in", 2) && strspn(tok + 2, " \n\t") > 0)
+    if (len > 2 && strncmp(tok, "in", 2) && strspn(tok + 2, " \n\t") > 0)
         return false;
     // si il y a une ' ouvrante mais pas fermante
     if (tok[0] == '\'' && tok[len - 1] != '\'')
@@ -122,9 +122,9 @@ static int check_token(char *token, enum Grammaire grm)
     if (grm == IF_GRM)
         return strncmp(token, "if", 2) == 0 && strspn(token + 2, " \n\t") > 0;
     else if (grm == THEN_GRM)
-        return strncmp(token, "then", 4) == 0 && strspn(token + 4, " \n\t") > 0;
+        return strncmp(token, "then", 4) == 0 && strspn(token + 4, " ;\n\t") > 0;
     else if (grm == ELSE_GRM)
-        return strncmp(token, "else", 4) == 0 && strspn(token + 4, " \n\t") > 0;
+        return strncmp(token, "else", 4) == 0 && strspn(token + 4, " ;\n\t") > 0;
     else if (grm == ELIF_GRM)
         return strncmp(token, "elif", 4) == 0 && strspn(token + 4, " \n\t") > 0;
     else if (grm == FI_GRM)
@@ -142,7 +142,7 @@ static int check_token(char *token, enum Grammaire grm)
     else if (grm == IN_GRM)
         return strncmp(token, "in", 2) == 0 && strspn(token + 2, " \n\t") > 0;
     else if (grm == DO_GRM)
-        return strncmp(token, "do", 2) == 0 && strspn(token + 2, " \n\t") > 0;
+        return strncmp(token, "do", 2) == 0 && strspn(token + 2, " ;\n\t") > 0;
     else if (grm == DONE_GRM)
         return strncmp(token, "done", 4) == 0
             && (*(token + 4) == ';' || *(token + 4) == '\0'

@@ -39,6 +39,7 @@ struct Ast *for_cmd(struct Lexer *lex)
         free_ast(ast);
         return NULL;
     }
+    lexerVerif(lex, SEMICOLON);
     // ajout de la boucle
     fr->do_cdt = parse_start(lex);
 
@@ -88,6 +89,7 @@ struct Ast *until_cmd(struct Lexer *lex)
         free(ast);
         return NULL;
     }
+    lexerVerif(lex, SEMICOLON);
     ut->do_cdt = parse_start(lex);
     if (ut->do_cdt == NULL)
     {
@@ -142,6 +144,7 @@ struct Ast *while_cmd(struct Lexer *lex)
         free(ast);
         return NULL;
     }
+    lexerVerif(lex, SEMICOLON);
     wh->do_cdt = parse_start(lex);
     if (wh->do_cdt == NULL)
     {
