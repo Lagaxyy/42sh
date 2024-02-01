@@ -23,3 +23,7 @@ jobs:
       run: make
     - name: testsuite
       run: ./tests/CI_testsuite.sh
+    - name: testsuite2
+      run: ./tests/testsuite_with_script_sup.sh
+    - name: testsuite3
+      run: ./tests/testsuite_with_script.sh
