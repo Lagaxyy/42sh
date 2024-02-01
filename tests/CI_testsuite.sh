@@ -58,6 +58,13 @@ COMMANDS=(
     # "echo 'Hello" // Recoit un message d'erreur sur la sortie standard ??
     "/bin/seq '1' '1' '123'"
 
+    # command cd
+    "if cd ouiii ; then echo true ; else echo false ; fi"
+    "if cd . ; then echo true ; else echo false ; fi"
+    "cd ."
+    "cd sahh"
+    "cd .."
+    "cd -"
 )
 
 # couleur

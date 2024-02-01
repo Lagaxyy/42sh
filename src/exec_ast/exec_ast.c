@@ -42,7 +42,7 @@ static int exec_ast_sc(struct Ast *ast)
         return 0;
     }
     //merge_token(sc->cmd, variables);
-    struct Ast *ast_var = cpy_cmd_with_var(sc->cmd, variables);
+    struct Ast *ast_var = cpy_cmd_with_var(sc->cmd, variables); // remplace les variables par leur valeur
     struct Ast_simple_cmd *scvar = &ast_var->data.sc; // Alias pratique
     
     if (strncmp(scvar->cmd->tokenlist[0]->str, "echo", 4) == 0)
@@ -50,8 +50,10 @@ static int exec_ast_sc(struct Ast *ast)
         rep = my_echo(ast_var);
     else if (strncmp(scvar->cmd->tokenlist[0]->str, "true", 4) == 0)
         rep = 0;
-    else if (strncmp(scvar->cmd->tokenlist[0]->str, "false", 4) == 0)
+    else if (strncmp(scvar->cmd->tokenlist[0]->str, "false", 5) == 0)
         rep = 1;
+    else if (strncmp(scvar->cmd->tokenlist[0]->str, "cd", 2) == 0)
+        rep = execute_cd(ast_var);
     else
         rep = run_cmds(ast_var);
     
