@@ -136,7 +136,7 @@ union Ast_union
     struct Ast_if aif;
     struct Ast_neg neg;
     struct Ast_and and;
-    struct Ast_or or;
+    struct Ast_or or ;
 };
 
 struct Ast

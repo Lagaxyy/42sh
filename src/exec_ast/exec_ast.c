@@ -41,20 +41,20 @@ static int exec_ast_sc(struct Ast *ast)
             return 1;
         return 0;
     }
-    //merge_token(sc->cmd, variables);
+    // merge_token(sc->cmd, variables);
     struct Ast *ast_var = cpy_cmd_with_var(sc->cmd, variables);
     struct Ast_simple_cmd *scvar = &ast_var->data.sc; // Alias pratique
-    
+
     if (strncmp(scvar->cmd->tokenlist[0]->str, "echo", 4) == 0)
         // ECHO
         rep = my_echo(ast_var);
     else if (strncmp(scvar->cmd->tokenlist[0]->str, "true", 4) == 0)
         rep = 0;
-    else if (strncmp(scvar->cmd->tokenlist[0]->str, "false", 4) == 0)
+    else if (strncmp(scvar->cmd->tokenlist[0]->str, "false", 5) == 0)
         rep = 1;
     else
         rep = run_cmds(ast_var);
-    
+
     free_cmd_var(ast_var);
 
     return rep;

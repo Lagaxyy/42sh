@@ -1,6 +1,5 @@
-#include "parsing.h"
-
 #include "../lexer/lexer.h"
+#include "parsing.h"
 
 struct Ast *elif_command(struct Lexer *lex)
 /*

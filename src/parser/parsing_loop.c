@@ -1,6 +1,5 @@
-#include "parsing.h"
-
 #include "../lexer/lexer.h"
+#include "parsing.h"
 
 struct Ast *for_cmd(struct Lexer *lex)
 {

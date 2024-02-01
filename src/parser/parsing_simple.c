@@ -1,6 +1,5 @@
-#include "parsing.h"
-
 #include "../lexer/lexer.h"
+#include "parsing.h"
 
 struct Command *init_command(void)
 /*

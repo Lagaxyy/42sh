@@ -33,7 +33,8 @@ static struct Command *cpy_cmd(struct Command *cmd, struct Command *command)
 ** si oui il renvoit la variable asociée
 ** sinon renvoi null
 */
-static struct Variable *is_var(struct Token *token, struct ListVariable *ListVariable, size_t i)
+static struct Variable *is_var(struct Token *token,
+                               struct ListVariable *ListVariable, size_t i)
 {
     if (i >= token->len || token->str[i] != '$')
         return NULL;
@@ -59,7 +60,8 @@ static void merge_token_var(struct Token *token, struct Variable *var, size_t i)
     first[i] = 0;
     char *last = malloc(token->len - i);
     last = strcpy(last, token->str + i + var->name->len + 1);
-    snprintf(token->str, token->len + l + 1, "%s%s%s", first, var->valeur, last);
+    snprintf(token->str, token->len + l + 1, "%s%s%s", first, var->valeur,
+             last);
     free(first);
     free(last);
     token->len = strlen(token->str);
@@ -70,7 +72,8 @@ static void merge_token_var(struct Token *token, struct Variable *var, size_t i)
 ** si une variable a été trouvé, retourne 1
 ** sinon retourn 0
 */
-static void add_var_double_quote(struct Token *token, struct ListVariable *ListVariable)
+static void add_var_double_quote(struct Token *token,
+                                 struct ListVariable *ListVariable)
 {
     size_t i = 0;
     struct Variable *var = NULL;
@@ -89,9 +92,10 @@ static void add_var_double_quote(struct Token *token, struct ListVariable *ListV
 }
 
 /*
-** insert a la i eme place le token 
+** insert a la i eme place le token
 */
-static void insert_token_at_cmd(struct Command *cmd, struct Token *token, size_t i)
+static void insert_token_at_cmd(struct Command *cmd, struct Token *token,
+                                size_t i)
 {
     size_t j = cmd->nbtoken;
     struct Token *aux = NULL;
@@ -147,7 +151,8 @@ static void add_token_var(struct Command *cmd, struct Variable *var, size_t i)
 ** si une variable a été trouvé, retourne 1
 ** sinon retourn 0
 */
-static int add_var_not_quote(struct Command *cmd, struct ListVariable *ListVariable, size_t i)
+static int add_var_not_quote(struct Command *cmd,
+                             struct ListVariable *ListVariable, size_t i)
 {
     struct Token *token = cmd->tokenlist[i];
     size_t rep = 0;
@@ -175,7 +180,8 @@ static int add_var_not_quote(struct Command *cmd, struct ListVariable *ListVaria
 ** modifie la command pour ajouter les variable au bonne endroi
 ** renvoie la command modifier
 */
-static struct Command *add_var(struct Command *cmd, struct ListVariable *ListVariable)
+static struct Command *add_var(struct Command *cmd,
+                               struct ListVariable *ListVariable)
 {
     size_t i = 0;
     while (i < cmd->nbtoken)
@@ -196,7 +202,8 @@ static struct Command *add_var(struct Command *cmd, struct ListVariable *ListVar
     return cmd;
 }
 
-struct Ast *cpy_cmd_with_var(struct Command *command, struct ListVariable *ListVariable)
+struct Ast *cpy_cmd_with_var(struct Command *command,
+                             struct ListVariable *ListVariable)
 {
     struct Command *cmd = malloc(sizeof(struct Command));
     cmd->nbtoken = 0;

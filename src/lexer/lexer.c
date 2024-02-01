@@ -122,9 +122,11 @@ static int check_token(char *token, enum Grammaire grm)
     if (grm == IF_GRM)
         return strncmp(token, "if", 2) == 0 && strspn(token + 2, " \n\t") > 0;
     else if (grm == THEN_GRM)
-        return strncmp(token, "then", 4) == 0 && strspn(token + 4, " ;\n\t") > 0;
+        return strncmp(token, "then", 4) == 0
+            && strspn(token + 4, " ;\n\t") > 0;
     else if (grm == ELSE_GRM)
-        return strncmp(token, "else", 4) == 0 && strspn(token + 4, " ;\n\t") > 0;
+        return strncmp(token, "else", 4) == 0
+            && strspn(token + 4, " ;\n\t") > 0;
     else if (grm == ELIF_GRM)
         return strncmp(token, "elif", 4) == 0 && strspn(token + 4, " \n\t") > 0;
     else if (grm == FI_GRM)

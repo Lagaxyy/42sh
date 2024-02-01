@@ -1,6 +1,5 @@
-#include "parsing.h"
-
 #include "../lexer/lexer.h"
+#include "parsing.h"
 
 struct Ast *pipelines_command(struct Lexer *lex)
 /*
@@ -112,7 +111,7 @@ struct Ast *or_command(struct Lexer *lex)
         ast_aux->next = NULL;
 
         // Alias pratique
-        struct Ast_or *or = &ast_aux->data.or;
+        struct Ast_or * or = &ast_aux->data.or ;
 
         // Parse la commande
         or->left = ast;
