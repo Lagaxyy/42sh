@@ -2,6 +2,54 @@
 
 #include "../lexer/lexer.h"
 
+struct Ast *for_cmd(struct Lexer *lex)
+{
+    if (!lexerVerif(lex, FOR_GRM))
+        return simple_command(lex);
+
+    // Alloue la mémoire pour la struct Ast et définit le type
+    struct Ast *ast = calloc(1, sizeof(struct Ast));
+    if (!ast)
+        return NULL;
+    ast->type = FOR_CMD;
+    ast->next = NULL;
+
+    // Alias pratique
+    struct Ast_for *fr = &ast->data.fr;
+
+    // requpere la variable
+    fr->var = lexer(lex, WORD);
+
+    if (fr->var == NULL || !lexerVerif(lex, IN_GRM))
+    {
+        free_ast(ast);
+        return NULL;
+    }
+
+    fr->valeurs = simple_command(lex);
+
+    if (!lexerVerif(lex, SEMICOLON))
+    {
+        free_ast(ast);
+        return NULL;
+    }
+
+    if (!lexerVerif(lex, DO_GRM))
+    {
+        free_ast(ast);
+        return NULL;
+    }
+    // ajout de la boucle
+    fr->do_cdt = parse_start(lex);
+
+    if (!lexerVerif(lex, DONE_GRM))
+    {
+        free_ast(ast);
+        return NULL;
+    }
+    return ast;
+}
+
 struct Ast *until_cmd(struct Lexer *lex)
 /*
 ** Renvoie un noeud de l'AST de type

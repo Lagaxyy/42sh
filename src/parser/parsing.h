@@ -21,6 +21,8 @@ enum Grammaire
     FI_GRM,
     WHILE_GRM,
     UNTIL_GRM,
+    FOR_GRM,
+    IN_GRM,
     DO_GRM,
     DONE_GRM,
     NEG_GRM,
@@ -63,6 +65,7 @@ enum Ast_type
     PIPELINE_CMD,
     WHILE_CMD,
     UNTIL_CMD,
+    FOR_CMD,
     NEG_CMD,
     AND_CMD,
     OR_CMD,
@@ -116,16 +119,24 @@ struct Ast_or
     struct Ast *right;
 };
 
+struct Ast_for
+{
+    struct Token *var;
+    struct Ast *valeurs;
+    struct Ast *do_cdt;
+};
+
 union Ast_union
 {
     struct Ast_simple_cmd sc;
     struct Ast_pipelines pl;
     struct Ast_while wh;
     struct Ast_until ut;
+    struct Ast_for fr;
     struct Ast_if aif;
     struct Ast_neg neg;
     struct Ast_and and;
-    struct Ast_or or ;
+    struct Ast_or or;
 };
 
 struct Ast
@@ -142,6 +153,7 @@ struct Ast *parse_command(struct Lexer *lexer);
 struct Ast *parse_start(struct Lexer *lex);
 
 struct Ast *simple_command(struct Lexer *lex);
+struct Ast *for_cmd(struct Lexer *lex);
 struct Ast *if_command(struct Lexer *lex);
 struct Ast *elif_command(struct Lexer *lex);
 struct Ast *until_cmd(struct Lexer *lex);

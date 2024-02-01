@@ -38,6 +38,8 @@ static bool check_word(char *tok, size_t len)
         return false;
     if (*tok == ';')
         return false;
+    if (len == 2 && strncmp(tok, "in", 2) && strspn(tok + 2, " \n\t") > 0)
+        return false;
     // si il y a une ' ouvrante mais pas fermante
     if (tok[0] == '\'' && tok[len - 1] != '\'')
         return false;
@@ -135,11 +137,15 @@ static int check_token(char *token, enum Grammaire grm)
     else if (grm == UNTIL_GRM)
         return strncmp(token, "until", 5) == 0
             && strspn(token + 5, " \n\t") > 0;
+    else if (grm == FOR_GRM)
+        return strncmp(token, "for", 3) == 0 && strspn(token + 3, " \n\t") > 0;
+    else if (grm == IN_GRM)
+        return strncmp(token, "in", 2) == 0 && strspn(token + 2, " \n\t") > 0;
     else if (grm == DO_GRM)
         return strncmp(token, "do", 2) == 0 && strspn(token + 2, " \n\t") > 0;
     else if (grm == DONE_GRM)
         return strncmp(token, "done", 4) == 0
-            && (*(token + 2) == ';' || *(token + 2) == '\0'
+            && (*(token + 4) == ';' || *(token + 4) == '\0'
                 || *(token + 2) == ' ');
     else if (grm == SEMICOLON)
         return strncmp(token, ";", 1) == 0;
@@ -222,6 +228,8 @@ bool lexer_check(struct Lexer *lex)
     if (strncmp(lex->input + lex->pos, "else", 4) == 0)
         return true;
     if (strncmp(lex->input + lex->pos, "fi", 2) == 0)
+        return true;
+    if (strncmp(lex->input + lex->pos, "in", 2) == 0)
         return true;
     if (strncmp(lex->input + lex->pos, "do", 2) == 0)
         return true;

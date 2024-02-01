@@ -4,7 +4,7 @@
 
 void print_ast(struct Ast *ast, size_t depth);
 
-void print_space(size_t depth)
+static void print_space(size_t depth)
 {
     for (size_t i = 0; i < depth; ++i)
     {
@@ -12,7 +12,7 @@ void print_space(size_t depth)
     }
 }
 
-void print_simple_cmd(struct Ast *ast, size_t depth)
+static void print_simple_cmd(struct Ast *ast, size_t depth)
 {
     printf("SIMPLE COMMAND\n");
     // Alias pratique
@@ -39,7 +39,7 @@ void print_simple_cmd(struct Ast *ast, size_t depth)
     }
 }
 
-void print_if_cmd(struct Ast *ast, size_t depth)
+static void print_if_cmd(struct Ast *ast, size_t depth)
 {
     printf("IF\n");
     print_ast(ast->data.aif.cdt, depth + 2);
@@ -51,7 +51,7 @@ void print_if_cmd(struct Ast *ast, size_t depth)
     print_ast(ast->data.aif.cmd2, depth + 2);
 }
 
-void print_pipeline_cmd(struct Ast *ast, size_t depth)
+static void print_pipeline_cmd(struct Ast *ast, size_t depth)
 {
     printf("PIPELINES\n");
     print_space(depth);
@@ -62,7 +62,21 @@ void print_pipeline_cmd(struct Ast *ast, size_t depth)
     print_ast(ast->data.pl.right, depth + 2);
 }
 
-void print_while_cmd(struct Ast *ast, size_t depth)
+static void print_for_cmd(struct Ast *ast, size_t depth)
+{
+    printf("FOR\n");
+    print_space(depth + 2);
+    int s = ast->data.fr.var->len;
+    printf("Token %d: %.*s\n", 1, s, ast->data.fr.var->str);
+    print_space(depth);
+    printf("IN\n");
+    print_ast(ast->data.fr.valeurs, depth + 2);
+    print_space(depth);
+    printf("DO\n");
+    print_ast(ast->data.fr.do_cdt, depth + 2);
+}
+
+static void print_while_cmd(struct Ast *ast, size_t depth)
 {
     printf("WHILE\n");
     print_ast(ast->data.wh.cdt, depth + 2);
@@ -71,7 +85,7 @@ void print_while_cmd(struct Ast *ast, size_t depth)
     print_ast(ast->data.wh.do_cdt, depth + 2);
 }
 
-void print_until_cmd(struct Ast *ast, size_t depth)
+static void print_until_cmd(struct Ast *ast, size_t depth)
 {
     printf("WHILE\n");
     print_ast(ast->data.wh.cdt, depth + 2);
@@ -80,7 +94,7 @@ void print_until_cmd(struct Ast *ast, size_t depth)
     print_ast(ast->data.wh.do_cdt, depth + 2);
 }
 
-void print_and_cmd(struct Ast *ast, size_t depth)
+static void print_and_cmd(struct Ast *ast, size_t depth)
 {
     printf("AND\n");
     print_space(depth);
@@ -91,7 +105,7 @@ void print_and_cmd(struct Ast *ast, size_t depth)
     print_ast(ast->data.and.right, depth + 2);
 }
 
-void print_or_cmd(struct Ast *ast, size_t depth)
+static void print_or_cmd(struct Ast *ast, size_t depth)
 {
     printf("OR\n");
     print_space(depth);
@@ -102,7 +116,7 @@ void print_or_cmd(struct Ast *ast, size_t depth)
     print_ast(ast->data.or.right, depth + 2);
 }
 
-void print_neg_cmd(struct Ast *ast, size_t depth)
+static void print_neg_cmd(struct Ast *ast, size_t depth)
 {
     printf("NEG\n");
     print_ast(ast->data.neg.prg, depth + 2);
@@ -123,6 +137,9 @@ void print_ast(struct Ast *ast, size_t depth)
         break;
     case SIMPLE_CMD:
         print_simple_cmd(ast, depth);
+        break;
+    case FOR_CMD:
+        print_for_cmd(ast, depth);
         break;
     case WHILE_CMD:
         print_while_cmd(ast, depth);

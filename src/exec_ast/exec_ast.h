@@ -15,6 +15,11 @@ struct ListVariable
 int exec_ast(struct Ast *ast);
 
 /*
+** initialise la list de variable et execute l'arbre
+*/
+int exec_ast_init(struct Ast *ast);
+
+/*
 ** Implémentation du
 ** builtin echo
 */

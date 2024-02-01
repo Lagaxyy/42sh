@@ -5,7 +5,6 @@
 
 void free_list(struct ListVariable *list)
 {
-    return;
     while (list != NULL)
     {
         struct ListVariable *temp = list;
@@ -36,9 +35,11 @@ int present_or_add(struct ListVariable **list, struct Variable *new_var)
 
     if (found_var != NULL)
     {
-        struct Variable *supr = found_var;
-        found_var = new_var;
-        free_var(supr);
+        char *f = found_var->valeur;
+        found_var->valeur = new_var->valeur;
+        free(new_var->name);
+        free(new_var);
+        free(f);
         return 1;
     }
     else
