@@ -15,4 +15,11 @@ libparser_a_CPPFLAGS = -I$(top_srcdir)
 
 noinst_LIBRARIES = libparser.a
 
-#SUBDIRS = tests
+#check-local: libparser.a
+#	$(MAKE) -C tests $@
+
+#clean-local:
+#	rm -rf tests/ut_parser tests/ut_parser-unit_tests_parser.o tests/Makefile tests/.deps
+
+#cov:
+#	$(MAKE) -C tests $@

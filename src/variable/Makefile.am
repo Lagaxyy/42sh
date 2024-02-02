@@ -8,4 +8,11 @@ libvar_a_CPPFLAGS = -I$(top_srcdir)
 
 noinst_LIBRARIES = libvar.a
 
-#SUBDIRS = tests
+#check-local: libvar.a
+#	$(MAKE) -C tests $@
+
+#clean-local:
+#	rm -rf tests/ut_var tests/ut_var-unit_tests_var.o tests/Makefile tests/.deps
+
+#cov:
+#	$(MAKE) -C tests $@

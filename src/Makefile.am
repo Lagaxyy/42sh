@@ -15,3 +15,6 @@ SUBDIRS = lexer \
 		  mypipe \
 		  variable \
 		  exec_ast
+
+cov:
+	$(MAKE) -C lexer $@
