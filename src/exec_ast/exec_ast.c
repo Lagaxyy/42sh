@@ -5,6 +5,7 @@
 #include "exec_ast.h"
 
 #include <assert.h>
+#include <err.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -17,6 +18,20 @@ struct Info *info = NULL;
 // Pointeur de fonction pour rediriger vers les autres
 // fonctions selon le type du noeud
 typedef int (*node_type)(struct Ast *ast);
+
+static int strnint(char *str, size_t len)
+{
+    int val = 0;
+    for (size_t i = 0; i < len; i++)
+    {
+        if (str[i] < '0' || str[i] > '9')
+        {
+            errx(2, "Erreur convertion");
+        }
+        val = val * 10 + (str[i] - '0');
+    }
+    return val;
+}
 
 static int exec_ast_sc(struct Ast *ast)
 /*
@@ -52,6 +67,11 @@ static int exec_ast_sc(struct Ast *ast)
         rep = 0;
     else if (strncmp(scvar->cmd->tokenlist[0]->str, "false", 5) == 0)
         rep = 1;
+    else if (scvar->cmd->nbtoken == 2 && strncmp(scvar->cmd->tokenlist[0]->str, "exit", 4) == 0)
+    {
+        int cvt = strnint(scvar->cmd->tokenlist[1]->str, scvar->cmd->tokenlist[1]->len);
+        exit(cvt);
+    }
     else if (strncmp(scvar->cmd->tokenlist[0]->str, "continue", 8) == 0)
     {
         rep = 0;
