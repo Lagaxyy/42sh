@@ -104,6 +104,19 @@ Test(lexer, lexerVerif_fi)
     free_lexer(test_lexer);
 }
 
+Test(lexer, lexerVerif_fi_2)
+{
+    char *input = strdup("fi   ");
+    struct Lexer *test_lexer = init_lexer(input);
+    int check = lexerVerif(test_lexer, FI_GRM);
+
+    int expected_check = 1; // true
+
+    cr_expect_eq(check, expected_check);
+
+    free_lexer(test_lexer);
+}
+
 Test(lexer, lexerVerif_while)
 {
     char *input = strdup("while ");
@@ -148,6 +161,45 @@ Test(lexer, lexerVerif_done)
     char *input = strdup("done;");
     struct Lexer *test_lexer = init_lexer(input);
     int check = lexerVerif(test_lexer, DONE_GRM);
+
+    int expected_check = 1; // true
+
+    cr_expect_eq(check, expected_check);
+
+    free_lexer(test_lexer);
+}
+
+Test(lexer, lexerVerif_done_2)
+{
+    char *input = strdup("done ;");
+    struct Lexer *test_lexer = init_lexer(input);
+    int check = lexerVerif(test_lexer, DONE_GRM);
+
+    int expected_check = 1; // true
+
+    cr_expect_eq(check, expected_check);
+
+    free_lexer(test_lexer);
+}
+
+Test(lexer, lexerVerif_for)
+{
+    char *input = strdup("for\t");
+    struct Lexer *test_lexer = init_lexer(input);
+    int check = lexerVerif(test_lexer, FOR_GRM);
+
+    int expected_check = 1; // true
+
+    cr_expect_eq(check, expected_check);
+
+    free_lexer(test_lexer);
+}
+
+Test(lexer, lexerVerif_in)
+{
+    char *input = strdup("in;");
+    struct Lexer *test_lexer = init_lexer(input);
+    int check = lexerVerif(test_lexer, IN_GRM);
 
     int expected_check = 1; // true
 
@@ -327,9 +379,22 @@ Test(lexer, lexer_check_done)
     free_lexer(test_lexer);
 }
 
+Test(lexer, lexer_check_in)
+{
+    char *input = strdup("in");
+    struct Lexer *test_lexer = init_lexer(input);
+    bool check = lexer_check(test_lexer);
+
+    bool expected_check = true;
+
+    cr_expect_eq(check, expected_check);
+
+    free_lexer(test_lexer);
+}
+
 // === Tests coverage lexer ===================================================
 
-Test(lexer, end)
+Test(lexer, lexer_end)
 {
     char *input = strdup("Test");
     struct Lexer *test_lexer = init_lexer(input);
@@ -346,7 +411,7 @@ Test(lexer, end)
     }
 }
 
-Test(lexer, op_and)
+Test(lexer, lexer_op_and)
 {
     char *input = strdup("&&");
     struct Lexer *test_lexer = init_lexer(input);
@@ -363,7 +428,7 @@ Test(lexer, op_and)
     }
 }
 
-Test(lexer, op_pipe)
+Test(lexer, lexer_op_pipe)
 {
     char *input = strdup("|");
     struct Lexer *test_lexer = init_lexer(input);
@@ -380,7 +445,7 @@ Test(lexer, op_pipe)
     }
 }
 
-Test(lexer, op_or)
+Test(lexer, lexer_op_or)
 {
     char *input = strdup("||");
     struct Lexer *test_lexer = init_lexer(input);
@@ -397,7 +462,7 @@ Test(lexer, op_or)
     }
 }
 
-Test(lexer, op_negation)
+Test(lexer, lexer_op_negation)
 {
     char *input = strdup("!");
     struct Lexer *test_lexer = init_lexer(input);
@@ -414,7 +479,7 @@ Test(lexer, op_negation)
     }
 }
 
-Test(lexer, single_quotes)
+Test(lexer, lexer_single_quotes)
 {
     char *input = strdup("'Test'");
     struct Lexer *test_lexer = init_lexer(input);
@@ -434,7 +499,27 @@ Test(lexer, single_quotes)
     free_lexer(test_lexer);
 }
 
-Test(lexer, bad_single_quotes)
+Test(lexer, lexer_double_quotes)
+{
+    char *input = strdup("\"Test\"");
+    struct Lexer *test_lexer = init_lexer(input);
+    struct Token *test_token = lexer(test_lexer, WORD);
+
+    size_t expected_len = 4;
+    char *expected_str = "Test";
+
+    cr_expect_eq(test_token->len, expected_len, "Expected: %zu. Got: %zu.",
+                 expected_len, test_token->len);
+    for (size_t i = 0; i < test_token->len; i++)
+        cr_expect_eq(test_token->str[i], expected_str[i],
+                     "Expected: %c. Got: %c.", expected_str[i],
+                     test_token->str[i]);
+
+    free(test_token);
+    free_lexer(test_lexer);
+}
+
+Test(lexer, lexer_bad_single_quotes)
 {
     char *input = strdup("'Test");
     struct Lexer *test_lexer = init_lexer(input);
@@ -451,9 +536,43 @@ Test(lexer, bad_single_quotes)
     }
 }
 
-Test(lexer, comment)
+Test(lexer, lexer_bad_double_quotes)
+{
+    char *input = strdup("\"Test");
+    struct Lexer *test_lexer = init_lexer(input);
+    struct Token *test_token = lexer(test_lexer, WORD);
+
+    free_lexer(test_lexer);
+
+    if (!test_token)
+        cr_assert(1);
+    else
+    {
+        free(test_token);
+        cr_assert(0);
+    }
+}
+
+Test(lexer, lexer_comment)
 {
     char *input = strdup("# Test");
+    struct Lexer *test_lexer = init_lexer(input);
+    struct Token *test_token = lexer(test_lexer, WORD);
+
+    free_lexer(test_lexer);
+
+    if (!test_token)
+        cr_assert(1);
+    else
+    {
+        free(test_token);
+        cr_assert(0);
+    }
+}
+
+Test(lexer, lexer_in)
+{
+    char *input = strdup("in  \n");
     struct Lexer *test_lexer = init_lexer(input);
     struct Token *test_token = lexer(test_lexer, WORD);
 
