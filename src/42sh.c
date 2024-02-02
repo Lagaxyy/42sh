@@ -89,6 +89,45 @@ bool present_semicolon(char *str, size_t l)
     return false;
 }
 
+static size_t strlen_without_comment(char *str)
+{
+    size_t i = 0;
+    while (str[i] != 0 && str[i] != '#')
+    {
+        if (str[i] == '\'')
+        {
+            i++;
+            while (str[i] != 0 && str[i] != '\'')
+            {
+                i++;
+            }
+            if (str[i] != 0)
+                i++;
+        }
+        else if (str[i] == '"')
+        {
+            i++;
+            while (str[i] != 0 && str[i] != '"')
+            {
+                i++;
+            }
+            if (str[i] != 0)
+                i++;
+        }
+        else
+        {
+            i++;
+        }
+    }
+    if (str[i] == '#')
+    {
+        str[i] = '\n';
+        str[i + 1] = 0;
+        return i + 1;
+    }
+    return i;
+}
+
 char *InputStandardInStr(void)
 /*
 ** Récupère l'input depuis
@@ -107,7 +146,7 @@ char *InputStandardInStr(void)
     while (getline(&content, &contentSize, stdin) != -1)
     {
         // Vérification de ligne vide
-        l = strlen(content);
+        l = strlen_without_comment(content);
         if (content[l - 1] != '\n')
         {
             len += l;
@@ -168,7 +207,7 @@ char *fileInStr(char *path)
     while (getline(&content, &contentSize, file) != -1)
     {
         // Vérification de ligne vide
-        l = strlen(content);
+        l = strlen_without_comment(content);
         if (content[l - 1] != '\n')
         {
             len += l;
