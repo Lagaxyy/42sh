@@ -7,7 +7,7 @@ struct Command *init_command(void)
 ** Renvoie une struct Command initialisée
 */
 {
-    struct Command *c = malloc(sizeof(struct Command));
+    struct Command *c = calloc(1,sizeof(struct Command));
     c->tokenlist = NULL;
     c->nbtoken = 0;
     return c;

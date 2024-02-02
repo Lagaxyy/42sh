@@ -7,6 +7,7 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 #include "../mypipe/mypipe.h"
 #include "../variable/variable.h"
@@ -174,10 +175,16 @@ static int exec_ast_for(struct Ast *ast)
 {
     if (!ast)
         return 1;
-    assert(ast->type == FOR_CMD);
+    assert(ast->type == FOR_CMD);    
 
     struct Ast_for *fr = &ast->data.fr;
     struct Ast_simple_cmd *cd = &fr->valeurs->data.sc;
+
+    if (fr->valeurs == NULL)
+    {
+        return 0;
+    }
+    
     struct Command *cmd = cd->cmd;
 
     struct Variable *var = NULL;
