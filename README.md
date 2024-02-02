@@ -19,6 +19,25 @@ autoreconf --install
 make
 ```
 
+## Lancer les tests
+
+Les commandes pour lancer les tests (unitaires pour l'instant) sont:
+```
+autoreconf --install
+./configure
+make check
+```
+
+## Voir le coverage des tests unitaires
+
+Les commandes pour voir le coverage sont:
+```
+autoreconf --install
+./configure
+make cov
+```
+Les fichiers _report.html_ sont les fichiers de bilan du coverage
+
 ## Clean le repo
 
 Les commandes pour supprimer tous les fichiers produits sont:
@@ -26,8 +45,6 @@ Les commandes pour supprimer tous les fichiers produits sont:
 make distclean
 ./rm_autotools_files.sh
 ```
-NB: après avoir fait un make check, faire un make clean pour supprimer les
-fichiers de coverage
 
 ## Autres commandes utiles
 

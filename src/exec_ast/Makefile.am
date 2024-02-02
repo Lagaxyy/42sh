@@ -13,4 +13,11 @@ libea_a_CPPFLAGS = -I$(top_srcdir)
 
 noinst_LIBRARIES = libea.a
 
-#SUBDIRS = tests
+#check-local: libea.a
+#	$(MAKE) -C tests $@
+
+#clean-local:
+#	rm -rf tests/ut_exec_ast tests/ut_exec_ast-unit_tests_exec_ast.o tests/Makefile tests/.deps
+
+#cov:
+#	$(MAKE) -C tests $@

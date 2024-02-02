@@ -2,3 +2,7 @@
 AUTOMAKE_OPTIONS = foreign
 
 SUBDIRS = src
+
+# Lance le coverage
+cov:
+	$(MAKE) -C src $@
