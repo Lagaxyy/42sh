@@ -12,6 +12,19 @@
 
 #include "exec_ast.h"
 
+static char *write_sh(void)
+{
+    char *c = malloc(7 * sizeof(char));
+    c[0] = '.';
+    c[1] = '/';
+    c[2] = '4';
+    c[3] = '2';
+    c[4] = 's';
+    c[5] = 'h';
+    c[6] = 0;
+    return c;
+}
+
 int run_cmds(struct Ast *ast)
 /*
 ** Exécute les commandes non builtin
@@ -32,7 +45,14 @@ int run_cmds(struct Ast *ast)
     char **argv = malloc(sizeof(char *) * (nbt + 1));
     for (size_t i = 0; i < nbt; i++)
     {
-        if (sc->cmd->tokenlist[i]->str[0] == ';'
+        if (sc->cmd->tokenlist[i]->str[0] == '.'
+            && sc->cmd->tokenlist[i]->len == 1
+            && i == 0)
+        {
+            argv[0] = write_sh();
+            continue;
+        }
+        else if (sc->cmd->tokenlist[i]->str[0] == ';'
             && sc->cmd->tokenlist[i]->len == 1)
         {
             argv[i] = NULL;
