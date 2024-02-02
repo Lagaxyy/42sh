@@ -9,6 +9,13 @@ struct ListVariable
     struct ListVariable *next;
 };
 
+struct Info
+{
+    struct ListVariable *listVar;
+    int isBreak;
+    int isContinue;
+};
+
 /*
 ** Exécute l'AST
 */
