@@ -142,7 +142,7 @@ static int check_token(char *token, enum Grammaire grm)
     else if (grm == FOR_GRM)
         return strncmp(token, "for", 3) == 0 && strspn(token + 3, " \n\t") > 0;
     else if (grm == IN_GRM)
-        return strncmp(token, "in", 2) == 0 && strspn(token + 2, " \n\t") > 0;
+        return strncmp(token, "in", 2) == 0 && strspn(token + 2, " ;\n\t") > 0;
     else if (grm == DO_GRM)
         return strncmp(token, "do", 2) == 0 && strspn(token + 2, " ;\n\t") > 0;
     else if (grm == DONE_GRM)
