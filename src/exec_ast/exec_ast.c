@@ -12,7 +12,7 @@
 #include "../variable/variable.h"
 #include "merge_token.h"
 
-struct ListVariable *variables = NULL;
+struct Info *info = NULL;
 
 // Pointeur de fonction pour rediriger vers les autres
 // fonctions selon le type du noeud
@@ -35,14 +35,14 @@ static int exec_ast_sc(struct Ast *ast)
     struct Variable *var = varialble_parsing(sc->cmd);
     if (var != NULL)
     {
-        // l'ajouter ou modifier dans variables
-        int err = present_or_add(&variables, var);
+        // l'ajouter ou modifier dans info->listVar
+        int err = present_or_add(&info->listVar, var);
         if (err == 0)
             return 1;
         return 0;
     }
-    // merge_token(sc->cmd, variables);
-    struct Ast *ast_var = cpy_cmd_with_var(sc->cmd, variables);
+    // merge_token(sc->cmd, info->listVar);
+    struct Ast *ast_var = cpy_cmd_with_var(sc->cmd, info->listVar);
     struct Ast_simple_cmd *scvar = &ast_var->data.sc; // Alias pratique
 
     if (strncmp(scvar->cmd->tokenlist[0]->str, "echo", 4) == 0)
@@ -52,6 +52,16 @@ static int exec_ast_sc(struct Ast *ast)
         rep = 0;
     else if (strncmp(scvar->cmd->tokenlist[0]->str, "false", 5) == 0)
         rep = 1;
+    else if (strncmp(scvar->cmd->tokenlist[0]->str, "continue", 8) == 0)
+    {
+        rep = 0;
+        info->isContinue = 1;
+    }
+    else if (strncmp(scvar->cmd->tokenlist[0]->str, "break", 5) == 0)
+    {
+        rep = 0;
+        info->isBreak = 1;
+    }
     else
         rep = run_cmds(ast_var);
 
@@ -111,6 +121,16 @@ static int exec_ast_until(struct Ast *ast)
     while (exec_ast(ut->cdt) != 0)
     {
         res = exec_ast(ut->do_cdt);
+        if(info->isContinue == 1)
+        {
+            info->isContinue = 0;
+            continue;
+        }
+        if (info->isBreak == 1)
+        {
+            info->isBreak = 0;
+            break;
+        }
     }
     return res;
 }
@@ -127,6 +147,16 @@ static int exec_ast_while(struct Ast *ast)
     while (exec_ast(wh->cdt) == 0)
     {
         res = exec_ast(wh->do_cdt);
+        if(info->isContinue == 1)
+        {
+            info->isContinue = 0;
+            continue;
+        }
+        if (info->isBreak == 1)
+        {
+            info->isBreak = 0;
+            break;
+        }
     }
     return res;
 }
@@ -198,8 +228,19 @@ static int exec_ast_for(struct Ast *ast)
         var->valeur = c;
 
         // appeler present_or_add
-        present_or_add(&variables, var);
+        present_or_add(&info->listVar, var);
         res = exec_ast(fr->do_cdt);
+
+        if(info->isContinue == 1)
+        {
+            info->isContinue = 0;
+            continue;
+        }
+        if (info->isBreak == 1)
+        {
+            info->isBreak = 0;
+            break;
+        }
     }
     return res;
 }
@@ -223,7 +264,7 @@ int exec_ast(struct Ast *ast)
     };
 
     int i = (*functions[ast->type])(ast);
-    if (ast->next == NULL)
+    if (info->isBreak == 1 || info->isContinue == 1 || ast->next == NULL)
     {
         return i;
     }
@@ -235,7 +276,12 @@ int exec_ast(struct Ast *ast)
 
 int exec_ast_init(struct Ast *ast)
 {
+    info = malloc(sizeof(struct Info));
+    info->listVar = NULL;
+    info->isBreak = 0;
+    info->isContinue = 0;
     int ret = exec_ast(ast);
-    free_list(variables);
+    free_list(info->listVar);
+    free(info);
     return ret;
 }
