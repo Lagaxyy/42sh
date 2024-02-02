@@ -46,14 +46,13 @@ int run_cmds(struct Ast *ast)
     for (size_t i = 0; i < nbt; i++)
     {
         if (sc->cmd->tokenlist[i]->str[0] == '.'
-            && sc->cmd->tokenlist[i]->len == 1
-            && i == 0)
+            && sc->cmd->tokenlist[i]->len == 1 && i == 0)
         {
             argv[0] = write_sh();
             continue;
         }
         else if (sc->cmd->tokenlist[i]->str[0] == ';'
-            && sc->cmd->tokenlist[i]->len == 1)
+                 && sc->cmd->tokenlist[i]->len == 1)
         {
             argv[i] = NULL;
             break;

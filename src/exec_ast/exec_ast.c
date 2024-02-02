@@ -67,9 +67,11 @@ static int exec_ast_sc(struct Ast *ast)
         rep = 0;
     else if (strncmp(scvar->cmd->tokenlist[0]->str, "false", 5) == 0)
         rep = 1;
-    else if (scvar->cmd->nbtoken == 2 && strncmp(scvar->cmd->tokenlist[0]->str, "exit", 4) == 0)
+    else if (scvar->cmd->nbtoken == 2
+             && strncmp(scvar->cmd->tokenlist[0]->str, "exit", 4) == 0)
     {
-        int cvt = strnint(scvar->cmd->tokenlist[1]->str, scvar->cmd->tokenlist[1]->len);
+        int cvt = strnint(scvar->cmd->tokenlist[1]->str,
+                          scvar->cmd->tokenlist[1]->len);
         exit(cvt);
     }
     else if (strncmp(scvar->cmd->tokenlist[0]->str, "continue", 8) == 0)
@@ -141,7 +143,7 @@ static int exec_ast_until(struct Ast *ast)
     while (exec_ast(ut->cdt) != 0)
     {
         res = exec_ast(ut->do_cdt);
-        if(info->isContinue == 1)
+        if (info->isContinue == 1)
         {
             info->isContinue = 0;
             continue;
@@ -167,7 +169,7 @@ static int exec_ast_while(struct Ast *ast)
     while (exec_ast(wh->cdt) == 0)
     {
         res = exec_ast(wh->do_cdt);
-        if(info->isContinue == 1)
+        if (info->isContinue == 1)
         {
             info->isContinue = 0;
             continue;
@@ -257,7 +259,7 @@ static int exec_ast_for(struct Ast *ast)
         present_or_add(&info->listVar, var);
         res = exec_ast(fr->do_cdt);
 
-        if(info->isContinue == 1)
+        if (info->isContinue == 1)
         {
             info->isContinue = 0;
             continue;
