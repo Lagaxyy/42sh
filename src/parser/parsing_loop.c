@@ -2,6 +2,16 @@
 #include "parsing.h"
 
 struct Ast *for_cmd(struct Lexer *lex)
+/*
+** Renvoie un noeud de l'AST de type
+** for
+**
+** Grammaire:
+**
+** rule_for =
+**   'for' WORD ( [';'] | [ {'\n'} 'in' { WORD } ( ';' | '\n' ) ] ) {'\n'} 'do'
+**   compound_list
+*/
 {
     if (!lexerVerif(lex, FOR_GRM))
         return simple_command(lex);
@@ -16,7 +26,7 @@ struct Ast *for_cmd(struct Lexer *lex)
     // Alias pratique
     struct Ast_for *fr = &ast->data.fr;
 
-    // requpere la variable
+    // Récupère la variable
     fr->var = lexer(lex, WORD);
 
     if (fr->var == NULL || !lexerVerif(lex, IN_GRM))
@@ -25,23 +35,28 @@ struct Ast *for_cmd(struct Lexer *lex)
         return NULL;
     }
 
+    // Parse la commande
     fr->valeurs = simple_command(lex);
 
+    // Trouve le ';'
     if (!lexerVerif(lex, SEMICOLON))
     {
         free_ast(ast);
         return NULL;
     }
 
+    // Trouve le 'do'
     if (!lexerVerif(lex, DO_GRM))
     {
         free_ast(ast);
         return NULL;
     }
     lexerVerif(lex, SEMICOLON);
-    // ajout de la boucle
+
+    // Ajout de la boucle
     fr->do_cdt = parse_start(lex);
 
+    // Trouve le 'done'
     if (!lexerVerif(lex, DONE_GRM))
     {
         free_ast(ast);
@@ -81,6 +96,7 @@ struct Ast *until_cmd(struct Lexer *lex)
         free(ast);
         return NULL;
     }
+
     // Récupère le 'do'
     if (!lexerVerif(lex, DO_GRM))
     {
@@ -89,6 +105,8 @@ struct Ast *until_cmd(struct Lexer *lex)
         return NULL;
     }
     lexerVerif(lex, SEMICOLON);
+
+    // Ajoute la boucle
     ut->do_cdt = parse_start(lex);
     if (ut->do_cdt == NULL)
     {
@@ -96,6 +114,7 @@ struct Ast *until_cmd(struct Lexer *lex)
         free(ast);
         return NULL;
     }
+
     // Récupère le 'done'
     if (!lexerVerif(lex, DONE_GRM))
     {
@@ -136,6 +155,7 @@ struct Ast *while_cmd(struct Lexer *lex)
         free(ast);
         return NULL;
     }
+
     // Récupère le 'do'
     if (!lexerVerif(lex, DO_GRM))
     {
@@ -144,6 +164,8 @@ struct Ast *while_cmd(struct Lexer *lex)
         return NULL;
     }
     lexerVerif(lex, SEMICOLON);
+
+    // Ajoute la boucle
     wh->do_cdt = parse_start(lex);
     if (wh->do_cdt == NULL)
     {
@@ -151,6 +173,7 @@ struct Ast *while_cmd(struct Lexer *lex)
         free(ast);
         return NULL;
     }
+
     // Récupère le 'done'
     if (!lexerVerif(lex, DONE_GRM))
     {

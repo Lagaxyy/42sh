@@ -36,7 +36,7 @@ struct Ast *simple_command(struct Lexer *lex)
 ** element = WORD ;
 */
 {
-    // Premier WORD necessaire
+    // Premier WORD nécessaire
     struct Token *token = lexer(lex, WORD);
     if (!token)
         // Token incorrect
