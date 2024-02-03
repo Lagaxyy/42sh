@@ -23,24 +23,6 @@ void free_ast_sc(struct Ast *ast)
     free(sc->cmd);
 }
 
-// void free_ast_cl(struct Ast *ast)
-/*
-** Libere la memoire allouee pour le
-** noeud command_list
-*//*
-{
-    if (!ast)
-        return;
-
-    // Alias pratique
-    struct Ast_cmd_list *cl = &ast->data.cl;
-
-    // Libere la memoire allouee pour la liste des commandes
-    for (size_t i = 0; i < cl->nbnodes; i++)
-        free_ast(cl->list[i]);
-    free(cl->list);
-}*/
-
 void free_ast_if(struct Ast *ast)
 /*
 ** Libere la memoire allouee pour le
