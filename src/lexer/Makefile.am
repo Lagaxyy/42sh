@@ -12,7 +12,10 @@ check-local: liblexer.a
 
 clean-local:
 	$(MAKE) -C tests clean
-	rm -rf tests/ut_lexer tests/ut_lexer-unit_tests_lexer.o tests/Makefile tests/.deps
+	rm -rf tests/ut_lexer tests/ut_lexer-unit_tests_lexer.o tests/.deps
+
+distclean:
+	rm -rf tests/Makefile Makefile .deps
 
 cov:
 	$(MAKE) -C tests $@

@@ -30,14 +30,14 @@ void free_lexer(struct Lexer *lexer);
 int lexerVerif(struct Lexer *lex, enum Grammaire grm);
 
 /*
-** Renvoie true si c'est un token
+** Renvoie true si le premier token est
 ** spécial, sinon renvoie false
 */
 bool lexer_check(struct Lexer *lex);
 
 /*
-** Considerant l'input (ici c'est str), renvoie
-** un struct Token contenant un pointeur au debut
+** Considérant l'input (ici c'est str), renvoie
+** un struct Token contenant un pointeur au début
 ** du token et la taille du token
 */
 struct Token *lexer(struct Lexer *lex, enum Grammaire grm);
