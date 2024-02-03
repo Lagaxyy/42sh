@@ -15,8 +15,10 @@
 
 struct Info *info = NULL;
 
-// Pointeur de fonction pour rediriger vers les autres
-// fonctions selon le type du noeud
+/*
+** Pointeur de fonction pour rediriger vers les autres
+** fonctions selon le type du noeud
+*/
 typedef int (*node_type)(struct Ast *ast);
 
 static int strnint(char *str, size_t len)
@@ -35,7 +37,7 @@ static int strnint(char *str, size_t len)
 
 static int exec_ast_sc(struct Ast *ast)
 /*
-** Execute le noeud simple_command
+** Exécute le noeud simple_command
 */
 {
     if (!ast)
@@ -45,12 +47,13 @@ static int exec_ast_sc(struct Ast *ast)
     int rep = 1;
 
     // Match la commande avec sa fonction correspondante
-    struct Ast_simple_cmd *sc = &ast->data.sc; // Alias pratique
-    // si s'est une initialisation de variable
+    //   Alias pratique
+    struct Ast_simple_cmd *sc = &ast->data.sc;
+    //   Si c'est une initialisation de variable
     struct Variable *var = varialble_parsing(sc->cmd);
     if (var != NULL)
     {
-        // l'ajouter ou modifier dans info->listVar
+        // L'ajouter ou modifier dans info->listVar
         int err = present_or_add(&info->listVar, var);
         if (err == 0)
             return 1;
@@ -58,6 +61,7 @@ static int exec_ast_sc(struct Ast *ast)
     }
     // merge_token(sc->cmd, info->listVar);
     struct Ast *ast_var = cpy_cmd_with_var(sc->cmd, info->listVar);
+
     struct Ast_simple_cmd *scvar = &ast_var->data.sc; // Alias pratique
 
     if (strncmp(scvar->cmd->tokenlist[0]->str, "echo", 4) == 0)
@@ -94,7 +98,7 @@ static int exec_ast_sc(struct Ast *ast)
 
 static int exec_ast_if(struct Ast *ast)
 /*
-** Execute le noeud if_command
+** Exécute le noeud if_command
 */
 {
     if (!ast)
@@ -113,9 +117,6 @@ static int exec_ast_if(struct Ast *ast)
             return 0;
         return exec_ast(aif->cmd2);
     }
-
-    /*// Alloue la memoire pour la struct Ast_simple_cmd
-    struct Ast_if *aif = &ast->data.aif;*/
 
     return 1;
 }
@@ -139,7 +140,8 @@ static int exec_ast_until(struct Ast *ast)
 
     struct Ast_until *ut = &ast->data.ut;
     int res = 0;
-    // si s'est 0 continue
+
+    // Si c'est 0 on continue
     while (exec_ast(ut->cdt) != 0)
     {
         res = exec_ast(ut->do_cdt);
@@ -165,7 +167,8 @@ static int exec_ast_while(struct Ast *ast)
 
     struct Ast_while *wh = &ast->data.wh;
     int res = 0;
-    // si s'est 0 continue
+
+    // Si c'est 0 on continue
     while (exec_ast(wh->cdt) == 0)
     {
         res = exec_ast(wh->do_cdt);
@@ -243,7 +246,7 @@ static int exec_ast_for(struct Ast *ast)
     char *c = NULL;
     for (size_t i = 0; i < cmd->nbtoken; i++)
     {
-        // créer la variable
+        // Créer la variable
         var = malloc(sizeof(struct Variable));
         var->name = malloc(sizeof(struct Token));
         var->name->str = fr->var->str;
@@ -255,7 +258,7 @@ static int exec_ast_for(struct Ast *ast)
         c[cmd->tokenlist[i]->len] = 0;
         var->valeur = c;
 
-        // appeler present_or_add
+        // Appeler present_or_add
         present_or_add(&info->listVar, var);
         res = exec_ast(fr->do_cdt);
 
@@ -275,7 +278,7 @@ static int exec_ast_for(struct Ast *ast)
 
 int exec_ast(struct Ast *ast)
 /*
-** Execute l'AST
+** Exécute l'AST
 ** Etape: simple_command
 */
 {

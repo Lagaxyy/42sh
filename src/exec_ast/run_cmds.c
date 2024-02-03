@@ -14,14 +14,7 @@
 
 static char *write_sh(void)
 {
-    char *c = malloc(7 * sizeof(char));
-    c[0] = '.';
-    c[1] = '/';
-    c[2] = '4';
-    c[3] = '2';
-    c[4] = 's';
-    c[5] = 'h';
-    c[6] = 0;
+    char *c = strdup("./src/42sh");
     return c;
 }
 
@@ -50,12 +43,6 @@ int run_cmds(struct Ast *ast)
         {
             argv[0] = write_sh();
             continue;
-        }
-        else if (sc->cmd->tokenlist[i]->str[0] == ';'
-                 && sc->cmd->tokenlist[i]->len == 1)
-        {
-            argv[i] = NULL;
-            break;
         }
         str = strdup(sc->cmd->tokenlist[i]->str);
         str[sc->cmd->tokenlist[i]->len] = '\0';
