@@ -16,6 +16,9 @@ SUBDIRS = lexer \
 		  variable \
 		  exec_ast
 
+check-local: lexer/liblexer.a parser/libparser.a exec_ast/libea.a variable/libvar.a mypipe/libmypipe.a
+	$(MAKE) -C ../tests $@
+
 cov:
 	$(MAKE) -C lexer $@
 	$(MAKE) -C parser $@

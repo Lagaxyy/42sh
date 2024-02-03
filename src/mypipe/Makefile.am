@@ -8,11 +8,9 @@ libmypipe_a_CPPFLAGS = -I$(top_srcdir)
 
 noinst_LIBRARIES = libmypipe.a
 
-#check-local: libmypipe.a
-#	$(MAKE) -C tests $@
+DC = Makefile \
+	 .dirstamp \
+	 .deps
 
-#clean-local:
-#	rm -rf tests/ut_mypipe tests/ut_mypipe-unit_tests_mypipe.o tests/Makefile tests/.deps
-
-#cov:
-#	$(MAKE) -C tests $@
+distclean:
+	rm -rf $(DC)

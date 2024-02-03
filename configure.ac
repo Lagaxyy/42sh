@@ -18,6 +18,7 @@ AC_CONFIG_FILES([
     src/exec_ast/tests/Makefile
     src/mypipe/Makefile
     src/variable/Makefile
+    tests/Makefile
     ])
 
 AC_OUTPUT

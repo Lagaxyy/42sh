@@ -239,6 +239,7 @@ Test(exec_ast, simple_cmd_non_builtin)
     cr_expect_eq(exitcode, 0, "Expected: %d. Got: %d.", 0, exitcode);
 }
 
+/* Run un nouveau programme, donc risque de false leaks
 Test(exec_ast, dot)
 {
     char *input = strdup(". -c \"echo foo\";");
@@ -255,6 +256,7 @@ Test(exec_ast, dot)
     // de la commande ?
     cr_expect_eq(exitcode, 127, "Expected: %d. Got: %d.", 127, exitcode);
 }
+*/
 
 // === Tests merge_token et list_variable =====================================
 

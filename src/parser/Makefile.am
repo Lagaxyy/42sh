@@ -17,12 +17,7 @@ noinst_LIBRARIES = libparser.a
 
 DC = tests/Makefile \
 	 Makefile \
-	 ../lexer/Makefile \
-	 ../lexer/tests/Makefile \
-	 .deps \
-	 tests/.deps \
-	 ../lexer/.deps \
-	 ../lexer/tests/.deps
+	 .deps
 
 check-local: libparser.a
 	$(MAKE) -C tests $@

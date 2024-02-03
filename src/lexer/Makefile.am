@@ -7,15 +7,19 @@ liblexer_a_CPPFLAGS = -I$(top_srcdir)
 
 noinst_LIBRARIES = liblexer.a
 
+DC = tests/Makefile \
+	 Makefile \
+	 .deps
+
 check-local: liblexer.a
 	$(MAKE) -C tests $@
 
 clean-local:
 	$(MAKE) -C tests clean
-	rm -rf tests/ut_lexer tests/ut_lexer-unit_tests_lexer.o tests/.deps
+	rm -rf tests/ut_lexer-unit_tests_lexer.o
 
 distclean:
-	rm -rf tests/Makefile Makefile .deps
+	rm -rf $(DC)
 
 cov:
 	$(MAKE) -C tests $@

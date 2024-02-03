@@ -6,7 +6,11 @@ libea_a_SOURCES = exec_ast.c \
 				   list_variable.c \
 				   merge_token.c \
 				   merge_token.h \
-				   exec_ast.h
+				   exec_ast.h \
+				   $(top_builddir)/src/mypipe/mypipe.c \
+				   $(top_builddir)/src/mypipe/mypipe.h \
+				   $(top_builddir)/src/variable/variable.c \
+				   $(top_builddir)/src/variable/variable.h
 
 libea_a_CFLAGS = -std=c99 -Werror -Wall -Wextra -Wvla -pedantic
 libea_a_CPPFLAGS = -I$(top_srcdir)
@@ -15,12 +19,7 @@ noinst_LIBRARIES = libea.a
 
 DC = tests/Makefile \
 	 Makefile \
-	 ../lexer/Makefile \
-	 ../lexer/tests/Makefile \
-	 .deps \
-	 tests/.deps \
-	 ../lexer/.deps \
-	 ../lexer/tests/.deps
+	 .deps
 
 check-local: libea.a
 	$(MAKE) -C tests $@
