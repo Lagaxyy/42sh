@@ -18,3 +18,4 @@ SUBDIRS = lexer \
 
 cov:
 	$(MAKE) -C lexer $@
+	$(MAKE) -C parser $@
