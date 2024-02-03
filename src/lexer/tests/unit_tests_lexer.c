@@ -9,6 +9,7 @@
 
 #include "../lexer.h"
 
+// Coverage: 96% (02/02/2024)
 TestSuite(lexer);
 
 Test(lexer, dummy)
